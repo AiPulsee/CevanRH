@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CreateJobModal } from "@/components/dashboard/create-job-modal";
+import Link from "next/link";
 
 export default function JobsPage() {
   const jobs = [
@@ -46,44 +47,46 @@ export default function JobsPage() {
 
       <div className="grid grid-cols-1 gap-4">
         {jobs.map((job, i) => (
-          <Card key={i} className="p-6 border-border bg-white rounded-[2rem] shadow-sm hover:shadow-md transition-all group cursor-pointer relative overflow-hidden">
-            {job.managed && (
-              <div className="absolute top-0 right-0 p-4">
-                <Badge className="bg-primary/10 text-primary border-primary/20 rounded-lg flex items-center gap-1 font-black text-[10px] uppercase tracking-widest">
-                  <Zap className="h-3 w-3 fill-primary" />
-                  Managed
-                </Badge>
-              </div>
-            )}
-            
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="h-14 w-14 rounded-2xl bg-secondary border border-border flex items-center justify-center font-black text-xl text-primary shadow-inner">
-                  {job.title.charAt(0)}
+          <Link href="/dashboard/candidates" key={i} className="block">
+            <Card className="p-6 border-border bg-white rounded-[2rem] shadow-sm hover:shadow-md transition-all group cursor-pointer relative overflow-hidden">
+              {job.managed && (
+                <div className="absolute top-0 right-0 p-4">
+                  <Badge className="bg-primary/10 text-primary border-primary/20 rounded-lg flex items-center gap-1 font-black text-[10px] uppercase tracking-widest">
+                    <Zap className="h-3 w-3 fill-primary" />
+                    Managed
+                  </Badge>
                 </div>
-                <div>
-                  <h4 className="font-bold text-lg group-hover:text-primary transition-colors">{job.title}</h4>
-                  <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground font-medium">
-                    <span className="flex items-center gap-1"><Briefcase className="h-3.5 w-3.5" /> {job.type}</span>
-                    <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> Publicada hoje</span>
+              )}
+              
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-4">
+                  <div className="h-14 w-14 rounded-2xl bg-secondary border border-border flex items-center justify-center font-black text-xl text-primary shadow-inner">
+                    {job.title.charAt(0)}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-lg group-hover:text-primary transition-colors">{job.title}</h4>
+                    <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground font-medium">
+                      <span className="flex items-center gap-1"><Briefcase className="h-3.5 w-3.5" /> {job.type}</span>
+                      <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> Publicada hoje</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-8">
+                  <div className="text-right hidden md:block">
+                    <p className="text-xs font-black text-foreground uppercase tracking-widest">{job.candidates} candidatos</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">Interessados</p>
+                  </div>
+                  <Badge variant={job.status === "Ativa" ? "default" : "secondary"} className="rounded-lg px-3 py-1 font-bold text-[10px] uppercase">
+                    {job.status}
+                  </Badge>
+                  <div className="flex items-center justify-center rounded-xl border border-border bg-white group-hover:bg-primary group-hover:text-white transition-all shadow-sm h-12 w-12">
+                    <ChevronRight className="h-6 w-6" />
                   </div>
                 </div>
               </div>
-
-              <div className="flex items-center gap-8">
-                <div className="text-right hidden md:block">
-                  <p className="text-xs font-black text-foreground uppercase tracking-widest">{job.candidates} candidatos</p>
-                  <p className="text-[10px] text-muted-foreground mt-1">Interessados</p>
-                </div>
-                <Badge variant={job.status === "Ativa" ? "default" : "secondary"} className="rounded-lg px-3 py-1 font-bold text-[10px] uppercase">
-                  {job.status}
-                </Badge>
-                <Button variant="ghost" size="icon" className="rounded-xl border border-border bg-white group-hover:bg-primary group-hover:text-white transition-all shadow-sm h-12 w-12">
-                  <ChevronRight className="h-6 w-6" />
-                </Button>
-              </div>
-            </div>
-          </Card>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>

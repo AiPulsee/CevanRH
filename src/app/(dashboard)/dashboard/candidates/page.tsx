@@ -14,10 +14,11 @@ import {
   Star
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { CandidateModal } from "@/components/dashboard/candidate-modal";
 
 const columns = [
   { id: "new", name: "Novos", count: 12, color: "bg-blue-500" },
-  { id: "screening", name: "Triagem", count: 5, color: "bg-purple-500" },
+  { id: "screening", name: "Triagem", count: 5, color: "bg-blue-500" },
   { id: "interview", name: "Entrevista", count: 3, color: "bg-orange-500" },
   { id: "offer", name: "Proposta", count: 1, color: "bg-green-500" },
   { id: "hired", name: "Contratado", count: 0, color: "bg-emerald-500" },
@@ -69,7 +70,7 @@ export default function CandidatesKanban() {
       <div className="flex-1 overflow-x-auto pb-4 custom-scrollbar">
         <div className="flex gap-6 h-full min-w-max">
           {columns.map((column) => (
-            <div key={column.id} className="w-80 flex flex-col gap-4">
+            <div key={column.id} className="w-[420px] flex flex-col gap-4">
               <div className="flex items-center justify-between px-2">
                 <div className="flex items-center gap-2">
                   <div className={`h-2 w-2 rounded-full ${column.color}`} />
@@ -83,45 +84,47 @@ export default function CandidatesKanban() {
                 </Button>
               </div>
 
-              <div className="flex-1 space-y-4 p-2 bg-secondary/30 rounded-[2rem] border border-border/50 min-h-[500px]">
+              <div className="flex-1 grid grid-cols-2 gap-3 p-3 bg-secondary/30 rounded-[2rem] border border-border/50 content-start min-h-[500px]">
                 {candidates
                   .filter((c) => c.status === column.id)
                   .map((candidate) => (
-                    <Card key={candidate.id} className="p-4 border-border bg-white rounded-2xl shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing group">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
-                          {candidate.avatar}
+                    <CandidateModal key={candidate.id} candidate={candidate}>
+                      <Card className="p-4 border-border bg-white rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col h-full">
+                        <div className="flex flex-col gap-2 mb-3">
+                          <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
+                            {candidate.avatar}
+                          </div>
+                          <div className="flex items-center gap-0.5">
+                            {[...Array(5)].map((_, i) => (
+                              <Star 
+                                key={i} 
+                                className={`h-3 w-3 ${i < candidate.rating ? "fill-yellow-400 text-yellow-400" : "text-muted/30"}`} 
+                              />
+                            ))}
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star 
-                              key={i} 
-                              className={`h-3 w-3 ${i < candidate.rating ? "fill-yellow-400 text-yellow-400" : "text-muted/30"}`} 
-                            />
-                          ))}
+                        
+                        <h4 className="font-bold text-sm group-hover:text-primary transition-colors">{candidate.name}</h4>
+                        <p className="text-xs text-muted-foreground mb-4">{candidate.role}</p>
+                        
+                        <div className="flex flex-col gap-2 pt-3 border-t border-border mt-auto">
+                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest text-center">
+                            Ativo há 2d
+                          </span>
+                          <div className="flex items-center justify-center -space-x-2">
+                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full bg-secondary border border-border z-10 hover:z-20">
+                              <Mail className="h-3 w-3" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full bg-secondary border border-border z-10 hover:z-20">
+                              <Calendar className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <h4 className="font-bold text-sm group-hover:text-primary transition-colors">{candidate.name}</h4>
-                      <p className="text-xs text-muted-foreground mb-4">{candidate.role}</p>
-                      
-                      <div className="flex items-center justify-between pt-3 border-t border-border">
-                        <div className="flex -space-x-2">
-                          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full bg-secondary border border-border">
-                            <Mail className="h-3 w-3" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full bg-secondary border border-border">
-                            <Calendar className="h-3 w-3" />
-                          </Button>
-                        </div>
-                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                          Ativo há 2d
-                        </span>
-                      </div>
-                    </Card>
+                      </Card>
+                    </CandidateModal>
                   ))}
                 
-                <Button variant="ghost" className="w-full h-12 border-2 border-dashed border-border rounded-2xl text-muted-foreground hover:bg-white/50 hover:border-primary/30 transition-all">
+                <Button variant="ghost" className="col-span-2 w-full h-12 border-2 border-dashed border-border rounded-2xl text-muted-foreground hover:bg-white/50 hover:border-primary/30 transition-all mt-2">
                   <Plus className="h-4 w-4 mr-2" />
                   Novo Candidato
                 </Button>

@@ -79,11 +79,11 @@ export default function CandidateSettingsPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-start gap-3">
-              <ShieldCheck className="h-5 w-5 text-indigo-500 mt-0.5" />
+            <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100 flex items-start gap-3">
+              <ShieldCheck className="h-5 w-5 text-blue-500 mt-0.5" />
               <div className="space-y-1">
-                <p className="text-xs font-bold text-indigo-900">Privacidade de Perfil</p>
-                <p className="text-[10px] text-indigo-700 leading-relaxed">Apenas empresas das vagas que você se candidatou podem ver seu perfil completo e currículo.</p>
+                <p className="text-xs font-bold text-blue-900">Privacidade de Perfil</p>
+                <p className="text-[10px] text-blue-700 leading-relaxed">Apenas empresas das vagas que você se candidatou podem ver seu perfil completo e currículo.</p>
               </div>
             </div>
 

@@ -33,7 +33,7 @@ export default function AdminSettings() {
             <Button 
               key={item.name} 
               variant={item.active ? "secondary" : "ghost"} 
-              className={`w-full justify-start gap-3 h-12 rounded-xl font-bold transition-all ${item.active ? "bg-indigo-500/10 text-indigo-600 border border-indigo-500/20" : "text-slate-500 hover:bg-slate-50"}`}
+              className={`w-full justify-start gap-3 h-12 rounded-xl font-bold transition-all ${item.active ? "bg-blue-500/10 text-blue-600 border border-blue-500/20" : "text-slate-500 hover:bg-slate-50"}`}
             >
               <item.icon className="h-5 w-5" />
               {item.name}
@@ -45,7 +45,7 @@ export default function AdminSettings() {
           <Card className="p-8 border-slate-200 bg-white rounded-[2.5rem] shadow-sm space-y-8">
             <div className="space-y-6">
               <h3 className="text-lg font-bold flex items-center gap-2">
-                <Lock className="h-5 w-5 text-indigo-500" />
+                <Lock className="h-5 w-5 text-blue-500" />
                 Segurança Global
               </h3>
               
@@ -55,7 +55,7 @@ export default function AdminSettings() {
                     <p className="text-sm font-bold text-slate-900">Autenticação de Dois Fatores (2FA)</p>
                     <p className="text-xs text-slate-500 font-medium">Obrigatório para todos os Administradores.</p>
                   </div>
-                  <div className="h-6 w-10 bg-indigo-600 rounded-full flex items-center px-1">
+                  <div className="h-6 w-10 bg-blue-600 rounded-full flex items-center px-1">
                     <div className="h-4 w-4 bg-white rounded-full ml-auto shadow-sm" />
                   </div>
                 </div>
@@ -88,7 +88,7 @@ export default function AdminSettings() {
 
             <div className="pt-6 border-t border-slate-200 flex justify-end gap-3">
               <Button variant="ghost" className="rounded-xl font-bold h-12 px-8">Descartar</Button>
-              <Button className="rounded-xl font-bold h-12 px-8 bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200">
+              <Button className="rounded-xl font-bold h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200">
                 Salvar Configurações
               </Button>
             </div>

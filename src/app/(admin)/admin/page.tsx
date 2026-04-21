@@ -30,13 +30,13 @@ export default function AdminPage() {
           <Card key={i} className="p-6 border-slate-200 bg-white rounded-3xl shadow-sm">
             <div className="flex items-start justify-between">
               <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
-                <stat.icon className="h-5 w-5 text-indigo-500" />
+                <stat.icon className="h-5 w-5 text-blue-500" />
               </div>
             </div>
             <div className="mt-4">
               <p className="text-sm font-bold text-slate-400">{stat.name}</p>
               <h3 className="text-3xl font-black mt-1 text-slate-900">{stat.value}</h3>
-              <p className="text-[10px] font-bold text-indigo-500 mt-2 uppercase tracking-widest">{stat.change}</p>
+              <p className="text-[10px] font-bold text-blue-500 mt-2 uppercase tracking-widest">{stat.change}</p>
             </div>
           </Card>
         ))}
@@ -50,7 +50,7 @@ export default function AdminPage() {
               <AlertCircle className="h-5 w-5 text-orange-500" />
               Triagem Urgente (Vagas p/ Curadoria)
             </h3>
-            <Button variant="ghost" size="sm" className="font-bold text-indigo-600">Ver Todas</Button>
+            <Button variant="ghost" size="sm" className="font-bold text-blue-600">Ver Todas</Button>
           </div>
 
           <div className="space-y-4">
@@ -60,7 +60,7 @@ export default function AdminPage() {
               { company: "Nubank", role: "Senior Backend (Clojure)", pending: 45, deadline: "2 dias" },
               { company: "Vercel", role: "Developer Relations", pending: 5, deadline: "3 dias" },
             ].map((vaga, i) => (
-              <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-200 transition-all cursor-pointer group">
+              <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition-all cursor-pointer group">
                 <div className="flex items-center gap-4">
                   <div className="h-10 w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center font-bold text-slate-400">
                     {vaga.company.charAt(0)}
@@ -72,10 +72,10 @@ export default function AdminPage() {
                 </div>
                 <div className="flex items-center gap-6">
                   <div className="text-right">
-                    <p className="text-xs font-bold text-indigo-600">{vaga.pending} pendentes</p>
+                    <p className="text-xs font-bold text-blue-600">{vaga.pending} pendentes</p>
                     <p className="text-[10px] text-slate-400 uppercase tracking-widest">Prazo: {vaga.deadline}</p>
                   </div>
-                  <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-indigo-500 transform group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-blue-500 transform group-hover:translate-x-1 transition-all" />
                 </div>
               </div>
             ))}
@@ -94,20 +94,20 @@ export default function AdminPage() {
                 { event: "Shortlist", desc: "Enviada para Microsoft", time: "5h atrás" },
               ].map((log, i) => (
                 <div key={i} className="flex gap-4">
-                  <div className="w-1 bg-indigo-500 rounded-full" />
+                  <div className="w-1 bg-blue-500 rounded-full" />
                   <div>
-                    <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest">{log.event}</p>
+                    <p className="text-xs font-bold text-blue-400 uppercase tracking-widest">{log.event}</p>
                     <p className="text-sm font-medium text-slate-200">{log.desc}</p>
                     <p className="text-[10px] text-slate-500 mt-1">{log.time}</p>
                   </div>
                 </div>
               ))}
             </div>
-            <Button className="w-full mt-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold h-12 rounded-xl">
+            <Button className="w-full mt-8 bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 rounded-xl">
               Ver Logs Completos
             </Button>
           </div>
-          <div className="absolute -bottom-20 -right-20 h-64 w-64 bg-indigo-500/10 rounded-full blur-[100px]" />
+          <div className="absolute -bottom-20 -right-20 h-64 w-64 bg-blue-500/10 rounded-full blur-[100px]" />
         </Card>
       </div>
     </div>

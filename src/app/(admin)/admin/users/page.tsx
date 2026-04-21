@@ -76,7 +76,7 @@ export default function AdminUsers() {
                   <Badge className={cn(
                     "rounded-lg px-2 py-0.5 text-[10px] font-black uppercase border-none",
                     user.role === "ADMIN" ? "bg-rose-500/10 text-rose-600" :
-                    user.role === "EMPLOYER" ? "bg-indigo-500/10 text-indigo-600" :
+                    user.role === "EMPLOYER" ? "bg-blue-500/10 text-blue-600" :
                     "bg-slate-100 text-slate-500"
                   )}>
                     {user.role}

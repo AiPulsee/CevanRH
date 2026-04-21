@@ -59,7 +59,7 @@ export function ScreeningModal({ jobTitle, companyName }: ScreeningModalProps) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger 
         render={
-          <Button className="rounded-2xl h-14 px-8 font-bold bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200">
+          <Button className="rounded-2xl h-14 px-8 font-bold bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200">
             Fazer Triagem
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
@@ -69,7 +69,7 @@ export function ScreeningModal({ jobTitle, companyName }: ScreeningModalProps) {
         {/* Header - Fixed */}
         <div className="bg-slate-900 p-8 text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-indigo-500 flex items-center justify-center">
+            <div className="h-12 w-12 rounded-2xl bg-blue-500 flex items-center justify-center">
               <Zap className="h-6 w-6 text-white fill-white" />
             </div>
             <div>
@@ -80,10 +80,10 @@ export function ScreeningModal({ jobTitle, companyName }: ScreeningModalProps) {
           <div className="flex items-center gap-3">
             <div className="text-right mr-4">
               <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Progresso da Curadoria</p>
-              <p className="text-sm font-bold text-indigo-400">3 de 5 candidatos selecionados</p>
+              <p className="text-sm font-bold text-blue-400">3 de 5 candidatos selecionados</p>
             </div>
             <div className="h-2 w-32 bg-slate-800 rounded-full overflow-hidden">
-              <div className="h-full bg-indigo-500 rounded-full" style={{ width: "60%" }} />
+              <div className="h-full bg-blue-500 rounded-full" style={{ width: "60%" }} />
             </div>
           </div>
         </div>
@@ -94,12 +94,12 @@ export function ScreeningModal({ jobTitle, companyName }: ScreeningModalProps) {
           <div className="w-full lg:w-[450px] flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-2">
             <Card className="p-8 border-none bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50">
               <div className="flex items-center gap-4 mb-8">
-                <div className="h-20 w-20 rounded-[2rem] bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-2xl border-2 border-indigo-100">
+                <div className="h-20 w-20 rounded-[2rem] bg-blue-50 text-blue-600 flex items-center justify-center font-black text-2xl border-2 border-blue-100">
                   {candidate.name.charAt(0)}
                 </div>
                 <div>
                   <h3 className="text-2xl font-black text-slate-900">{candidate.name}</h3>
-                  <Badge className="bg-indigo-500/10 text-indigo-600 border-none font-bold text-[10px] uppercase">{candidate.match} de Afinidade</Badge>
+                  <Badge className="bg-blue-500/10 text-blue-600 border-none font-bold text-[10px] uppercase">{candidate.match} de Afinidade</Badge>
                 </div>
               </div>
 
@@ -168,7 +168,7 @@ export function ScreeningModal({ jobTitle, companyName }: ScreeningModalProps) {
           <div className="flex-1 flex flex-col gap-6">
             <div className="flex-1 bg-white rounded-[2.5rem] border border-slate-200 shadow-inner p-10 flex flex-col items-center justify-center text-center relative overflow-hidden group">
               <div className="absolute inset-0 bg-slate-50/50 backdrop-blur-[2px] z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button className="bg-indigo-600 rounded-xl font-bold px-8 h-12 shadow-xl shadow-indigo-200">Ver Currículo Completo</Button>
+                <Button className="bg-blue-600 rounded-xl font-bold px-8 h-12 shadow-xl shadow-blue-200">Ver Currículo Completo</Button>
               </div>
               <FileText className="h-24 w-24 text-slate-200 mb-4" />
               <p className="text-lg font-bold text-slate-400">Visualização do Currículo</p>
@@ -181,7 +181,7 @@ export function ScreeningModal({ jobTitle, companyName }: ScreeningModalProps) {
                 <XCircle className="h-5 w-5 mr-3" />
                 Rejeitar Candidato
               </Button>
-              <Button className="h-16 rounded-[1.5rem] bg-indigo-600 text-white hover:bg-indigo-700 shadow-xl shadow-indigo-200 font-black uppercase tracking-widest text-xs transition-all">
+              <Button className="h-16 rounded-[1.5rem] bg-blue-600 text-white hover:bg-blue-700 shadow-xl shadow-blue-200 font-black uppercase tracking-widest text-xs transition-all">
                 <CheckCircle2 className="h-5 w-5 mr-3" />
                 Aprovar para Curadoria
               </Button>

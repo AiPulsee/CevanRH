@@ -93,7 +93,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Managed Progress */}
-        <Card className="p-6 bg-gradient-to-br from-primary to-indigo-700 border-none rounded-[2rem] relative overflow-hidden shadow-xl shadow-primary/20 text-white">
+        <Card className="p-6 bg-gradient-to-br from-primary to-blue-700 border-none rounded-[2rem] relative overflow-hidden shadow-xl shadow-primary/20 text-white">
           <div className="relative z-10">
             <div className="flex items-center gap-2 text-white/80 font-black text-xs uppercase tracking-widest mb-4">
               <Zap className="h-4 w-4 fill-white" />

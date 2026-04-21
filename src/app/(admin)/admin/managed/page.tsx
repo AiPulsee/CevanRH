@@ -54,8 +54,8 @@ export default function AdminManagedJobs() {
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-indigo-500 font-black text-xs uppercase tracking-widest mb-2">
-            <Zap className="h-4 w-4 fill-indigo-500" />
+          <div className="flex items-center gap-2 text-blue-500 font-black text-xs uppercase tracking-widest mb-2">
+            <Zap className="h-4 w-4 fill-blue-500" />
             Curadoria Especializada
           </div>
           <h1 className="text-3xl font-black tracking-tight text-slate-900">Vagas p/ Curadoria</h1>
@@ -71,7 +71,7 @@ export default function AdminManagedJobs() {
 
       {/* Stats row for Admin */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-6 border-slate-200 bg-white rounded-3xl shadow-sm border-l-4 border-l-indigo-500">
+        <Card className="p-6 border-slate-200 bg-white rounded-3xl shadow-sm border-l-4 border-l-blue-500">
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Managed</p>
           <h3 className="text-3xl font-black mt-1 text-slate-900">18</h3>
         </Card>
@@ -94,14 +94,14 @@ export default function AdminManagedJobs() {
 
         <div className="grid grid-cols-1 gap-4">
           {managedJobs.map((job) => (
-            <Card key={job.id} className="p-6 border-slate-200 bg-white rounded-[2rem] shadow-sm hover:border-indigo-200 transition-all group">
+            <Card key={job.id} className="p-6 border-slate-200 bg-white rounded-[2rem] shadow-sm hover:border-blue-200 transition-all group">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                 <div className="flex items-center gap-4 flex-1">
-                  <div className="h-14 w-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-indigo-500 text-xl">
+                  <div className="h-14 w-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-blue-500 text-xl">
                     {job.company.charAt(0)}
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg text-slate-900 group-hover:text-indigo-600 transition-colors">{job.role}</h4>
+                    <h4 className="font-bold text-lg text-slate-900 group-hover:text-blue-600 transition-colors">{job.role}</h4>
                     <div className="flex items-center gap-4 mt-1 text-xs text-slate-500 font-medium">
                       <span className="flex items-center gap-1"><Building2 className="h-3.5 w-3.5" /> {job.company}</span>
                       <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {job.deadline}</span>
@@ -114,7 +114,7 @@ export default function AdminManagedJobs() {
                     <p className="text-[10px] font-black uppercase text-slate-400 tracking-tighter">Status</p>
                     <Badge className={cn(
                       "rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase",
-                      job.status === "Finalizado" ? "bg-green-100 text-green-700 border-none" : "bg-indigo-50 text-indigo-600 border-none"
+                      job.status === "Finalizado" ? "bg-green-100 text-green-700 border-none" : "bg-blue-50 text-blue-600 border-none"
                     )}>
                       {job.status}
                     </Badge>

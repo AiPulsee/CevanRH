@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Zap, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
+import Image from "next/image";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -12,31 +13,33 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <div className="flex min-h-screen flex-col bg-[#fafafa] text-foreground">
       {/* Premium Light Navigation Bar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center bg-white border-b border-slate-100 h-20 px-10">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center bg-white border-b border-slate-100 h-20 px-4 lg:px-10">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group mr-12">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1967D2]">
-              <Zap className="h-6 w-6 text-white fill-white" />
-            </div>
-            <span className="text-2xl font-bold tracking-tight text-[#202124]">CevanRH</span>
+          <Link href="/" className="flex items-center group mr-4 lg:mr-12">
+            <Image src="/logoprincipal.png" alt="CevanRH" width={280} height={80} className="h-14 w-auto object-contain" priority />
           </Link>
 
-          {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-8 text-sm font-medium text-[#202124]">
-            <Link href="/" className="hover:text-[#1967D2] transition-colors font-bold">Home</Link>
-            <Link href="/jobs" className="hover:text-[#1967D2] transition-colors font-bold">Find Jobs</Link>
-            <Link href="/employers" className="hover:text-[#1967D2] transition-colors font-bold">Employers</Link>
-            <Link href="/candidates" className="hover:text-[#1967D2] transition-colors font-bold">Candidates</Link>
-            <Link href="/blog" className="hover:text-[#1967D2] transition-colors font-bold">Blog</Link>
+            <Link href="/" className="hover:text-[#1967D2] transition-colors font-bold">Início</Link>
+            <Link href="/jobs" className="hover:text-[#1967D2] transition-colors font-bold">Vagas</Link>
+            <Link href="/empresas" className="hover:text-[#1967D2] transition-colors font-bold">Empresas</Link>
+            <Link href="/candidatos" className="hover:text-[#1967D2] transition-colors font-bold">Candidatos</Link>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-6 ml-auto">
+          {/* Desktop Actions */}
+          <div className="hidden lg:flex items-center gap-6 ml-auto">
             <Link href="/login" className="text-sm font-bold text-[#202124] hover:text-[#1967D2] transition-colors">
-              Login / Register
+              Entrar / Cadastrar
             </Link>
             <Button size="lg" className="rounded-xl font-bold bg-[#1967D2] hover:bg-blue-700 h-12 px-8">
-              Job Post
+              Anunciar Vaga
+            </Button>
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="flex lg:hidden ml-auto items-center">
+            <Button variant="ghost" size="icon" className="text-slate-600">
+               <Menu className="h-8 w-8" />
             </Button>
           </div>
       </nav>

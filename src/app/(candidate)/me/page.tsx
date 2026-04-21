@@ -30,7 +30,7 @@ export default function CandidatePage() {
       date: "1 semana atrás",
       location: "Híbrido (BH)",
       salary: "Confidencial",
-      color: "bg-purple-500"
+      color: "bg-blue-500"
     },
     { 
       company: "Stripe", 
@@ -39,7 +39,7 @@ export default function CandidatePage() {
       date: "3 dias atrás",
       location: "Remoto (Global)",
       salary: "USD 120k/yr",
-      color: "bg-indigo-500"
+      color: "bg-blue-500"
     },
   ];
 
@@ -98,7 +98,7 @@ export default function CandidatePage() {
                 <div className="flex flex-col items-end gap-2 min-w-[120px]">
                   <Badge className={cn(
                     "rounded-lg px-3 py-1 font-bold text-[10px] uppercase",
-                    app.status === "Entrevista" ? "bg-indigo-500/10 text-indigo-600 border-indigo-500/20" :
+                    app.status === "Entrevista" ? "bg-blue-500/10 text-blue-600 border-blue-500/20" :
                     app.status === "Visualizado" ? "bg-green-500/10 text-green-600 border-green-500/20" :
                     "bg-primary/10 text-primary border-primary/20"
                   )}>
@@ -122,7 +122,7 @@ export default function CandidatePage() {
       </div>
 
       {/* Tip Box */}
-      <div className="p-6 rounded-[2rem] bg-indigo-500 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="p-6 rounded-[2rem] bg-blue-500 text-white flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div className="p-3 rounded-2xl bg-white/20">
             <Eye className="h-6 w-6" />
@@ -132,7 +132,7 @@ export default function CandidatePage() {
             <p className="text-xs text-white/80">Candidatos com perfil completo têm 3x mais chances de serem selecionados para triagem.</p>
           </div>
         </div>
-        <Button className="bg-white text-indigo-600 hover:bg-white/90 font-black rounded-xl h-12 px-8 shadow-xl">
+        <Button className="bg-white text-blue-600 hover:bg-white/90 font-black rounded-xl h-12 px-8 shadow-xl">
           Completar Perfil
         </Button>
       </div>
