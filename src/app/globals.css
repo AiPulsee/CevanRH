@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.2 0.05 260);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.2 0.05 260);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.2 0.05 260);
+  --color-primary: oklch(0.55 0.25 260); /* Professional Blue */
+  --color-primary-foreground: oklch(1 0 0);
+  --color-secondary: oklch(0.97 0.01 260);
+  --color-secondary-foreground: oklch(0.2 0.05 260);
+  --color-muted: oklch(0.97 0.01 260);
+  --color-muted-foreground: oklch(0.45 0.05 260);
+  --color-accent: oklch(0.97 0.01 260);
+  --color-accent-foreground: oklch(0.2 0.05 260);
+  --color-destructive: oklch(0.6 0.2 20);
+  --color-destructive-foreground: oklch(1 0 0);
+  --color-border: oklch(0.92 0.01 260);
+  --color-input: oklch(0.92 0.01 260);
+  --color-ring: oklch(0.55 0.25 260);
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+}
+
+@layer base {
+  .container {
+    @apply mx-auto;
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-move 8s linear infinite;
+  }
+
+  @keyframes gradient-move {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #ccc;
+  }
+}

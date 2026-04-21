@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- ENUMS ---
+
+enum Role {
+  ADMIN      // Equipe interna do SaaS
+  EMPLOYER   // Dono da empresa/Recrutador
+  CANDIDATE  // Candidato
+}
+
+enum JobType {
+  SELF_SERVICE
+  MANAGED
+}
+
+enum JobStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+  ARCHIVED
+}
+
+enum ApplicationStatus {
+  APPLIED
+  REVIEWING
+  SHORTLISTED // Usado internamente no modelo MANAGED antes de ir para o cliente
+  INTERVIEW
+  REJECTED
+  HIRED
+}
+
+enum PlanType {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+// --- MODELS ---
+
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String    @unique
+  password      String?   // Opcional para OAuth
+  image         String?
+  role          Role      @default(CANDIDATE)
+  
+  // Relações
+  company       Company?  @relation(fields: [companyId], references: [id])
+  companyId     String?
+  applications  Application[]
+  
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Company {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  logoUrl     String?  @map("logo_url")
+  website     String?
+  description String?  @db.Text
+  
+  // Subscription management
+  plan        PlanType @default(FREE)
+  stripeId    String?  @unique @map("stripe_customer_id")
+
+  // Relações
+  users       User[]
+  jobs        Job[]
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("companies")
+}
+
+model Job {
+  id            String    @id @default(uuid())
+  title         String
+  slug          String    @unique
+  description   String    @db.Text
+  location      String
+  isRemote      Boolean   @default(false) @map("is_remote")
+  salaryRange   String?   @map("salary_range") // Ex: "5k - 8k"
+  
+  type          JobType   @default(SELF_SERVICE)
+  status        JobStatus @default(DRAFT)
+  
+  // Relações
+  company       Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId     String    @map("company_id")
+  applications  Application[]
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([companyId])
+  @@map("jobs")
+}
+
+model Application {
+  id           String            @id @default(uuid())
+  resumeUrl    String            @map("resume_url")
+  coverLetter  String?           @map("cover_letter") @db.Text
+  status       ApplicationStatus @default(APPLIED)
+  
+  // Relações
+  job          Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId        String            @map("job_id")
+  candidate    User              @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId  String            @map("candidate_id")
+  
+  shortlist    Shortlist?
+
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+
+  @@unique([jobId, candidateId]) // Impede candidatura duplicada
+  @@index([status])
+  @@map("applications")
+}
+
+model Shortlist {
+  id            String      @id @default(uuid())
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String      @unique @map("application_id")
+  
+  adminFeedback String?     @map("admin_feedback") @db.Text
+  clientReview  String?     @map("client_review") @db.Text // Feedback do cliente final
+  isApproved    Boolean?    @map("is_approved")
+
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  @@map("shortlists")
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  amount        Int      // Em centavos
+  currency      String   @default("BRL")
+  status        String   // paid, pending, failed
+  provider      String   // stripe, mercado_pago
+  providerId    String   @unique @map("provider_transaction_id")
+  
+  companyId     String   @map("company_id")
+  
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("transactions")
+}
