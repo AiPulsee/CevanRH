@@ -18,7 +18,11 @@ import {
   Image as ImageIcon,
   Heart,
   Plus,
-  LayoutTemplate
+  LayoutTemplate,
+  Users,
+  Mail,
+  Settings,
+  Lock
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -26,6 +30,7 @@ export default function SettingsPage() {
 
   const tabs = [
     { id: "perfil", name: "Perfil da Empresa", icon: Building },
+    { id: "equipe", name: "Gestão de Equipe", icon: Users },
     { id: "carreiras", name: "Portal de Carreiras", icon: LayoutTemplate },
     { id: "conta", name: "Minha Conta", icon: User },
     { id: "seguranca", name: "Segurança", icon: Shield },
@@ -181,15 +186,175 @@ export default function SettingsPage() {
               </div>
             </Card>
           )}
+          
+          {activeTab === "equipe" && (
+            <Card className="p-8 border-slate-100 bg-white rounded-[2.5rem] shadow-sm space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900">Membros da Equipe</h3>
+                  <p className="text-sm text-slate-500 font-medium mt-1">Gerencie quem tem acesso ao painel de recrutamento da sua empresa.</p>
+                </div>
+                <Button className="rounded-xl font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200">
+                  <Plus className="h-4 w-4 mr-2" /> Convidar Membro
+                </Button>
+              </div>
 
-          {/* Placeholder for other tabs */}
-          {["conta", "seguranca", "notificacoes"].includes(activeTab) && (
-            <Card className="p-12 border-slate-100 bg-white rounded-[2.5rem] shadow-sm flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-right-4 duration-500">
-              <Shield className="h-12 w-12 text-slate-300 mb-4" />
-              <h3 className="text-xl font-bold text-slate-900">Em Desenvolvimento</h3>
-              <p className="text-slate-500 font-medium max-w-sm mt-2">
-                As configurações de segurança e notificações serão integradas na próxima atualização.
-              </p>
+              <div className="space-y-3">
+                {[
+                  { name: "Danilo Almeida", email: "danilo@cevan.com.br", role: "Admin / Recrutador", status: "Ativo", avatar: "DA" },
+                  { name: "Mariana Souza", email: "mariana@cevan.com.br", role: "Gestora de RH", status: "Ativo", avatar: "MS" },
+                  { name: "Carlos Mendes", email: "carlos.tech@cevan.com.br", role: "Tech Lead", status: "Ativo", avatar: "CM" },
+                  { name: "Beatriz Oliveira", email: "beatriz@cevan.com.br", role: "Recrutadora Junior", status: "Pendente", avatar: "BO" },
+                ].map((member, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-2xl border border-slate-50 hover:border-slate-100 hover:bg-slate-50 transition-all group">
+                    <div className="flex items-center gap-4">
+                      <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-sm">
+                        {member.avatar}
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">{member.name}</p>
+                        <p className="text-xs text-slate-500 font-medium">{member.email}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-8">
+                      <div className="text-right hidden sm:block">
+                        <p className="text-xs font-bold text-slate-700">{member.role}</p>
+                        <p className={`text-[10px] font-black uppercase tracking-widest mt-0.5 ${member.status === 'Ativo' ? 'text-green-500' : 'text-amber-500'}`}>{member.status}</p>
+                      </div>
+                      <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl text-slate-400 group-hover:text-slate-600">
+                        <Settings className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="p-6 rounded-3xl bg-blue-50 border border-blue-100 flex items-start gap-4">
+                <Shield className="h-6 w-6 text-blue-600 mt-0.5" />
+                <div>
+                  <h4 className="font-bold text-blue-900 text-sm">Controle de Permissões</h4>
+                  <p className="text-xs text-blue-800/70 leading-relaxed font-medium mt-1">
+                    Como Administrador, você pode definir níveis de acesso para cada membro. Membros com cargo de "Gestor" podem aprovar shortlists, enquanto "Recrutadores" gerenciam apenas o pipeline.
+                  </p>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {activeTab === "conta" && (
+            <Card className="p-8 border-slate-100 bg-white rounded-[2.5rem] shadow-sm space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold text-slate-900">Meus Dados</h3>
+                <p className="text-sm text-slate-500 font-medium">Informações do responsável pela conta na plataforma.</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                <div className="space-y-2">
+                  <Label className="font-bold">Nome Completo</Label>
+                  <Input defaultValue="Danilo Almeida" className="h-12 bg-slate-50 border-slate-200 rounded-xl" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-bold">E-mail Profissional</Label>
+                  <Input defaultValue="danilo@cevan.com.br" className="h-12 bg-slate-50 border-slate-200 rounded-xl" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-bold">Cargo</Label>
+                  <Input defaultValue="Head de Recrutamento" className="h-12 bg-slate-50 border-slate-200 rounded-xl" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-bold">Telefone</Label>
+                  <Input defaultValue="(11) 99999-8888" className="h-12 bg-slate-50 border-slate-200 rounded-xl" />
+                </div>
+              </div>
+
+              <div className="pt-6 border-t border-slate-100 flex justify-end">
+                <Button className="rounded-xl font-bold h-12 px-8 bg-slate-900 text-white">Salvar Alterações</Button>
+              </div>
+            </Card>
+          )}
+
+          {activeTab === "seguranca" && (
+            <Card className="p-8 border-slate-100 bg-white rounded-[2.5rem] shadow-sm space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold text-slate-900">Segurança da Conta</h3>
+                <p className="text-sm text-slate-500 font-medium">Proteja seu acesso com autenticação forte.</p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                  <div className="flex gap-4">
+                    <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-blue-600 shadow-sm">
+                      <Shield className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Autenticação de Dois Fatores (2FA)</p>
+                      <p className="text-xs text-slate-500 font-medium mt-0.5">Adicione uma camada extra de segurança.</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="rounded-lg h-9 font-bold text-blue-600 border-blue-200 bg-blue-50">Ativar</Button>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                  <div className="flex gap-4">
+                    <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-slate-600 shadow-sm">
+                      <Lock className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Alterar Senha</p>
+                      <p className="text-xs text-slate-500 font-medium mt-0.5">Recomendamos trocar a cada 90 dias.</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="rounded-lg h-9 font-bold">Redefinir</Button>
+                </div>
+              </div>
+
+              <div className="pt-6 border-t border-slate-100">
+                <h4 className="font-bold text-slate-900 mb-4">Sessões Ativas</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-slate-400" />
+                      <span className="font-medium text-slate-700">Chrome no Windows (Atual)</span>
+                    </div>
+                    <span className="text-green-500 font-bold text-xs uppercase">Online</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-slate-400" />
+                      <span className="font-medium text-slate-700">Safari no iPhone 15</span>
+                    </div>
+                    <span className="text-slate-400 font-medium">Há 2 horas</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {activeTab === "notificacoes" && (
+            <Card className="p-8 border-slate-100 bg-white rounded-[2.5rem] shadow-sm space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold text-slate-900">Preferências de Notificação</h3>
+                <p className="text-sm text-slate-500 font-medium">Escolha como e quando quer ser avisado.</p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">E-mail</h4>
+                  {[
+                    "Novos candidatos inscritos",
+                    "Aprovação de vagas pela Cevan",
+                    "Resumo semanal de atividades",
+                    "Atualizações do sistema",
+                  ].map((label, i) => (
+                    <div key={i} className="flex items-center justify-between py-2">
+                      <span className="text-sm font-bold text-slate-700">{label}</span>
+                      <div className={`h-6 w-10 rounded-full flex items-center px-1 transition-all ${i < 3 ? 'bg-blue-600' : 'bg-slate-200'}`}>
+                        <div className={`h-4 w-4 bg-white rounded-full shadow-sm transition-all ${i < 3 ? 'ml-auto' : ''}`} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </Card>
           )}
 

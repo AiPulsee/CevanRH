@@ -4,7 +4,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
-  Search, 
   UserPlus, 
   Cpu, 
   Trophy,
@@ -12,12 +11,15 @@ import {
   Zap,
   Users2,
   FileSearch,
-  CheckCircle2,
   ChevronRight,
   Sparkles,
-  Target
+  Target,
+  ArrowRight,
+  MousePointer2,
+  BarChart3,
+  Search
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -26,26 +28,30 @@ export default function HowItWorksPage() {
 
   const candidateSteps = [
     {
-      title: "Cadastro & Perfil Inteligente",
-      desc: "Crie sua conta e faça upload do seu currículo. Nossa IA extrai automaticamente suas experiências e habilidades, criando um perfil otimizado para os algoritmos de busca.",
+      step: "01",
+      title: "Perfil Inteligente",
+      desc: "Nossa IA processa seu currículo e cria um perfil otimizado focado nas suas competências reais.",
       icon: UserPlus,
       color: "blue"
     },
     {
-      title: "Match via Inteligência Artificial",
-      desc: "Não perca tempo com vagas que não combinam com você. Nosso sistema te avisa quando uma vaga tem alto 'Score de Match' com suas competências e pretensões.",
+      step: "02",
+      title: "Match Predictor",
+      desc: "Você só recebe notificações de vagas onde sua chance de contratação é estatisticamente alta.",
       icon: Cpu,
       color: "indigo"
     },
     {
-      title: "Triagem e Curadoria",
-      desc: "Seu perfil será analisado por nossa IA e, em vagas gerenciadas, por nossos especialistas. Você recebe feedback sobre sua evolução no processo seletivo.",
+      step: "03",
+      title: "Curadoria & Feedback",
+      desc: "Acompanhe cada etapa com transparência total e feedbacks reais sobre sua performance.",
       icon: FileSearch,
       color: "purple"
     },
     {
-      title: "A Conquista da Vaga",
-      desc: "Participe de entrevistas assertivas com empresas que realmente valorizam seu perfil. Menos burocracia e mais foco no seu talento.",
+      step: "04",
+      title: "Sua Nova Jornada",
+      desc: "Entrevistas assertivas em empresas que buscam exatamente o seu conjunto de talentos.",
       icon: Trophy,
       color: "emerald"
     }
@@ -53,60 +59,59 @@ export default function HowItWorksPage() {
 
   const companySteps = [
     {
-      title: "Anúncio Assistido por IA",
-      desc: "Descreva o que precisa e nossa IA gera a descrição da vaga ideal, focada em atrair os melhores talentos e alinhada à sua cultura.",
+      step: "01",
+      title: "Design de Vaga via IA",
+      desc: "Nossa tecnologia estrutura sua vaga focando na conversão dos talentos de alta performance.",
       icon: Sparkles,
       color: "blue"
     },
     {
-      title: "Triagem Automatizada",
-      desc: "Receba centenas de currículos, mas visualize apenas os melhores. Nossa IA rankeia os candidatos por compatibilidade técnica e comportamental.",
+      step: "02",
+      title: "Ranking Semântico",
+      desc: "Visualize os candidatos rankeados por compatibilidade técnica e cultural em segundos.",
       icon: Target,
       color: "indigo"
     },
     {
-      title: "Gestão em Pipeline (Kanban)",
-      desc: "Acompanhe todos os processos em uma interface intuitiva. Arraste candidatos entre etapas de entrevista, teste e proposta com facilidade.",
+      step: "03",
+      title: "Pipeline Ágil",
+      desc: "Gerencie candidatos em um Kanban intuitivo com automações que aceleram sua decisão.",
       icon: Zap,
       color: "purple"
     },
     {
-      title: "Contratação de Alta Performance",
-      desc: "Para quem busca o máximo de segurança, nossa Curadoria Humana entrega apenas os finalistas (Shortlist) prontos para a decisão final.",
+      step: "04",
+      title: "Shortlist de Elite",
+      desc: "Receba apenas os finalistas validados por nossos especialistas, prontos para a proposta.",
       icon: Users2,
       color: "emerald"
     }
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFBFC] mt-24 font-sans">
-      {/* Hero Section */}
-      <section className="py-20 bg-slate-900 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
-        <div className="container mx-auto px-6 max-w-5xl relative z-10 text-center">
-          <Badge className="bg-blue-500/20 text-blue-300 border-none rounded-full px-4 py-1.5 font-black mb-6 uppercase tracking-widest text-[10px]">
-            Tecnologia + Expertise Humana
+    <div className="flex flex-col min-h-screen bg-[#FAFBFC] mt-20 font-sans selection:bg-blue-100 selection:text-blue-900">
+      
+      {/* Hero Section - Clean & High Impact */}
+      <section className="bg-white border-b border-slate-100 py-24 lg:py-32 relative overflow-hidden text-center">
+        <div className="absolute top-0 left-1/2 w-[800px] h-[800px] bg-blue-50/50 rounded-full blur-[140px] -translate-x-1/2 -translate-y-1/2" />
+        
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <Badge className="bg-blue-50 text-blue-600 border-blue-100 rounded-full px-4 py-1 font-black mb-6 uppercase tracking-[0.2em] text-[10px]">
+            Fluxo de Trabalho Inteligente
           </Badge>
-          <h1 className="text-4xl lg:text-5xl font-black tracking-tight mb-8">
-            Como a <span className="text-blue-400 font-black">Cevan Serviços Empresariais</span> Funciona para Você
+          <h1 className="text-5xl lg:text-6xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1] max-w-4xl mx-auto">
+            A ponte inteligente entre o <span className="text-blue-600">talento</span> e o próximo grande desafio.
           </h1>
-          <p className="text-slate-400 text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed">
-            Seja você um talento em busca de novos desafios ou uma empresa buscando excelência, nossa plataforma é o ponto de encontro ideal.
+          <p className="text-slate-500 font-medium mb-12 text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed">
+            Unimos inteligência de dados com curadoria humana para criar processos seletivos rápidos, assertivos e humanos.
           </p>
-        </div>
-      </section>
 
-      {/* Tab Selector */}
-      <section className="py-12 bg-white border-b border-slate-100 sticky top-24 z-30">
-        <div className="container mx-auto px-6 flex justify-center">
-          <div className="bg-slate-100 p-1.5 rounded-2xl flex items-center gap-1 shadow-inner">
+          <div className="inline-flex bg-slate-50 p-1.5 rounded-[1.5rem] border border-slate-100 shadow-sm relative">
             <button 
               onClick={() => setActiveTab('company')}
               className={cn(
-                "px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all",
-                activeTab === 'company' 
-                  ? "bg-white text-blue-600 shadow-md" 
-                  : "text-slate-500 hover:text-slate-700"
+                "px-10 py-3 rounded-[1rem] font-black text-[11px] uppercase tracking-widest transition-all relative z-10",
+                activeTab === 'company' ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
               )}
             >
               Para Empresas
@@ -114,110 +119,136 @@ export default function HowItWorksPage() {
             <button 
               onClick={() => setActiveTab('candidate')}
               className={cn(
-                "px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all",
-                activeTab === 'candidate' 
-                  ? "bg-white text-blue-600 shadow-md" 
-                  : "text-slate-500 hover:text-slate-700"
+                "px-10 py-3 rounded-[1rem] font-black text-[11px] uppercase tracking-widest transition-all relative z-10",
+                activeTab === 'candidate' ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
               )}
             >
               Para Candidatos
             </button>
+            <motion.div 
+              layoutId="tab-bg"
+              className="absolute inset-y-1.5 bg-white rounded-[1rem] shadow-sm border border-slate-100"
+              initial={false}
+              animate={{ 
+                x: activeTab === 'company' ? 6 : 148,
+                width: activeTab === 'company' ? 142 : 156
+              }}
+              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+            />
           </div>
         </div>
       </section>
 
-      {/* Steps Section */}
+      {/* Main Journey Section */}
       <section className="py-24 bg-white relative overflow-hidden">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
             
-            {/* Left Side: Content */}
-            <div className="space-y-12">
-              <div>
-                <Badge className="bg-blue-50 text-blue-600 border-none rounded-lg px-3 py-1 font-black uppercase text-[10px] mb-4">
-                  Passo a Passo
-                </Badge>
-                <h2 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
-                  {activeTab === 'company' 
-                    ? "Sua Empresa com Recrutamento Especializado" 
-                    : "Sua Carreira em um Novo Patamar"}
-                </h2>
-                <p className="text-slate-500 mt-4 text-lg font-medium leading-relaxed">
-                  {activeTab === 'company' 
-                    ? "Elimine o ruído e foque no que importa: escolher o profissional ideal para sua cultura."
-                    : "Pare de enviar currículos para o vácuo. Seja encontrado pelas melhores oportunidades do mercado."}
-                </p>
-              </div>
-
-              <div className="space-y-10">
-                {(activeTab === 'company' ? companySteps : candidateSteps).map((step, i) => (
-                  <motion.div 
-                    key={step.title}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    className="flex gap-6 group"
-                  >
-                    <div className={cn(
-                      "h-14 w-14 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 shadow-lg",
-                      step.color === 'blue' && "bg-blue-50 text-blue-600 shadow-blue-100",
-                      step.color === 'indigo' && "bg-indigo-50 text-indigo-600 shadow-indigo-100",
-                      step.color === 'purple' && "bg-purple-50 text-purple-600 shadow-purple-100",
-                      step.color === 'emerald' && "bg-emerald-50 text-emerald-600 shadow-emerald-100"
-                    )}>
-                      <step.icon className="h-6 w-6" />
+            {/* Left Side: Vertical Journey */}
+            <div className="space-y-12 relative">
+              <div className="absolute left-[31px] top-10 bottom-10 w-[2px] bg-slate-100" />
+              
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={activeTab}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.5 }}
+                  className="space-y-16"
+                >
+                  {(activeTab === 'company' ? companySteps : candidateSteps).map((step, i) => (
+                    <div key={step.step} className="flex gap-8 group relative z-10">
+                      <div className={cn(
+                        "h-16 w-16 rounded-[1.2rem] flex items-center justify-center shrink-0 transition-all duration-500 shadow-xl border-4 border-white",
+                        step.color === 'blue' && "bg-blue-600 text-white",
+                        step.color === 'indigo' && "bg-slate-900 text-white",
+                        step.color === 'purple' && "bg-indigo-600 text-white",
+                        step.color === 'emerald' && "bg-blue-600 text-white"
+                      )}>
+                        <step.icon className="h-6 w-6" />
+                      </div>
+                      <div className="pt-2">
+                        <span className="text-[11px] font-black text-blue-600 uppercase tracking-widest mb-2 block">
+                          Passo {step.step}
+                        </span>
+                        <h4 className="font-black text-slate-900 text-2xl mb-3 tracking-tight group-hover:text-blue-600 transition-colors">
+                          {step.title}
+                        </h4>
+                        <p className="text-slate-500 text-[15px] font-medium leading-relaxed max-w-md">
+                          {step.desc}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-black text-slate-900 text-lg mb-2">{step.title}</h4>
-                      <p className="text-slate-500 text-[15px] font-medium leading-relaxed">{step.desc}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
             </div>
 
-            {/* Right Side: Visual Aid */}
-            <div className="relative group lg:block hidden">
-                <div className="absolute inset-0 bg-blue-600/5 rounded-[3rem] blur-3xl group-hover:bg-blue-600/10 transition-all duration-700" />
-                <div className="relative bg-white border border-slate-100 rounded-[3rem] p-12 shadow-2xl">
-                    {/* Simulated Interface */}
-                    <div className="space-y-6">
-                       <div className="flex items-center justify-between pb-6 border-b border-slate-50">
-                          <div className="flex gap-3 items-center">
-                             <div className="h-10 w-10 rounded-full bg-slate-100 animate-pulse" />
-                             <div className="space-y-1.5">
-                                <div className="h-3 w-32 bg-slate-200 rounded animate-pulse" />
-                                <div className="h-2 w-20 bg-slate-100 rounded animate-pulse" />
-                             </div>
-                          </div>
-                          <Badge className="bg-emerald-50 text-emerald-600 border-none font-black text-[10px]">Active</Badge>
-                       </div>
-                       <div className="space-y-4">
-                          <div className="h-4 w-full bg-slate-50 rounded" />
-                          <div className="h-4 w-3/4 bg-slate-50 rounded" />
-                          <div className="h-4 w-1/2 bg-slate-50 rounded" />
-                       </div>
-                       <div className="grid grid-cols-2 gap-4 pt-4">
-                          <div className="h-20 bg-blue-50 rounded-2xl flex flex-col items-center justify-center p-4">
-                             <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">IA Score</span>
-                             <span className="text-2xl font-black text-blue-900">9.8</span>
-                          </div>
-                          <div className="h-20 bg-indigo-50 rounded-2xl flex flex-col items-center justify-center p-4">
-                             <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Status</span>
-                             <span className="text-sm font-black text-indigo-900">Finalista</span>
-                          </div>
-                       </div>
+            {/* Right Side: High-End Mockup */}
+            <div className="lg:block hidden relative">
+                <div className="absolute inset-0 bg-blue-50 rounded-[4rem] blur-3xl opacity-50" />
+                <Card className="relative bg-white border-slate-100 rounded-[3rem] p-10 shadow-2xl overflow-hidden border-2">
+                    <div className="flex items-center justify-between mb-10 pb-6 border-b border-slate-50">
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
+                          <BarChart3 className="h-6 w-6" />
+                        </div>
+                        <div>
+                          <h5 className="font-black text-slate-900 tracking-tight">Cevan Insight Engine</h5>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Análise de Dados em Tempo Real</p>
+                        </div>
+                      </div>
+                      <Badge className="bg-emerald-50 text-emerald-600 border-none font-black text-[10px]">98% Match</Badge>
                     </div>
 
-                    <div className="mt-12 p-6 rounded-2xl bg-slate-900 text-white">
-                       <div className="flex items-center gap-3 mb-4">
-                          <Sparkles className="h-5 w-5 text-blue-400" />
-                          <span className="text-sm font-bold">Relatório de IA</span>
+                    <div className="space-y-8">
+                       <div className="grid grid-cols-3 gap-4">
+                          {[1,2,3].map(i => (
+                            <div key={i} className="h-2 bg-slate-50 rounded-full relative overflow-hidden">
+                              <motion.div 
+                                className="absolute inset-y-0 left-0 bg-blue-600"
+                                initial={{ width: 0 }}
+                                animate={{ width: i === 1 ? '90%' : i === 2 ? '75%' : '85%' }}
+                                transition={{ duration: 1, delay: 0.5 }}
+                              />
+                            </div>
+                          ))}
                        </div>
-                       <p className="text-xs text-slate-400 font-medium leading-relaxed italic">
-                         "Candidato apresenta 98% de compatibilidade técnica e alinhamento cultural de 94% com a visão da empresa."
-                       </p>
+                       
+                       <div className="p-6 rounded-[2rem] bg-slate-900 text-white relative overflow-hidden">
+                          <div className="absolute top-0 right-0 p-4 opacity-20"><Search className="h-12 w-12" /></div>
+                          <div className="flex items-center gap-2 mb-4">
+                            <Sparkles className="h-4 w-4 text-blue-400" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-blue-100">Inteligência Preditiva</span>
+                          </div>
+                          <p className="text-[13px] font-medium leading-relaxed text-slate-300 italic">
+                            "Este candidato possui as hard skills essenciais para o cargo e apresenta um alinhamento cultural superior à média do setor."
+                          </p>
+                       </div>
+
+                       <div className="flex items-center justify-between p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                          <div className="flex items-center gap-3">
+                            <Users2 className="h-5 w-5 text-blue-600" />
+                            <span className="font-black text-xs text-blue-900">Aprovação Curadoria</span>
+                          </div>
+                          <div className="flex -space-x-2">
+                             {[1,2,3].map(i => (
+                               <div key={i} className="h-8 w-8 rounded-full bg-slate-200 border-2 border-white" />
+                             ))}
+                          </div>
+                       </div>
                     </div>
+                </Card>
+
+                {/* Floating elements */}
+                <div className="absolute -bottom-6 -left-6 p-6 bg-white rounded-3xl shadow-xl border border-slate-100 z-20 hidden xl:block">
+                   <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+                        <Trophy className="h-5 w-5" />
+                      </div>
+                      <span className="font-black text-sm text-slate-900">Shortlist Pronta</span>
+                   </div>
                 </div>
             </div>
 
@@ -225,47 +256,39 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* Benefits Summary Section */}
-      <section className="py-24 bg-slate-50">
-        <div className="container mx-auto px-6 max-w-6xl text-center">
-           <h2 className="text-3xl font-black text-slate-900 mb-16 tracking-tight">Vantagens Exclusivas</h2>
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              <div className="space-y-6">
-                 <div className="h-16 w-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto">
-                    <CheckCircle2 className="h-8 w-8 text-blue-600" />
-                 </div>
-                 <h3 className="font-bold text-xl text-slate-900">Agilidade Real</h3>
-                 <p className="text-slate-500 font-medium">Processos que levavam semanas agora são resolvidos em dias.</p>
+      {/* Trust & Stats Section */}
+      <section className="py-24 bg-[#FAFBFC]">
+        <div className="max-w-7xl mx-auto px-6">
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-16 text-center">
+              <div className="space-y-4">
+                 <h3 className="text-4xl lg:text-5xl font-black text-slate-900 tracking-tighter">70%</h3>
+                 <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px]">Mais rápido que processos comuns</p>
               </div>
-              <div className="space-y-6">
-                 <div className="h-16 w-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto">
-                    <Building2 className="h-8 w-8 text-indigo-600" />
-                 </div>
-                 <h3 className="font-bold text-xl text-slate-900">Authority</h3>
-                 <p className="text-slate-500 font-medium">As melhores empresas do país confiam em nossa curadoria.</p>
+              <div className="space-y-4">
+                 <h3 className="text-4xl lg:text-5xl font-black text-slate-900 tracking-tighter">94%</h3>
+                 <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px]">Taxa de retenção pós-contratação</p>
               </div>
-              <div className="space-y-6">
-                 <div className="h-16 w-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto">
-                    <Users2 className="h-8 w-8 text-emerald-600" />
-                 </div>
-                 <h3 className="font-bold text-xl text-slate-900">Cuidado Humano</h3>
-                 <p className="text-slate-500 font-medium">Não somos apenas algoritmos. Somos pessoas conectando pessoas.</p>
+              <div className="space-y-4">
+                 <h3 className="text-4xl lg:text-5xl font-black text-slate-900 tracking-tighter">15k+</h3>
+                 <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px]">Talentos de elite em nossa rede</p>
               </div>
            </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6 max-w-4xl text-center">
-           <h2 className="text-3xl lg:text-4xl font-black text-slate-900 mb-8 tracking-tight">Pronto para dar o próximo passo?</h2>
-           <p className="text-slate-500 text-lg mb-12 max-w-xl mx-auto font-medium">Escolha o seu perfil e junte-se à revolução do recrutamento inteligente.</p>
+      {/* Final CTA */}
+      <section className="py-32 bg-white">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+           <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-8 tracking-tight">Pronto para transformar sua <br />forma de contratar?</h2>
+           <p className="text-slate-500 text-lg mb-12 max-w-xl mx-auto font-medium leading-relaxed">
+             Junte-se às empresas que já descobriram o poder do recrutamento inteligente com a Cevan.
+           </p>
            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="h-14 px-10 rounded-2xl bg-[#1967D2] hover:bg-blue-700 font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100 flex items-center gap-2">
-                 Sou Empresa <ChevronRight className="h-4 w-4" />
+              <Button size="lg" className="h-16 px-12 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-[13px] uppercase tracking-widest shadow-2xl shadow-blue-200 transition-all group">
+                 Sou Empresa <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button size="lg" variant="outline" className="h-14 px-10 rounded-2xl border-slate-200 text-slate-700 font-black text-xs uppercase tracking-widest hover:bg-slate-50 flex items-center gap-2">
-                 Sou Candidato <ChevronRight className="h-4 w-4" />
+              <Button size="lg" variant="outline" className="h-16 px-12 rounded-2xl border-slate-200 text-slate-900 font-black text-[13px] uppercase tracking-widest hover:bg-slate-50 transition-all">
+                 Sou Candidato
               </Button>
            </div>
         </div>

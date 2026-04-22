@@ -58,6 +58,7 @@ export function ScreeningModal({ jobTitle, companyName }: ScreeningModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger 
+        nativeButton={false}
         render={
           <Button className="rounded-2xl h-14 px-8 font-bold bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200">
             Fazer Triagem

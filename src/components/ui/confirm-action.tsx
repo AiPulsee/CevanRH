@@ -35,15 +35,13 @@ export function ConfirmAction({
 }: ConfirmActionProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger 
-        render={
-          children || (
-            <Button variant={variant === "danger" ? "destructive" : "default"} className="rounded-xl font-bold">
-              {triggerText}
-            </Button>
-          )
-        }
-      />
+      <AlertDialogTrigger nativeButton={true}>
+        {children || (
+          <Button variant={variant === "danger" ? "destructive" : "default"} className="rounded-xl font-bold">
+            {triggerText}
+          </Button>
+        )}
+      </AlertDialogTrigger>
       <AlertDialogContent className="sm:max-w-lg w-[95vw] bg-white rounded-[2.5rem] border-none shadow-2xl p-10">
         <AlertDialogHeader className="space-y-4">
           <div className={`h-12 w-12 rounded-2xl flex items-center justify-center ${variant === "danger" ? "bg-rose-50 text-rose-500" : "bg-primary/10 text-primary"}`}>

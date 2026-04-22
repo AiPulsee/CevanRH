@@ -1,18 +1,31 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { 
   Search, MapPin, Zap, Code, Database, BarChart, Palette, HeartPulse, Headset, 
-  Briefcase, ChevronRight, Star, Quote, CheckCircle2, Smartphone, Apple, Play, 
-  Building2, Clock, DollarSign, Bookmark, ChevronDown
+  Briefcase, ChevronRight, Star, CheckCircle2, Smartphone, 
+  Building2, Clock, ChevronDown
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const featuredJobs = await prisma.job.findMany({
+    where: {
+      status: "ACTIVE"
+    },
+    include: {
+      company: true
+    },
+    take: 4,
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+
   return (
     <div className="flex flex-col w-full bg-[#fdfdfd] font-sans text-[#202124] selection:bg-blue-100 selection:text-blue-900">
       
@@ -105,46 +118,49 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-14">
-            {[
-              { role: "Engenheiro Frontend Gráfico", logo: "SF", bg: "bg-blue-600", comp: "Stripe Corp", pay: "R$ 15k - R$ 22k", urg: true },
-              { role: "Head of Design e Estratégia", logo: "IN", bg: "bg-pink-600", comp: "InVision", pay: "R$ 20k - R$ 35k", urg: false },
-              { role: "Cientista de Dados Avançado", logo: "AI", bg: "bg-blue-600", comp: "OpenAI BR", pay: "R$ 18k - R$ 28k", urg: false },
-              { role: "Gerente de Produto Mobile", logo: "NV", bg: "bg-teal-600", comp: "Nubank", pay: "R$ 12k - R$ 19k", urg: true },
-            ].map((job, i) => (
-              <Card key={i} className="group p-8 border-slate-100 hover:border-[#1967D2]/30 hover:shadow-[0_20px_40px_rgb(25,103,210,0.06)] hover:-translate-y-1.5 transition-all duration-500 cursor-pointer rounded-[2rem] bg-white relative overflow-hidden">
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className={`h-[72px] w-[72px] rounded-2xl ${job.bg} flex items-center justify-center text-white font-black text-2xl shadow-lg group-hover:scale-110 transition-transform duration-500`}>
-                    {job.logo}
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="font-extrabold text-[19px] text-slate-900 group-hover:text-[#1967D2] transition-colors">{job.role}</h4>
-                    <div className="flex items-center gap-3 text-slate-500 text-[13px] font-bold uppercase tracking-wider">
-                      <span className="flex items-center gap-1.5"><Building2 className="h-3.5 w-3.5 text-[#1967D2]" /> {job.comp}</span>
-                      <span className="w-1 h-1 bg-slate-200 rounded-full" />
-                      <span className="flex items-center gap-1.5 font-black text-green-600">{job.pay}</span>
+            {featuredJobs.map((job) => (
+              <Link key={job.id} href={`/jobs/${job.slug}`}>
+                <Card className="group p-8 border-slate-100 hover:border-[#1967D2]/30 hover:shadow-[0_20px_40px_rgb(25,103,210,0.06)] hover:-translate-y-1.5 transition-all duration-500 cursor-pointer rounded-[2rem] bg-white relative overflow-hidden h-full">
+                  <div className="flex items-center gap-6 relative z-10">
+                    <div className={`h-[72px] w-[72px] rounded-2xl ${job.type === 'MANAGED' ? 'bg-blue-600' : 'bg-slate-600'} flex items-center justify-center text-white font-black text-2xl shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+                      {job.company.logoUrl ? (
+                         <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-cover rounded-2xl" />
+                      ) : (
+                         job.company.name.charAt(0)
+                      )}
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-extrabold text-[19px] text-slate-900 group-hover:text-[#1967D2] transition-colors">{job.title}</h4>
+                      <div className="flex items-center gap-3 text-slate-500 text-[13px] font-bold uppercase tracking-wider">
+                        <span className="flex items-center gap-1.5"><Building2 className="h-3.5 w-3.5 text-[#1967D2]" /> {job.company.name}</span>
+                        <span className="w-1 h-1 bg-slate-200 rounded-full" />
+                        <span className="flex items-center gap-1.5 font-black text-green-600">{job.salaryRange || "A combinar"}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                {job.urg && (
-                  <Badge className="absolute top-6 right-6 bg-red-50 text-red-500 border-none font-black text-[10px] px-3 py-1 uppercase tracking-widest">Urgente</Badge>
-                )}
-                <div className="mt-8 pt-8 border-t border-slate-50 flex items-center justify-between text-[13px] font-bold">
-                  <div className="flex gap-4 text-slate-400 uppercase tracking-widest text-[10px]">
-                    <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> Remoto</span>
-                    <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> 12h Atrás</span>
+                  {job.type === 'MANAGED' && (
+                    <Badge className="absolute top-6 right-6 bg-blue-50 text-blue-600 border-none font-black text-[10px] px-3 py-1 uppercase tracking-widest">Patrocinada</Badge>
+                  )}
+                  <div className="mt-8 pt-8 border-t border-slate-50 flex items-center justify-between text-[13px] font-bold">
+                    <div className="flex gap-4 text-slate-400 uppercase tracking-widest text-[10px]">
+                      <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> {job.isRemote ? "Remoto" : job.location}</span>
+                      <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> {formatDistanceToNow(new Date(job.createdAt), { addSuffix: true, locale: ptBR })}</span>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#1967D2] group-hover:text-white transition-all duration-500">
+                      <ChevronRight className="h-5 w-5" />
+                    </div>
                   </div>
-                  <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#1967D2] group-hover:text-white transition-all duration-500">
-                    <ChevronRight className="h-5 w-5" />
-                  </div>
-                </div>
-              </Card>
+                </Card>
+              </Link>
             ))}
           </div>
 
           <div className="flex justify-center">
-             <Button size="lg" className="rounded-full h-14 px-10 font-black text-xs uppercase tracking-[0.2em] bg-slate-900 text-white hover:bg-[#1967D2] shadow-xl shadow-slate-200 hover:shadow-blue-200 hover:-translate-y-1 transition-all duration-500">
-               Explorar Todas as Vagas <ChevronRight className="ml-2 h-4 w-4" />
-             </Button>
+             <Link href="/jobs">
+               <Button size="lg" className="rounded-full h-14 px-10 font-black text-xs uppercase tracking-[0.2em] bg-slate-900 text-white hover:bg-[#1967D2] shadow-xl shadow-slate-200 hover:shadow-blue-200 hover:-translate-y-1 transition-all duration-500">
+                 Explorar Todas as Vagas <ChevronRight className="ml-2 h-4 w-4" />
+               </Button>
+             </Link>
           </div>
         </div>
       </section>

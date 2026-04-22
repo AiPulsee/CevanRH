@@ -12,7 +12,8 @@ import {
   Settings, 
   LogOut,
   ChevronRight,
-  TrendingUp
+  TrendingUp,
+  Eye
 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -111,6 +112,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             />
           </div>
           <div className="flex items-center gap-3">
+            <Link href="/empresas/google-cloud-br" className="flex items-center gap-2 px-4 h-12 rounded-2xl bg-white shadow-sm border border-slate-100 hover:bg-slate-50 transition-all group">
+              <Eye className="h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
+              <span className="text-sm font-bold text-slate-600">Ver Portal Público</span>
+            </Link>
             <div className="h-12 w-12 rounded-2xl bg-white shadow-sm flex items-center justify-center border border-slate-100 cursor-pointer hover:bg-slate-50 transition-all">
               <TrendingUp className="h-5 w-5 text-slate-400" />
             </div>

@@ -1,144 +1,185 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { 
   CreditCard, 
   Receipt, 
   ArrowUpRight, 
   CheckCircle2, 
   TrendingUp,
-  Download
+  Download,
+  ShieldCheck,
+  Info
 } from "lucide-react";
 
 export default function BillingPage() {
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-black tracking-tight">Financeiro e Plano</h1>
-          <p className="text-muted-foreground mt-1">Gerencie suas assinaturas, faturas e métodos de pagamento.</p>
-        </div>
-        <Button className="rounded-xl font-bold h-12 px-6 shadow-lg shadow-primary/20">
-          Upgrade de Plano
-          <TrendingUp className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Current Plan Card */}
-        <Card className="lg:col-span-2 p-8 border-border bg-white rounded-[2.5rem] shadow-sm relative overflow-hidden">
-          <div className="relative z-10 flex flex-col md:flex-row justify-between gap-8">
-            <div className="space-y-6 flex-1">
-              <div className="space-y-2">
-                <p className="text-xs font-black text-primary uppercase tracking-widest">Plano Atual</p>
-                <h3 className="text-4xl font-black">Pro Business</h3>
-                <p className="text-muted-foreground">Sua assinatura renova em 12 de Maio, 2026.</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 rounded-2xl bg-secondary/50 border border-border">
-                  <p className="text-xs text-muted-foreground font-bold mb-1">Vagas Usadas</p>
-                  <p className="text-2xl font-black">8 <span className="text-sm font-medium text-muted-foreground">/ 10</span></p>
-                </div>
-                <div className="p-4 rounded-2xl bg-secondary/50 border border-border">
-                  <p className="text-xs text-muted-foreground font-bold mb-1">Candidatos/Mês</p>
-                  <p className="text-2xl font-black">Ilimitado</p>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs font-bold mb-1">
-                  <span>Consumo de Vagas</span>
-                  <span className="text-primary">80%</span>
-                </div>
-                <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-                  <div className="h-full bg-primary rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]" style={{ width: "80%" }} />
-                </div>
-              </div>
+    <TooltipProvider>
+      <div className="space-y-6 animate-in fade-in duration-500">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-1.5 text-blue-600 mb-1">
+              <ShieldCheck className="h-4 w-4" />
+              <span className="text-[10px] font-black uppercase tracking-widest">Gestão de Assinatura</span>
             </div>
+            <h1 className="text-2xl font-black text-slate-900">Financeiro e Plano</h1>
+            <p className="text-sm text-slate-500 font-medium">Gerencie sua conta, faturas e métodos de pagamento.</p>
+          </div>
+          <Button className="rounded-lg font-bold h-10 px-6 bg-slate-900 text-white text-xs">
+            Upgrade de Plano
+            <TrendingUp className="ml-2 h-3.5 w-3.5" />
+          </Button>
+        </div>
 
-            <div className="w-full md:w-72 space-y-4 p-6 rounded-3xl bg-primary/5 border border-primary/10">
-              <h4 className="font-bold text-sm">O que está incluso no Pro:</h4>
-              <ul className="space-y-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Card de Plano Atual */}
+          <Card className="lg:col-span-2 p-6 border-slate-200 bg-white rounded-2xl shadow-sm relative overflow-hidden">
+            <div className="relative z-10 flex flex-col md:flex-row justify-between gap-6">
+              <div className="space-y-5 flex-1">
+                <div>
+                  <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Plano Ativo</p>
+                  <h3 className="text-2xl font-black text-slate-900">Pro Business</h3>
+                  <p className="text-xs text-slate-400 font-medium mt-1">Próxima renovação: 12 de Maio, 2026.</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <p className="text-[10px] text-slate-400 font-bold uppercase">Vagas Usadas</p>
+                      <Tooltip>
+                        <TooltipTrigger className="cursor-help">
+                          <Info className="h-3 w-3 text-slate-300" />
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                          Limite de vagas simultâneas no seu plano.
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <p className="text-xl font-black text-slate-900">08 <span className="text-xs font-medium text-slate-400">/ 10</span></p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <p className="text-[10px] text-slate-400 font-bold uppercase">Candidatos</p>
+                      <Tooltip>
+                        <TooltipTrigger className="cursor-help">
+                          <Info className="h-3 w-3 text-slate-300" />
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                          Você pode receber currículos ilimitados.
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <p className="text-xl font-black text-slate-900">Ilimitado</p>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1">
+                    <span className="text-slate-400">Consumo de Vagas</span>
+                    <span className="text-blue-600">80%</span>
+                  </div>
+                  <Tooltip>
+                    <TooltipTrigger className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden block cursor-help">
+                      <div className="h-full bg-blue-600 rounded-full shadow-sm" style={{ width: "80%" }} />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      Restam 2 vagas disponíveis para publicação.
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </div>
+
+            <div className="w-full md:w-64 space-y-4 p-5 rounded-xl bg-blue-50/50 border border-blue-100">
+              <h4 className="font-bold text-xs text-blue-900 uppercase tracking-tight">Benefícios Pro:</h4>
+              <ul className="space-y-2.5">
                 {[
                   "Suporte prioritário 24/7",
                   "Filtros de IA avançados",
-                  "Multiusuários (Time até 5)",
-                  "Custom Branding no Job Board",
+                  "Equipe até 5 usuários",
+                  "Branding Personalizado",
                 ].map(feature => (
-                  <li key={feature} className="flex items-start gap-2 text-xs text-muted-foreground font-medium">
-                    <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                  <li key={feature} className="flex items-start gap-2 text-[11px] text-slate-600 font-medium">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-blue-600 shrink-0" />
                     {feature}
                   </li>
                 ))}
               </ul>
-              <Button variant="outline" className="w-full rounded-xl border-primary/20 text-primary font-bold hover:bg-primary/5 mt-4">
+              <Button variant="outline" className="w-full h-9 rounded-lg border-blue-200 text-blue-700 font-bold text-[10px] hover:bg-blue-100 mt-2 bg-white">
                 Gerenciar Recursos
               </Button>
             </div>
           </div>
         </Card>
 
-        {/* Payment Method Card */}
-        <Card className="p-8 border-border bg-white rounded-[2.5rem] shadow-sm flex flex-col justify-between">
+        {/* Método de Pagamento */}
+        <Card className="p-6 border-slate-200 bg-white rounded-2xl shadow-sm flex flex-col justify-between">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-secondary border border-border flex items-center justify-center">
-                <CreditCard className="h-5 w-5 text-primary" />
+              <div className="h-9 w-9 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center">
+                <CreditCard className="h-4.5 w-4.5 text-slate-600" />
               </div>
-              <h3 className="font-bold text-lg">Pagamento</h3>
+              <h3 className="font-bold text-base text-slate-900">Pagamento</h3>
             </div>
             
-            <div className="p-6 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent relative group cursor-pointer overflow-hidden">
-              <div className="absolute -right-4 -bottom-4 h-24 w-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all" />
-              <p className="text-xs text-muted-foreground font-bold mb-1 uppercase tracking-tighter">Cartão Principal</p>
+            <div className="p-5 rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50 to-transparent relative group overflow-hidden">
+              <p className="text-[9px] text-slate-400 font-black mb-1 uppercase tracking-widest">Cartão Principal</p>
               <div className="flex items-center gap-3 mb-4">
-                <div className="h-6 w-10 bg-white border border-border rounded flex items-center justify-center font-bold text-[8px] italic">VISA</div>
-                <span className="font-black text-lg">•••• 4242</span>
+                <div className="h-5 w-8 bg-white border border-slate-100 rounded flex items-center justify-center font-bold text-[7px] italic text-blue-600">VISA</div>
+                <span className="font-black text-base text-slate-900 tracking-wider">•••• 4242</span>
               </div>
-              <Badge variant="outline" className="rounded-lg border-primary/20 text-primary bg-white text-[10px] font-black">EXP 12/28</Badge>
+              <Badge variant="outline" className="rounded-md border-blue-200 text-blue-600 bg-white text-[9px] font-black">EXP 12/28</Badge>
             </div>
           </div>
 
-          <Button variant="ghost" className="w-full rounded-xl font-bold text-primary hover:bg-primary/5 h-12">
-            Alterar Método
-            <ArrowUpRight className="ml-2 h-4 w-4" />
+          <Button variant="ghost" className="w-full h-10 rounded-lg font-bold text-blue-600 hover:bg-blue-50 text-xs">
+            Alterar Cartão
+            <ArrowUpRight className="ml-2 h-3.5 w-3.5" />
           </Button>
         </Card>
 
-        {/* Invoice Table */}
-        <Card className="lg:col-span-3 p-8 border-border bg-white rounded-[2.5rem] shadow-sm">
-          <div className="flex items-center justify-between mb-8">
+        {/* Tabela de Faturas */}
+        <Card className="lg:col-span-3 p-6 border-slate-200 bg-white rounded-2xl shadow-sm">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-secondary border border-border flex items-center justify-center">
-                <Receipt className="h-5 w-5 text-primary" />
+              <div className="h-9 w-9 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center">
+                <Receipt className="h-4.5 w-4.5 text-slate-600" />
               </div>
-              <h3 className="font-bold text-lg">Histórico de Faturas</h3>
+              <h3 className="font-bold text-base text-slate-900">Histórico de Faturas</h3>
             </div>
-            <Button variant="outline" size="sm" className="rounded-xl border-border bg-white font-bold h-10 px-4">Filtrar Ano</Button>
+            <Button variant="outline" size="sm" className="h-8 rounded-lg border-slate-200 bg-white font-bold text-[10px] px-4">Filtrar</Button>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1">
             {[
               { id: "#INV-2026-001", date: "12 Abr, 2026", amount: "R$ 499,00", status: "Pago" },
               { id: "#INV-2026-002", date: "12 Mar, 2026", amount: "R$ 499,00", status: "Pago" },
               { id: "#INV-2026-003", date: "12 Fev, 2026", amount: "R$ 499,00", status: "Pago" },
             ].map((invoice, i) => (
-              <div key={i} className="flex items-center justify-between p-4 rounded-2xl hover:bg-secondary/50 transition-all border border-transparent hover:border-border">
-                <div className="flex items-center gap-8">
-                  <span className="font-bold text-sm w-32">{invoice.id}</span>
-                  <span className="text-sm text-muted-foreground w-32">{invoice.date}</span>
-                  <span className="font-black text-sm w-24">{invoice.amount}</span>
-                  <Badge className="bg-green-500/10 text-green-500 border-green-500/20 rounded-lg">{invoice.status}</Badge>
+              <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all border border-transparent">
+                <div className="flex items-center flex-1">
+                  <span className="font-bold text-xs text-slate-900 w-32">{invoice.id}</span>
+                  <span className="text-[11px] text-slate-500 font-medium w-32">{invoice.date}</span>
+                  <span className="font-black text-xs text-slate-900 w-24">{invoice.amount}</span>
+                  <Badge className="bg-emerald-50 text-emerald-600 border-emerald-100 rounded-md text-[9px] font-black px-2 py-0.5">{invoice.status}</Badge>
                 </div>
-                <Button variant="ghost" size="icon" className="rounded-lg h-10 w-10 border border-border bg-white shadow-sm hover:text-primary">
-                  <Download className="h-4 w-4" />
+                <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg border-slate-200 bg-white shadow-sm hover:text-blue-600 hover:border-blue-200">
+                  <Download className="h-3.5 w-3.5" />
                 </Button>
               </div>
             ))}
           </div>
         </Card>
       </div>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 }
+

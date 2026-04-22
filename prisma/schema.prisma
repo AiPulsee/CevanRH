@@ -70,6 +70,8 @@ model Company {
   logoUrl     String?  @map("logo_url")
   website     String?
   description String?  @db.Text
+  industry    String?
+  location    String?
   
   // Subscription management
   plan        PlanType @default(FREE)
@@ -93,6 +95,11 @@ model Job {
   location      String
   isRemote      Boolean   @default(false) @map("is_remote")
   salaryRange   String?   @map("salary_range") // Ex: "5k - 8k"
+  
+  requirements    String?   @db.Text
+  benefits        String?   @db.Text
+  responsibilities String?   @db.Text
+  tips            String?   @db.Text
   
   type          JobType   @default(SELF_SERVICE)
   status        JobStatus @default(DRAFT)

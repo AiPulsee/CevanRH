@@ -75,11 +75,14 @@ export function CreateJobModal() {
       if(!open) resetAndClose();
       else setIsOpen(true);
     }}>
-      <DialogTrigger asChild>
-        <Button className="rounded-xl font-bold shadow-lg shadow-blue-500/20 bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="h-4 w-4 mr-2" />
-          Criar Nova Vaga
-        </Button>
+      <DialogTrigger 
+        nativeButton={true}
+        render={
+          <Button className="rounded-xl font-bold shadow-lg shadow-blue-500/20 bg-blue-600 hover:bg-blue-700 text-white" />
+        }
+      >
+        <Plus className="h-4 w-4 mr-2" />
+        Criar Nova Vaga
       </DialogTrigger>
       
       <DialogContent className="sm:max-w-4xl w-[95vw] bg-white rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden flex flex-col h-[85vh] sm:h-auto sm:max-h-[90vh]">

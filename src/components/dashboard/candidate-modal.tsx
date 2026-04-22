@@ -41,7 +41,7 @@ export function CandidateModal({ children, candidate }: { children: React.ReactN
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger nativeButton={true}>
         {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-5xl w-[95vw] bg-slate-50 rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden h-[85vh] flex flex-col">

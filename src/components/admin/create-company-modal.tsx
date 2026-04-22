@@ -21,6 +21,7 @@ export function CreateCompanyModal() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger 
+        nativeButton={false}
         render={
           <Button className="rounded-xl font-bold h-12 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200">
             <Plus className="h-4 w-4 mr-2" />
