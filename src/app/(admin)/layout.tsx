@@ -37,7 +37,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex min-h-screen bg-[#f1f5f9] text-foreground overflow-hidden">
-      {/* Admin Sidebar - Premium Dark Mode */}
+      {/* Admin Sidebar - Dark Mode */}
       <aside className="w-72 border-r border-slate-800 bg-[#0f172a] text-slate-300 flex flex-col z-20 shadow-2xl shadow-slate-900/50">
         <div className="p-8">
           <Link href="/" className="flex items-center justify-center group">
@@ -73,7 +73,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         {/* Profile / Logout */}
-        <div className="p-6 mt-auto border-t border-slate-800/50">
+        <div className="p-6 pb-10 mt-auto border-t border-slate-800/50">
           <form action={async () => {
             await logout();
           }} className="flex items-center justify-between mt-6 px-2">

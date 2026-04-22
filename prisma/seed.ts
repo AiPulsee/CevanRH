@@ -15,7 +15,7 @@ async function main() {
     },
   });
 
-  // 2. Usuário ADMIN (CevanRH Internal)
+  // 2. Usuário ADMIN (Cevan Serviços Empresariais Internal)
   await prisma.user.upsert({
     where: { email: "admin@cevan.com.br" },
     update: { role: "ADMIN" },

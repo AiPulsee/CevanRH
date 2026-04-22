@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function EmployersPublicPage() {
   const employers = [
@@ -32,34 +33,56 @@ export default function EmployersPublicPage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFBFC] font-sans selection:bg-blue-100 selection:text-blue-900 mt-20">
+    <div className="flex flex-col min-h-screen bg-[#FAFBFC] font-sans selection:bg-blue-100 selection:text-blue-900 mt-24">
       
-      {/* Banner Ultra Premium */}
-      <div className="bg-slate-900 py-16 lg:py-24 relative overflow-hidden">
-        {/* Abstract Background Vectors */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/20 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+      {/* Banner Principal */}
+      <div className="bg-[#0f172a] py-24 lg:py-36 relative overflow-hidden">
+        {/* Animated Background Orbs */}
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/20 rounded-full blur-[140px] -translate-y-1/2 translate-x-1/2 animate-pulse" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />
         
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-            <h1 className="text-4xl lg:text-[52px] font-extrabold text-white mb-5 tracking-tight leading-tight">
-              Acesso Exclusivo às <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-300">Melhores Empresas</span>
-            </h1>
-            <p className="text-slate-300 font-medium mb-12 text-lg max-w-2xl mx-auto">Explore corporações que lideram o setor tecnológico e corporativo. Analise detalhes de cultura, expansão e descubra as melhores vagas abertas.</p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Badge className="bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full px-4 py-1.5 font-black mb-8 uppercase tracking-[0.2em] text-[10px]">
+                Networking de Alto Nível
+              </Badge>
+              <h1 className="text-4xl lg:text-6xl font-black text-white mb-8 tracking-tighter leading-tight">
+                Onde os <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-200">Melhores</span> <br />
+                se Encontram.
+              </h1>
+              <p className="text-slate-400 font-medium mb-16 text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
+                Explore as corporações que estão moldando o futuro. <br className="hidden lg:block" /> Conecte-se com culturas de alto desempenho.
+              </p>
+            </motion.div>
             
-            <div className="bg-white/10 backdrop-blur-xl p-2.5 md:rounded-full rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.2)] max-w-3xl mx-auto flex flex-col md:flex-row gap-3 border border-white/20 items-center">
-                <div className="flex-1 w-full flex items-center px-4 relative group">
-                  <Search className="h-5 w-5 text-blue-200 group-focus-within:text-white transition-colors" />
-                  <Input placeholder="Qual empresa você busca?" className="h-12 border-none bg-transparent focus-visible:ring-0 text-[16px] shadow-none text-white placeholder-blue-200/60 font-medium" />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="bg-white p-2.5 md:rounded-[2.5rem] rounded-3xl shadow-[0_40px_80px_-15px_rgba(0,0,0,0.5)] max-w-5xl mx-auto flex flex-col md:flex-row gap-2 items-center border border-white/10"
+            >
+                <div className="flex-[1.2] w-full flex items-center px-6 group border-b md:border-b-0 md:border-r border-slate-100/50">
+                  <Search className="h-6 w-6 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
+                  <Input 
+                    placeholder="Nome da empresa ou setor..." 
+                    className="h-16 border-none bg-transparent focus-visible:ring-0 text-[18px] shadow-none text-slate-900 placeholder-slate-300 font-bold" 
+                  />
                 </div>
-                <div className="hidden md:block w-px h-8 bg-white/10" />
-                <div className="flex-1 w-full flex items-center px-4 relative group">
-                  <MapPin className="h-5 w-5 text-blue-200 group-focus-within:text-white transition-colors" />
-                  <Input placeholder="Localização" className="h-12 border-none bg-transparent focus-visible:ring-0 text-[16px] shadow-none text-white placeholder-blue-200/60 font-medium" />
+                <div className="flex-1 w-full flex items-center px-6 group">
+                  <MapPin className="h-6 w-6 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
+                  <Input 
+                    placeholder="Cidade ou Remoto" 
+                    className="h-16 border-none bg-transparent focus-visible:ring-0 text-[18px] shadow-none text-slate-900 placeholder-slate-300 font-bold" 
+                  />
                 </div>
-                <Button className="w-full md:w-auto h-12 md:rounded-full rounded-xl px-10 bg-[#1967D2] hover:bg-blue-600 font-bold shadow-lg hover:-translate-y-0.5 transition-all text-white border border-blue-400/30">
-                  Pesquisar
+                <Button className="w-full md:w-auto h-16 md:rounded-[1.8rem] rounded-2xl px-14 bg-[#1967D2] hover:bg-blue-600 font-black shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1 transition-all text-white uppercase tracking-widest text-[13px]">
+                  Explorar
                 </Button>
-            </div>
+            </motion.div>
         </div>
       </div>
 
@@ -78,7 +101,7 @@ export default function EmployersPublicPage() {
             </div>
          </div>
 
-         {/* Premium Employers Grid */}
+         {/* Employers Grid */}
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {employers.map((emp, i) => (
               <Card key={i} className="group border-none bg-white hover:shadow-[0_20px_50px_rgba(25,103,210,0.12)] hover:-translate-y-1.5 transition-all duration-500 rounded-[1.5rem] flex flex-col justify-between h-full cursor-pointer overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.03)] ring-1 ring-slate-100 relative">

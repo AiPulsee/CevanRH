@@ -29,27 +29,45 @@ export default function JobsPublicPage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFBFC] font-sans selection:bg-blue-100 selection:text-blue-900 mt-20">
+    <div className="flex flex-col min-h-screen bg-[#FAFBFC] font-sans selection:bg-blue-100 selection:text-blue-900 mt-24">
       
       {/* Search & Banner Top (V6 Style) */}
-      <div className="bg-[#f2f6ff] py-16 lg:py-20 border-b border-blue-100">
+      <div className="bg-[#f8faff] py-20 lg:py-28 border-b border-blue-100/60 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-            <h1 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">O Próximo Passo da Sua Carreira</h1>
-            <p className="text-slate-500 font-medium mb-10 text-lg">Navegue pelas vagas mais cobiçadas do mercado de tecnologia e alcance seu potencial máximo.</p>
+            <Badge className="bg-blue-600/10 text-blue-600 border-none rounded-full px-4 py-1.5 font-black mb-6 uppercase tracking-[0.2em] text-[10px]">
+              Oportunidades Ativas
+            </Badge>
+            <h1 className="text-4xl lg:text-5xl font-black text-slate-900 mb-8 tracking-tighter leading-tight">
+              O Próximo Passo da <br />
+              <span className="text-blue-600">Sua Carreira</span>
+            </h1>
+            <p className="text-slate-500 font-medium mb-12 text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed">
+              Navegue pelas vagas mais cobiçadas do mercado e alcance seu potencial máximo com a curadoria especializada da Cevan.
+            </p>
             
-            {/* Search Box */}
-            <div className="bg-white p-3 md:rounded-full rounded-2xl shadow-[0_15px_40px_rgba(25,103,210,0.08)] max-w-4xl mx-auto flex flex-col md:flex-row gap-3 border border-slate-100 items-center">
-                <div className="flex-1 w-full flex items-center px-4 relative group">
-                  <Search className="h-5 w-5 text-slate-400 group-focus-within:text-[#1967D2] transition-colors" />
-                  <Input placeholder="Qual cargo você procura?" className="h-12 border-none bg-transparent focus-visible:ring-0 text-[15px] shadow-none" />
+            {/* Search Box Refined */}
+            <div className="p-1.5 bg-white rounded-2xl lg:rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-slate-100 flex flex-col md:flex-row items-center w-full max-w-5xl mx-auto transition-all duration-500 hover:shadow-[0_30px_60px_rgba(0,0,0,0.1)] group/search">
+                <div className="flex-[1.2] w-full flex items-center px-4 gap-3 group border-b md:border-b-0 md:border-r border-slate-100">
+                  <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0 group-focus-within:bg-blue-600 group-focus-within:text-white transition-all">
+                    <Search className="h-5 w-5 text-blue-600 group-focus-within:text-current transition-colors" />
+                  </div>
+                  <input 
+                    placeholder="Qual cargo ou tecnologia?" 
+                    className="h-14 w-full bg-transparent border-none outline-none focus:ring-0 text-[16px] font-bold placeholder:text-slate-300 px-2"
+                  />
                 </div>
-                <div className="hidden md:block w-px h-10 bg-slate-100" />
-                <div className="flex-1 w-full flex items-center px-4 relative group">
-                  <MapPin className="h-5 w-5 text-slate-400 group-focus-within:text-[#1967D2] transition-colors" />
-                  <Input placeholder="Qualquer localização" className="h-12 border-none bg-transparent focus-visible:ring-0 text-[15px] shadow-none" />
+                <div className="flex-1 w-full flex items-center px-4 gap-3 group">
+                  <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center shrink-0 group-focus-within:bg-blue-600 group-focus-within:text-white transition-all">
+                    <MapPin className="h-5 w-5 text-slate-400 group-focus-within:text-current transition-colors" />
+                  </div>
+                  <input 
+                    placeholder="Localização (Ex: Remoto)" 
+                    className="h-14 w-full bg-transparent border-none outline-none focus:ring-0 text-[16px] font-bold placeholder:text-slate-300 px-2"
+                  />
                 </div>
-                <Button className="w-full md:w-auto h-12 md:rounded-full rounded-xl px-10 bg-[#1967D2] hover:bg-blue-700 font-bold shadow-md hover:-translate-y-0.5 transition-all">
-                  Localizar
+                <Button className="w-full md:w-auto h-14 md:rounded-full rounded-xl px-12 bg-[#1967D2] hover:bg-blue-700 font-black shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all uppercase tracking-widest text-xs">
+                  Localizar Vaga
                 </Button>
             </div>
         </div>
@@ -122,7 +140,7 @@ export default function JobsPublicPage() {
               </div>
             </div>
 
-            {/* Premium Job Cards (List Format) */}
+            {/* Job Cards (List Format) */}
             <div className="space-y-5">
               {jobs.map((job, i) => (
                 <Card key={i} className="p-6 border border-slate-100 bg-white hover:border-[#1967D2]/40 hover:shadow-[0_12px_40px_rgb(25,103,210,0.06)] hover:-translate-y-1 transition-all duration-300 rounded-[1.2rem] relative group cursor-pointer">

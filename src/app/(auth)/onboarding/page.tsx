@@ -39,7 +39,7 @@ export default function OnboardingPage() {
       {/* Brand Header */}
       <div className="absolute top-8 left-0 right-0 flex justify-center">
         <Link href="/" className="inline-block">
-          <Image src="/logoprincipal.png" alt="CevanRH" width={500} height={150} className="h-24 w-auto object-contain" />
+          <Image src="/logoprincipal.png" alt="Cevan Serviços Empresariais" width={500} height={150} className="h-24 w-auto object-contain" />
         </Link>
       </div>
 
@@ -74,7 +74,7 @@ export default function OnboardingPage() {
           {step === 1 && (
             <div className="space-y-8 animate-in fade-in duration-500">
               <div className="space-y-2 text-center">
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight">Bem-vindo à CevanRH! 👋</h1>
+                <h1 className="text-3xl font-black text-slate-900 tracking-tight">Bem-vindo à Cevan Serviços Empresariais! 👋</h1>
                 <p className="text-slate-500 font-medium">Vamos configurar o perfil da sua empresa para atrair os melhores talentos.</p>
               </div>
 

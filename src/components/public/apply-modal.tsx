@@ -81,7 +81,7 @@ export function ApplyModal({ jobTitle, companyName, isManaged }: ApplyModalProps
                     <Zap className="h-5 w-5 text-primary mt-1 shrink-0 fill-primary" />
                     <div>
                       <p className="text-xs font-bold text-primary uppercase">Vaga com Curadoria</p>
-                      <p className="text-[10px] text-primary/70">Esta vaga é gerenciada pela CevanRH. Teremos um cuidado especial com seu perfil.</p>
+                      <p className="text-[10px] text-primary/70">Esta vaga é gerenciada pela Cevan Serviços Empresariais. Teremos um cuidado especial com seu perfil.</p>
                     </div>
                   </div>
                 )}

@@ -59,7 +59,7 @@ export default function AdminManagedJobs() {
             Curadoria Especializada
           </div>
           <h1 className="text-3xl font-black tracking-tight text-slate-900">Vagas p/ Curadoria</h1>
-          <p className="text-slate-500 mt-1">Gerencie a triagem e seleção de talentos para seus clientes premium.</p>
+          <p className="text-slate-500 mt-1">Gerencie a triagem e seleção de talentos para seus clientes estratégicos.</p>
         </div>
         <div className="flex gap-3">
           <Button variant="outline" className="rounded-xl border-slate-200 bg-white font-bold text-slate-600">

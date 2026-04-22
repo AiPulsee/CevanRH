@@ -20,9 +20,9 @@ import { CreateCompanyModal } from "@/components/admin/create-company-modal";
 
 export default function AdminCompanies() {
   const companies = [
-    { name: "Google Cloud", slug: "google-cloud", plan: "PRO", status: "Ativo", employees: 42, jobs: 8, joined: "12 Jan 2026" },
-    { name: "Nubank", slug: "nubank", plan: "ENTERPRISE", status: "Ativo", employees: 125, jobs: 14, joined: "05 Fev 2026" },
-    { name: "Vercel", slug: "vercel", plan: "PRO", status: "Ativo", employees: 18, jobs: 4, joined: "10 Mar 2026" },
+    { name: "Google Cloud", slug: "google-cloud", plan: "PRO", status: "Ativo", employees: 42, jobs: 8, joined: "12 Jan 2026", managed: true },
+    { name: "Nubank", slug: "nubank", plan: "ENTERPRISE", status: "Ativo", employees: 125, jobs: 14, joined: "05 Fev 2026", managed: true },
+    { name: "Vercel", slug: "vercel", plan: "PRO", status: "Ativo", employees: 18, jobs: 4, joined: "10 Mar 2026", managed: false },
   ];
 
   const pendingCompanies = [
@@ -88,6 +88,7 @@ export default function AdminCompanies() {
               <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Empresa</th>
               <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Plano</th>
               <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
+              <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Curadoria</th>
               <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Time / Vagas</th>
               <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Desde</th>
               <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Ações</th>
@@ -121,6 +122,13 @@ export default function AdminCompanies() {
                     )}
                     <span className="text-xs font-medium text-slate-600">{company.status}</span>
                   </div>
+                </td>
+                <td className="px-6 py-4">
+                  {company.managed ? (
+                    <Badge className="rounded-lg bg-indigo-500 text-white border-none text-[9px] font-black uppercase px-2">Ativa</Badge>
+                  ) : (
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Inativa</span>
+                  )}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-4 text-xs font-bold text-slate-600">

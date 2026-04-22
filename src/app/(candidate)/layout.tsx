@@ -29,11 +29,11 @@ export default function CandidateLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex min-h-screen bg-[#F8FAFC] text-foreground">
-      {/* Candidate Sidebar - Premium look */}
+      {/* Candidate Sidebar - Refined look */}
       <aside className="w-72 border-r border-slate-200 bg-white flex flex-col z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
         <div className="p-8">
           <Link href="/" className="flex items-center justify-center group">
-            <Image src="/logoprincipal.png" alt="CevanRH" width={400} height={120} className="h-20 w-auto object-contain transition-transform group-hover:scale-105" />
+            <Image src="/logoprincipal.png" alt="Cevan Serviços Empresariais" width={400} height={120} className="h-20 w-auto object-contain transition-transform group-hover:scale-105" />
           </Link>
         </div>
 
