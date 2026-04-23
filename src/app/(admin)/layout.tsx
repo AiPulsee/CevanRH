@@ -13,7 +13,9 @@ import {
   Bell,
   LineChart,
   BrainCircuit,
-  LayoutDashboard
+  LayoutDashboard,
+  UserCheck,
+  Receipt
 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -30,6 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       items: [
         { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
         { name: "Métricas Financeiras", href: "/admin/finance", icon: LineChart },
+        { name: "Comissões", href: "/admin/finance/commissions", icon: Receipt },
       ]
     },
     {
@@ -43,6 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       label: "Operações IA",
       items: [
         { name: "Curadoria", href: "/admin/managed", icon: Zap },
+        { name: "Alocações", href: "/admin/placements", icon: UserCheck },
         { name: "Motor de IA", href: "/admin/ai", icon: BrainCircuit },
       ]
     },

@@ -37,27 +37,27 @@ export default async function EmployersPublicPage() {
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-50/50 rounded-full blur-[120px] -translate-y-1/2" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-indigo-50/30 rounded-full blur-[100px] translate-y-1/2" />
 
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl lg:text-7xl font-black text-slate-900 mb-8 tracking-tight leading-[0.95]">
-              Descubra onde o <br />
+        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center lg:text-left">
+          <div className="max-w-3xl mx-auto lg:mx-0">
+            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black text-slate-900 mb-6 sm:mb-8 tracking-tight leading-[1.1] lg:leading-[0.95]">
+              Descubra onde o <br className="hidden sm:block" />
               <span className="text-blue-600">futuro</span> acontece.
             </h1>
-            <p className="text-slate-500 font-medium mb-12 text-lg lg:text-xl leading-relaxed">
-              Conecte-se com as organizações mais inovadoras do mercado e encontre <br className="hidden lg:block" /> a cultura que impulsiona o seu propósito.
+            <p className="text-slate-500 font-medium mb-10 sm:mb-12 text-base sm:text-lg lg:text-xl leading-relaxed">
+              Conecte-se com as organizações mais inovadoras do mercado e encontre a cultura que impulsiona o seu propósito.
             </p>
             
             {/* Integrated Search Bar */}
-            <div className="flex flex-col md:flex-row gap-3 p-2 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-sm max-w-2xl">
-              <div className="flex-1 flex items-center px-4 gap-3">
-                <Search className="h-5 w-5 text-slate-400" />
+            <div className="flex flex-col md:flex-row gap-2 p-2 bg-slate-50 rounded-2xl sm:rounded-[2rem] border border-slate-100 shadow-sm max-w-2xl mx-auto lg:mx-0">
+              <div className="flex-1 flex items-center px-4 gap-3 py-1 md:py-0">
+                <Search className="h-5 w-5 text-slate-400 shrink-0" />
                 <input 
                   type="text"
                   placeholder="Buscar empresa ou setor..."
-                  className="w-full h-12 bg-transparent border-none focus:ring-0 text-slate-900 font-bold placeholder-slate-400"
+                  className="w-full h-12 bg-transparent border-none focus:ring-0 text-slate-900 text-sm sm:text-base font-bold placeholder-slate-400"
                 />
               </div>
-              <Button className="h-12 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-[12px] uppercase tracking-widest shadow-lg shadow-blue-200 transition-all">
+              <Button className="h-12 w-full md:w-auto px-8 rounded-xl sm:rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-[11px] sm:text-[12px] uppercase tracking-widest shadow-lg shadow-blue-200 transition-all">
                 Pesquisar
               </Button>
             </div>
@@ -88,48 +88,48 @@ export default async function EmployersPublicPage() {
                   {/* Subtle hover background decoration */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-[60px] translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   
-                  <div className="flex justify-between items-start mb-8 relative z-10">
-                    <div className="h-20 w-20 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-blue-600 text-2xl overflow-hidden shadow-sm group-hover:scale-105 transition-transform duration-500">
+                  <div className="flex justify-between items-start mb-6 sm:mb-8 relative z-10">
+                    <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-blue-600 text-xl sm:text-2xl overflow-hidden shadow-sm group-hover:scale-105 transition-transform duration-500">
                       {company.logoUrl ? (
                         <img src={company.logoUrl} alt={company.name} className="h-full w-full object-cover" />
                       ) : (
                         company.name.charAt(0)
                       )}
                     </div>
-                    <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
-                      <ArrowUpRight className="h-5 w-5" />
+                    <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
+                      <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                   </div>
 
-                  <div className="space-y-4 relative z-10 mb-8">
-                    <h3 className="font-black text-2xl text-slate-900 group-hover:text-blue-600 transition-colors leading-tight">
+                  <div className="space-y-3 sm:space-y-4 relative z-10 mb-6 sm:mb-8">
+                    <h3 className="font-black text-xl sm:text-2xl text-slate-900 group-hover:text-blue-600 transition-colors leading-tight line-clamp-1">
                       {company.name}
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      <Badge className="bg-slate-50 text-slate-500 border-none font-bold text-[11px] px-3 py-1 uppercase tracking-widest">
-                        {company.industry || "Tecnologia"}
+                      <Badge className="bg-slate-50 text-slate-500 border-none font-bold text-[9px] sm:text-[11px] px-2.5 py-1 uppercase tracking-widest">
+                        {company.industry || "Setor Tech"}
                       </Badge>
                       {company.location && (
-                        <Badge className="bg-slate-50 text-slate-400 border-none font-bold text-[11px] px-3 py-1 uppercase tracking-widest flex items-center gap-1">
+                        <Badge className="bg-slate-50 text-slate-400 border-none font-bold text-[9px] sm:text-[11px] px-2.5 py-1 uppercase tracking-widest flex items-center gap-1">
                           <MapPin className="h-3 w-3" /> {company.location}
                         </Badge>
                       )}
                     </div>
-                    <p className="text-[14px] text-slate-500 leading-relaxed line-clamp-2 font-medium">
+                    <p className="text-[13px] sm:text-[14px] text-slate-500 leading-relaxed line-clamp-2 font-medium">
                       {company.description || "Inovação e cultura focada em excelência e pessoas."}
                     </p>
                   </div>
 
-                  <div className="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between relative z-10">
+                  <div className="mt-auto pt-5 sm:pt-6 border-t border-slate-50 flex items-center justify-between relative z-10">
                     <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-emerald-500" />
-                      <span className="font-black text-[13px] text-slate-900">
-                        {company._count.jobs} vagas <span className="text-slate-400 font-bold ml-1 uppercase text-[10px] tracking-widest">Abertas</span>
+                      <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-emerald-500" />
+                      <span className="font-black text-[12px] sm:text-[13px] text-slate-900">
+                        {company._count.jobs} vagas <span className="text-slate-400 font-bold ml-1 uppercase text-[9px] sm:text-[10px] tracking-widest">Abertas</span>
                       </span>
                     </div>
                     {company.website && (
                       <div className="text-slate-300 hover:text-blue-600 transition-colors">
-                        <Globe className="h-4 w-4" />
+                        <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       </div>
                     )}
                   </div>

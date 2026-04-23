@@ -13,7 +13,8 @@ import {
   LogOut,
   ChevronRight,
   TrendingUp,
-  Eye
+  Eye,
+  UserCheck
 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: "Minhas Vagas", href: "/dashboard/jobs", icon: Briefcase },
     { name: "Candidatos", href: "/dashboard/candidates", icon: Users },
     { name: "Curadoria", href: "/dashboard/shortlists", icon: Zap },
+    { name: "Alocações", href: "/dashboard/placements", icon: UserCheck },
     { name: "Financeiro", href: "/dashboard/billing", icon: CreditCard },
     { name: "Configurações", href: "/dashboard/settings", icon: Settings },
   ];

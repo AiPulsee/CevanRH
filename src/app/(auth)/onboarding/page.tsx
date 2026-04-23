@@ -38,9 +38,9 @@ export default function OnboardingPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
       
       {/* Brand Header */}
-      <div className="absolute top-8 left-0 right-0 flex justify-center">
+      <div className="absolute top-6 sm:top-8 left-0 right-0 flex justify-center px-4">
         <Link href="/" className="inline-block">
-          <Image src="/logoprincipal.png" alt="Cevan Serviços Empresariais" width={500} height={150} className="h-24 w-auto object-contain" />
+          <Image src="/logoprincipal.png" alt="Cevan Serviços Empresariais" width={400} height={120} className="h-14 sm:h-24 w-auto object-contain" />
         </Link>
       </div>
 
@@ -70,13 +70,13 @@ export default function OnboardingPage() {
         </div>
 
         {/* Step Content */}
-        <Card className="bg-white border-slate-100 shadow-xl shadow-slate-200/50 rounded-[2rem] p-8 sm:p-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <Card className="bg-white border-slate-100 shadow-xl shadow-slate-200/50 rounded-[2rem] p-6 sm:p-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
           
           {step === 1 && (
             <div className="space-y-8 animate-in fade-in duration-500">
               <div className="space-y-2 text-center">
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight">Bem-vindo à Cevan Serviços Empresariais! 👋</h1>
-                <p className="text-slate-500 font-medium">Vamos configurar o perfil da sua empresa para atrair os melhores talentos.</p>
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Bem-vindo à Cevan! 👋</h1>
+                <p className="text-sm sm:text-base text-slate-500 font-medium px-2">Vamos configurar o perfil da sua empresa para atrair os melhores talentos.</p>
               </div>
 
               <div className="space-y-5">
@@ -110,8 +110,8 @@ export default function OnboardingPage() {
           {step === 2 && (
             <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
               <div className="space-y-2 text-center">
-                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Presença Digital 🌐</h2>
-                <p className="text-slate-500 font-medium">Como os candidatos encontrarão você?</p>
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Presença Digital 🌐</h2>
+                <p className="text-sm sm:text-base text-slate-500 font-medium">Como os candidatos encontrarão você?</p>
               </div>
 
               <div className="space-y-5">
@@ -163,8 +163,8 @@ export default function OnboardingPage() {
               </div>
 
               <div className="space-y-2">
-                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Tudo pronto! 🎉</h2>
-                <p className="text-slate-500 font-medium text-lg leading-relaxed max-w-md mx-auto">
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Tudo pronto! 🎉</h2>
+                <p className="text-sm sm:text-base text-slate-500 font-medium leading-relaxed max-w-md mx-auto px-4">
                   Sua empresa já está configurada. Agora você pode acessar o painel e publicar sua primeira vaga.
                 </p>
               </div>

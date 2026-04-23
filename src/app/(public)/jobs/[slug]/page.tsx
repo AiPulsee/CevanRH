@@ -32,57 +32,57 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
       <div className="relative overflow-hidden bg-white border-b border-slate-100">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-50/50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
         <div className="container mx-auto max-w-7xl px-6 relative z-10 py-12 lg:py-16">
-          <Link href="/jobs" className="inline-flex items-center text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-600 mb-8 transition-all group">
+          <Link href="/jobs" className="inline-flex items-center text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-600 mb-6 sm:mb-8 transition-all group">
             <ChevronLeft className="h-4 w-4 mr-1.5 group-hover:-translate-x-1 transition-transform" />
             Vagas Disponíveis
           </Link>
 
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
             <div className="space-y-6 flex-1">
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 {job.type === "MANAGED" && (
-                  <Badge className="bg-blue-600 text-white border-none rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-200">
+                  <Badge className="bg-blue-600 text-white border-none rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[9px] sm:text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-200">
                     <Zap className="h-3 w-3 mr-1.5 fill-white" />
-                    Curadoria Ativa Cevan
+                    Curadoria Ativa
                   </Badge>
                 )}
-                <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-none rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest">
+                <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-none rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[9px] sm:text-[10px] font-black uppercase tracking-widest">
                   {job.isRemote ? "100% Remoto" : "Presencial / Híbrido"}
                 </Badge>
               </div>
 
-              <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-[1.1] max-w-4xl">
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-[1.2] lg:leading-[1.1] max-w-4xl">
                 {job.title}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 pt-2">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-blue-600 shadow-sm border border-slate-100">
+                  <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-blue-600 shadow-sm border border-slate-100 shrink-0">
                     <Building2 className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Empresa</p>
-                    <p className="text-[15px] font-black text-slate-900">{job.company.name}</p>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Empresa</p>
+                    <p className="text-[14px] font-black text-slate-900">{job.company.name}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-blue-600 shadow-sm border border-slate-100">
+                  <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-blue-600 shadow-sm border border-slate-100 shrink-0">
                     <MapPin className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Localização</p>
-                    <p className="text-[15px] font-black text-slate-900">{job.location}</p>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Local</p>
+                    <p className="text-[14px] font-black text-slate-900">{job.location}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100">
+                  <div className="h-10 w-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100 shrink-0">
                     <DollarSign className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Remuneração</p>
-                    <p className="text-[15px] font-black text-emerald-600">{job.salaryRange || "A combinar"}</p>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Salário</p>
+                    <p className="text-[14px] font-black text-emerald-600">{job.salaryRange || "A combinar"}</p>
                   </div>
                 </div>
               </div>
@@ -107,11 +107,11 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
           <div className="lg:col-span-8 space-y-8">
             
             {/* Job Description Card */}
-            <div className="bg-white rounded-[2rem] p-10 lg:p-12 border border-slate-100 shadow-sm">
+            <div className="bg-white rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-10 lg:p-12 border border-slate-100 shadow-sm">
               <div className="prose prose-slate max-w-none">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="h-8 w-1 bg-blue-600 rounded-full" />
-                  <h3 className="text-[12px] font-black text-slate-400 uppercase tracking-[0.3em] m-0">Sobre a Oportunidade</h3>
+                <div className="flex items-center gap-3 mb-6 sm:mb-8">
+                  <div className="h-6 sm:h-8 w-1 bg-blue-600 rounded-full" />
+                  <h3 className="text-[10px] sm:text-[12px] font-black text-slate-400 uppercase tracking-[0.3em] m-0">Sobre a Oportunidade</h3>
                 </div>
                 
                 <div className="text-slate-600 leading-[1.8] whitespace-pre-wrap text-[16px] font-medium">
@@ -119,43 +119,43 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
                 </div>
 
                 {job.responsibilities && (
-                  <div className="mt-12 space-y-4">
-                    <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                  <div className="mt-8 sm:mt-12 space-y-3 sm:space-y-4">
+                    <h4 className="text-[10px] sm:text-[11px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-blue-600" /> Responsabilidades
                     </h4>
-                    <div className="text-slate-600 leading-relaxed whitespace-pre-wrap text-[14px] font-medium pl-6">
+                    <div className="text-slate-600 leading-relaxed whitespace-pre-wrap text-sm sm:text-[14px] font-medium pl-2 sm:pl-6">
                       {job.responsibilities}
                     </div>
                   </div>
                 )}
 
                 {job.requirements && (
-                  <div className="mt-12 space-y-4">
-                    <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                  <div className="mt-8 sm:mt-12 space-y-3 sm:space-y-4">
+                    <h4 className="text-[10px] sm:text-[11px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
                       <Zap className="h-4 w-4 text-blue-600" /> Requisitos & Qualificações
                     </h4>
-                    <div className="text-slate-600 leading-relaxed whitespace-pre-wrap text-[14px] font-medium pl-6">
+                    <div className="text-slate-600 leading-relaxed whitespace-pre-wrap text-sm sm:text-[14px] font-medium pl-2 sm:pl-6">
                       {job.requirements}
                     </div>
                   </div>
                 )}
 
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-slate-50">
-                  <div className="space-y-4">
-                    <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-slate-50">
+                  <div className="space-y-3 sm:space-y-4">
+                    <h4 className="text-[10px] sm:text-[11px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
                       <Star className="h-4 w-4 text-blue-600" /> Benefícios & Vantagens
                     </h4>
                     <div className="text-slate-600 leading-relaxed whitespace-pre-wrap text-[13px] font-medium">
                       {job.benefits || "Não informado"}
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
-                      <Info className="h-4 w-4 text-blue-600" /> Informações Adicionais
+                  <div className="space-y-3 sm:space-y-4">
+                    <h4 className="text-[10px] sm:text-[11px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                      <Info className="h-4 w-4 text-blue-600" /> Detalhes
                     </h4>
-                    <div className="space-y-3">
-                      <p className="text-[13px] text-slate-500 font-medium m-0">Tipo: <span className="text-slate-900 font-bold">Contratação {job.type === "MANAGED" ? "Premium" : "CLT"}</span></p>
-                      <p className="text-[13px] text-slate-500 font-medium m-0">Modelo: <span className="text-slate-900 font-bold">{job.isRemote ? "100% Remoto" : "Híbrido/Presencial"}</span></p>
+                    <div className="space-y-2.5">
+                      <p className="text-[13px] text-slate-500 font-medium m-0">Tipo: <span className="text-slate-900 font-bold">{job.type === "MANAGED" ? "Curadoria Premium" : "CLT"}</span></p>
+                      <p className="text-[13px] text-slate-500 font-medium m-0">Modelo: <span className="text-slate-900 font-bold">{job.isRemote ? "Remoto" : "Presencial"}</span></p>
                       <p className="text-[13px] text-slate-500 font-medium m-0">Postada: <span className="text-slate-900 font-bold">{formatDistanceToNow(new Date(job.createdAt), { addSuffix: true, locale: ptBR })}</span></p>
                     </div>
                   </div>
@@ -164,12 +164,12 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
             </div>
 
             {/* Company Deep Dive Card - NOW ON LEFT */}
-            <Card className="p-8 lg:p-10 rounded-[2rem] border-slate-100 bg-white shadow-sm space-y-8 overflow-hidden relative group">
+            <Card className="p-6 sm:p-8 lg:p-10 rounded-[1.5rem] sm:rounded-[2rem] border-slate-100 bg-white shadow-sm space-y-8 overflow-hidden relative group">
               <div className="absolute top-0 right-0 w-48 h-48 bg-blue-50 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
               
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-                <div className="flex items-center gap-6">
-                  <div className="h-20 w-20 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-blue-600 text-2xl overflow-hidden shadow-sm">
+                <div className="flex items-center gap-4 sm:gap-6">
+                  <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-blue-600 text-xl sm:text-2xl overflow-hidden shadow-sm shrink-0">
                     {job.company.logoUrl ? (
                       <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-cover" />
                     ) : (
@@ -177,13 +177,13 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
                     )}
                   </div>
                   <div>
-                    <h3 className="font-black text-2xl text-slate-900 leading-tight mb-2">Sobre a {job.company.name}</h3>
-                    <p className="text-[10px] text-emerald-600 font-bold uppercase flex items-center gap-1.5">
-                      <ShieldCheck className="h-4 w-4" /> Empresa Verificada pela Cevan
+                    <h3 className="font-black text-xl sm:text-2xl text-slate-900 leading-tight mb-1 sm:mb-2">Sobre a {job.company.name}</h3>
+                    <p className="text-[9px] sm:text-[10px] text-emerald-600 font-bold uppercase flex items-center gap-1.5">
+                      <ShieldCheck className="h-4 w-4" /> Empresa Verificada
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" className="h-12 px-8 rounded-xl font-black text-[11px] uppercase tracking-widest border-slate-200 text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-100 transition-all">
+                <Button variant="outline" className="w-full md:w-auto h-12 px-8 rounded-xl font-black text-[10px] sm:text-[11px] uppercase tracking-widest border-slate-200 text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-100 transition-all">
                   Conhecer a Empresa
                 </Button>
               </div>

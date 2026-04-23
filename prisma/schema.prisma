@@ -42,6 +42,20 @@ enum PlanType {
   ENTERPRISE
 }
 
+enum PlacementStatus {
+  TRIAL         // Em período de experiência (0-90 dias)
+  EFFECTIVE     // Efetivado pela empresa (gera comissão)
+  TERMINATED    // Não efetivado / Desligado durante o trial
+  CANCELLED     // Cancelado antes de iniciar
+}
+
+enum CommissionStatus {
+  PENDING       // Comissão gerada, aguardando pagamento
+  INVOICED      // Nota fiscal / fatura emitida
+  PAID          // Pago pela empresa
+  WAIVED        // Dispensada (ex: acordo comercial)
+}
+
 // --- MODELS ---
 
 model User {
@@ -130,6 +144,7 @@ model Application {
   candidateId  String            @map("candidate_id")
   
   shortlist    Shortlist?
+  placement    Placement?
 
   createdAt    DateTime          @default(now()) @map("created_at")
   updatedAt    DateTime          @updatedAt @map("updated_at")
@@ -167,4 +182,64 @@ model Transaction {
   createdAt     DateTime @default(now()) @map("created_at")
 
   @@map("transactions")
+}
+
+// --- MÓDULO DE RECRUTAMENTO / CURADORIA ---
+
+model Placement {
+  id              String           @id @default(uuid())
+  
+  // Vínculo com a candidatura original
+  application     Application      @relation(fields: [applicationId], references: [id])
+  applicationId   String           @unique @map("application_id")
+  
+  // Dados do contrato
+  status          PlacementStatus  @default(TRIAL)
+  monthlySalary   Int              @map("monthly_salary")  // Salário em centavos
+  startDate       DateTime         @map("start_date")       // Início do trial
+  trialEndDate    DateTime         @map("trial_end_date")   // Data limite (start + 90 dias)
+  effectiveDate   DateTime?        @map("effective_date")   // Data real da efetivação
+  terminationDate DateTime?        @map("termination_date") // Data de desligamento (se houver)
+  terminationReason String?        @map("termination_reason") @db.Text
+  
+  // Observações
+  adminNotes      String?          @map("admin_notes") @db.Text
+  companyFeedback String?          @map("company_feedback") @db.Text
+  
+  // Relação com comissão
+  commission      Commission?
+  
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@map("placements")
+}
+
+model Commission {
+  id              String           @id @default(uuid())
+  
+  placement       Placement        @relation(fields: [placementId], references: [id])
+  placementId     String           @unique @map("placement_id")
+  
+  // Valores
+  baseSalary      Int              @map("base_salary")       // Salário base (centavos)
+  percentage      Float            @default(50)               // Percentual fixo 50%
+  amount          Int              // Valor da comissão (centavos) = baseSalary * 50 / 100
+  
+  // Controle
+  status          CommissionStatus @default(PENDING)
+  invoiceNumber   String?          @map("invoice_number")
+  dueDate         DateTime?        @map("due_date")
+  paidAt          DateTime?        @map("paid_at")
+  
+  // Vínculo com empresa
+  companyId       String           @map("company_id")
+  
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([companyId])
+  @@map("commissions")
 }
