@@ -365,7 +365,7 @@ export default function AdminPlacementsPage() {
                           {placement.status === "TRIAL" && (
                             <>
                               <Tooltip>
-                                <TooltipTrigger asChild>
+                                <TooltipTrigger>
                                   <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-emerald-50 hover:text-emerald-600">
                                     <CheckCircle2 className="h-4 w-4" />
                                   </Button>
@@ -373,7 +373,7 @@ export default function AdminPlacementsPage() {
                                 <TooltipContent>Confirmar Efetivação</TooltipContent>
                               </Tooltip>
                               <Tooltip>
-                                <TooltipTrigger asChild>
+                                <TooltipTrigger>
                                   <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600">
                                     <XCircle className="h-4 w-4" />
                                   </Button>
@@ -384,7 +384,7 @@ export default function AdminPlacementsPage() {
                           )}
                           {placement.commission?.status === "PENDING" && (
                             <Tooltip>
-                              <TooltipTrigger asChild>
+                              <TooltipTrigger>
                                 <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600">
                                   <DollarSign className="h-4 w-4" />
                                 </Button>

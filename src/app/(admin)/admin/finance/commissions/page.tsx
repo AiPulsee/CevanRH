@@ -256,7 +256,7 @@ export default function AdminCommissionsPage() {
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
                         {comm.status === "PENDING" && (
                           <Tooltip>
-                            <TooltipTrigger asChild>
+                            <TooltipTrigger>
                               <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600">
                                 <Receipt className="h-4 w-4" />
                               </Button>
@@ -266,7 +266,7 @@ export default function AdminCommissionsPage() {
                         )}
                         {(comm.status === "PENDING" || comm.status === "INVOICED") && (
                           <Tooltip>
-                            <TooltipTrigger asChild>
+                            <TooltipTrigger>
                               <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-emerald-50 hover:text-emerald-600">
                                 <CheckCircle2 className="h-4 w-4" />
                               </Button>
