@@ -31,28 +31,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       label: "Painel de Controle",
       items: [
         { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-        { name: "Métricas Financeiras", href: "/admin/finance", icon: LineChart },
-        { name: "Comissões", href: "/admin/finance/commissions", icon: Receipt },
+        { name: "Relatórios Gerais", href: "/admin/analytics", icon: LineChart },
       ]
     },
     {
-      label: "Gestão da Rede",
+      label: "Operações ATS",
       items: [
-        { name: "Empresas", href: "/admin/companies", icon: Building2 },
-        { name: "Usuários", href: "/admin/users", icon: Users2 },
-      ]
-    },
-    {
-      label: "Operações IA",
-      items: [
-        { name: "Curadoria", href: "/admin/managed", icon: Zap },
+        { name: "Curadoria (Vagas)", href: "/admin/managed", icon: Zap },
         { name: "Alocações", href: "/admin/placements", icon: UserCheck },
         { name: "Motor de IA", href: "/admin/ai", icon: BrainCircuit },
       ]
     },
     {
-      label: "Sistema",
+      label: "Sistema & Gestão",
       items: [
+        { name: "Usuários ADM", href: "/admin/users", icon: Users2 },
         { name: "Configurações", href: "/admin/settings", icon: Settings },
       ]
     }

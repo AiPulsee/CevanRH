@@ -18,16 +18,15 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   const navLinks = [
     { name: "Início", href: "/" },
     { name: "Vagas", href: "/jobs" },
-    { name: "Empresas", href: "/empresas" },
     { name: "Como Funciona", href: "/how-it-works" },
-    { name: "Planos", href: "/pricing" },
     { name: "Sobre a Cevan", href: "/about" },
+    { name: "Proposta", href: "/proposta-detalhada" },
   ];
 
   return (
     <div className="flex min-h-screen flex-col bg-[#fafafa] text-foreground">
       {/* Refined Navigation Bar with Glassmorphism */}
-      {!pathname.includes("/proposta") && (
+      {!pathname.includes("/proposta-detalhada") && (
         <nav className="fixed top-0 left-0 right-0 z-50 flex items-center bg-white/80 backdrop-blur-xl border-b border-slate-200/60 h-20 lg:h-24 px-6 lg:px-16 transition-all duration-300">
             
             {/* Left: Logo Area */}
@@ -80,13 +79,14 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
                   <span className="text-[10px]">👤</span>
                 </div>
-                Entrar / Cadastrar
+                Área Restrita
               </Link>
               <Button 
                 size="lg" 
+                asChild
                 className="rounded-2xl font-black bg-[#1967D2] hover:bg-[#1557b0] h-14 px-10 shadow-xl shadow-blue-200/50 hover:shadow-blue-300/60 transition-all hover:-translate-y-0.5 active:scale-95 text-[13px] tracking-widest uppercase"
               >
-                Anunciar Vaga
+                <Link href="/about">Fale Conosco</Link>
               </Button>
             </div>
 
@@ -164,10 +164,10 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                     className="flex items-center gap-3 p-4 rounded-2xl bg-slate-50 text-slate-700 font-bold hover:bg-slate-100 transition-all"
                   >
                     <UserCircle className="h-6 w-6 text-slate-400" />
-                    Entrar / Cadastrar
+                    Área Restrita
                   </Link>
-                  <Button className="w-full h-16 rounded-2xl bg-[#1967D2] text-white font-black uppercase tracking-widest text-[12px] shadow-xl shadow-blue-200">
-                    Anunciar Vaga
+                  <Button asChild className="w-full h-16 rounded-2xl bg-[#1967D2] text-white font-black uppercase tracking-widest text-[12px] shadow-xl shadow-blue-200">
+                    <Link href="/about" onClick={() => setIsMenuOpen(false)}>Fale Conosco</Link>
                   </Button>
                 </div>
               </div>

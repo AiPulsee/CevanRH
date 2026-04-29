@@ -62,9 +62,9 @@ export default function LoginPage() {
           </div>
 
           <div className="space-y-2 text-center">
-            <h1 className="text-4xl font-black tracking-tight text-slate-900">Bem-vindo de volta</h1>
+            <h1 className="text-4xl font-black tracking-tight text-slate-900">Área Restrita</h1>
             <p className="text-slate-500 font-medium leading-relaxed">
-              Acesse sua conta para gerenciar candidaturas e processos seletivos de forma inteligente.
+              Acesso exclusivo para administradores e gestores da Cevan Serviços Empresariais.
             </p>
           </div>
 
@@ -77,7 +77,7 @@ export default function LoginPage() {
                   <Input 
                     id="email" 
                     type="email" 
-                    placeholder="voce@empresa.com" 
+                    placeholder="admin@cevan.com.br" 
                     className="h-14 pl-12 bg-slate-50 border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -111,7 +111,7 @@ export default function LoginPage() {
               disabled={isLoading}
               className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase text-xs tracking-widest shadow-2xl shadow-blue-200 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              {isLoading ? "Entrando..." : "Acessar Plataforma"}
+              {isLoading ? "Entrando..." : "Acessar Sistema"}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </form>
@@ -119,46 +119,25 @@ export default function LoginPage() {
           {/* Quick Access Divider */}
           <div className="relative flex items-center gap-4 py-4">
             <div className="flex-1 h-px bg-slate-100" />
-            <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Acesso Rápido (Dev)</span>
+            <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Acesso Rápido</span>
             <div className="flex-1 h-px bg-slate-100" />
           </div>
 
           {/* Quick Access Buttons */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1">
             <button 
               onClick={() => quickLogin("admin@cevan.com.br", "123456")}
-              className="flex flex-col items-center gap-2 p-3 rounded-2xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all group"
+              className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all group"
             >
-              <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-white group-hover:shadow-md transition-all">
-                <ShieldCheck className="h-5 w-5 text-slate-400 group-hover:text-blue-600" />
+              <div className="h-12 w-12 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-white group-hover:shadow-md transition-all">
+                <ShieldCheck className="h-6 w-6 text-slate-400 group-hover:text-blue-600" />
               </div>
-              <span className="text-[10px] font-bold text-slate-500 group-hover:text-blue-600 uppercase">Admin</span>
-            </button>
-
-            <button 
-              onClick={() => quickLogin("rh@google.com", "123456")}
-              className="flex flex-col items-center gap-2 p-3 rounded-2xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all group"
-            >
-              <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-white group-hover:shadow-md transition-all">
-                <Briefcase className="h-5 w-5 text-slate-400 group-hover:text-blue-600" />
+              <div className="text-left">
+                <span className="text-xs font-black text-slate-900 group-hover:text-blue-600 uppercase block">Login Admin</span>
+                <span className="text-[10px] text-slate-400 font-bold block">admin@cevan.com.br</span>
               </div>
-              <span className="text-[10px] font-bold text-slate-500 group-hover:text-blue-600 uppercase">Empresa</span>
-            </button>
-
-            <button 
-              onClick={() => quickLogin("dev@talent.com", "123456")}
-              className="flex flex-col items-center gap-2 p-3 rounded-2xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all group"
-            >
-              <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-white group-hover:shadow-md transition-all">
-                <UserCircle className="h-5 w-5 text-slate-400 group-hover:text-blue-600" />
-              </div>
-              <span className="text-[10px] font-bold text-slate-500 group-hover:text-blue-600 uppercase">Candidato</span>
             </button>
           </div>
-
-          <p className="text-center text-sm text-slate-500 font-medium">
-            Não tem uma conta? <Link href="/onboarding" className="text-blue-600 font-black hover:underline">Cadastre sua empresa</Link>
-          </p>
         </div>
       </div>
 
