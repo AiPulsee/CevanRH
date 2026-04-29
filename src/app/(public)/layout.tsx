@@ -81,13 +81,15 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 </div>
                 Área Restrita
               </Link>
-              <Button 
-                size="lg" 
-                asChild
-                className="rounded-2xl font-black bg-[#1967D2] hover:bg-[#1557b0] h-14 px-10 shadow-xl shadow-blue-200/50 hover:shadow-blue-300/60 transition-all hover:-translate-y-0.5 active:scale-95 text-[13px] tracking-widest uppercase"
+              <Link 
+                href="/about"
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "rounded-2xl font-black bg-[#1967D2] hover:bg-[#1557b0] h-14 px-10 shadow-xl shadow-blue-200/50 hover:shadow-blue-300/60 transition-all hover:-translate-y-0.5 active:scale-95 text-[13px] tracking-widest uppercase flex items-center justify-center text-white border-none"
+                )}
               >
-                <Link href="/about">Fale Conosco</Link>
-              </Button>
+                Fale Conosco
+              </Link>
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -166,9 +168,16 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                     <UserCircle className="h-6 w-6 text-slate-400" />
                     Área Restrita
                   </Link>
-                  <Button asChild className="w-full h-16 rounded-2xl bg-[#1967D2] text-white font-black uppercase tracking-widest text-[12px] shadow-xl shadow-blue-200">
-                    <Link href="/about" onClick={() => setIsMenuOpen(false)}>Fale Conosco</Link>
-                  </Button>
+                  <Link 
+                    href="/about" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className={cn(
+                      buttonVariants({ size: "lg" }),
+                      "w-full h-16 rounded-2xl bg-[#1967D2] text-white font-black uppercase tracking-widest text-[12px] shadow-xl shadow-blue-200 flex items-center justify-center border-none"
+                    )}
+                  >
+                    Fale Conosco
+                  </Link>
                 </div>
               </div>
 
