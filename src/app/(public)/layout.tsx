@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Menu, X, ArrowRight, UserCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
