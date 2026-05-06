@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { JobType } from "@prisma/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,7 +32,7 @@ export default async function ResumesPage({
   const page = Math.max(1, parseInt(pageParam ?? "1"));
 
   const where = {
-    ...(typeFilter && { job: { type: typeFilter as "MANAGED" | "CURATION" | undefined } }),
+    ...(typeFilter && { job: { type: typeFilter as JobType } }),
     ...(query && {
       OR: [
         { candidate: { name: { contains: query, mode: "insensitive" as const } } },

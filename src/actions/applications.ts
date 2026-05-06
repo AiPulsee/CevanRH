@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { createNotification } from "./notifications";
+import { ApplicationStatus } from "@prisma/client";
 
 export async function applyToJob(data: {
   jobId: string;
@@ -52,7 +53,7 @@ export async function applyToJob(data: {
     revalidatePath("/admin");
     revalidatePath("/admin/managed");
 
-    return { success: true, applicationId: createdApplication.id };
+    return { success: true, applicationId: application.id };
   } catch (error: any) {
     console.error("Erro ao processar candidatura:", error);
     if (error.code === 'P2002') {
@@ -62,13 +63,12 @@ export async function applyToJob(data: {
   }
 }
 
-export async function getApplications(filters?: { jobId?: string; status?: string }) {
+export async function getApplications(filters?: { jobId?: string; status?: ApplicationStatus }) {
   try {
     return await prisma.application.findMany({
       where: {
         ...(filters?.jobId && { jobId: filters.jobId }),
         ...(filters?.status && { status: filters.status }),
-      },
       },
       include: {
         candidate: { select: { id: true, name: true, email: true } },
