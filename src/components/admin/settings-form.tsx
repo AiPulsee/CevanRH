@@ -48,7 +48,12 @@ export default function SettingsForm({ initialSettings }: Props) {
       )}
 
       <Card className="p-6 border-slate-200 bg-white rounded-2xl shadow-sm space-y-6">
-        <h3 className="text-base font-bold">Serviço Curadoria (Managed)</h3>
+        <div>
+          <h3 className="text-base font-bold">Serviço Curadoria (Managed)</h3>
+          <p className="text-[11px] text-slate-400 font-medium mt-0.5">
+            A taxa é aplicada automaticamente na próxima "Confirmação de Efetivação" em Alocações. Comissões já geradas não são alteradas.
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">

@@ -101,13 +101,19 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
     if (!currentApp) return;
     setAiLoading(true);
     setShowAI(true);
-    const res = await analyzeCandidate(currentApp.id);
-    setAiLoading(false);
-    if (res.success) {
-      setAiResult(res.data);
-    } else {
-      toast.error(res.error);
+    try {
+      const res = await analyzeCandidate(currentApp.id);
+      if (res.success) {
+        setAiResult(res.data);
+      } else {
+        toast.error(res.error, { duration: 6000 });
+        setShowAI(false);
+      }
+    } catch {
+      toast.error("Erro inesperado ao chamar a IA. Verifique o console do servidor.", { duration: 6000 });
       setShowAI(false);
+    } finally {
+      setAiLoading(false);
     }
   }
 

@@ -89,14 +89,17 @@ Formato obrigatório da resposta:
     application.resumeUrl.toLowerCase().includes(".pdf")
   ) {
     try {
-      const response = await fetch(application.resumeUrl);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const response = await fetch(application.resumeUrl, { signal: controller.signal });
+      clearTimeout(timeout);
       if (response.ok) {
         const buffer = await response.arrayBuffer();
         const base64 = Buffer.from(buffer).toString("base64");
         parts.unshift({ inlineData: { mimeType: "application/pdf", data: base64 } });
       }
     } catch {
-      // Continue without PDF if fetch fails
+      // Continua sem o PDF se o download falhar ou expirar
     }
   }
 
