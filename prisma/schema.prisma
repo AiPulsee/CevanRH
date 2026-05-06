@@ -15,6 +15,7 @@ model User {
   image        String?
   role         Role          @default(CANDIDATE)
   companyId    String?
+  permissions  String?
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
   applications Application[]

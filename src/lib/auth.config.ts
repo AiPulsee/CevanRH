@@ -23,10 +23,10 @@ export const authConfig = {
       return true;
     },
     async jwt({ token, user }) {
-      // Quando o usuário loga, o objeto 'user' contém os dados do banco
       if (user) {
         token.role = (user as any).role;
         token.companyId = (user as any).companyId;
+        token.permissions = (user as any).permissions ?? null;
       }
       return token;
     },
@@ -34,6 +34,7 @@ export const authConfig = {
       if (token) {
         (session.user as any).role = token.role;
         (session.user as any).companyId = token.companyId;
+        (session.user as any).permissions = token.permissions ?? null;
       }
       return session;
     },

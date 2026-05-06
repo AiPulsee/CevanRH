@@ -11,25 +11,28 @@ const createUserSchema = z.object({
   name: z.string().min(2, "Nome muito curto"),
   email: z.string().email("E-mail inválido"),
   password: z.string().min(6, "Senha mínima de 6 caracteres"),
-  role: z.enum(["ADMIN", "EMPLOYER", "CANDIDATE"]),
-  companyId: z.string().optional(),
+  permissions: z.string().optional(), // null = acesso total
 });
 
 export async function createUser(data: {
   name: string;
   email: string;
   password: string;
-  role: string;
-  companyId?: string;
+  permissions: string | null; // null = master, "painel,analytics,..." = restrito
 }) {
   const session = await auth();
   const userRole = session?.user ? (session.user as { role: string }).role : null;
   if (!session || userRole !== "ADMIN") return { error: "Não autorizado." };
 
-  const validated = createUserSchema.safeParse(data);
+  const validated = createUserSchema.safeParse({
+    name: data.name,
+    email: data.email,
+    password: data.password,
+    permissions: data.permissions ?? undefined,
+  });
   if (!validated.success) return { error: validated.error.issues[0].message };
 
-  const { name, email, password, role, companyId } = validated.data;
+  const { name, email, password } = validated.data;
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) return { error: "Já existe um usuário com este e-mail." };
@@ -41,12 +44,15 @@ export async function createUser(data: {
         name,
         email,
         password: passwordHash,
-        role: role as "ADMIN" | "EMPLOYER" | "CANDIDATE",
-        companyId: role === "EMPLOYER" && companyId ? companyId : null,
+        role: "ADMIN",
+        permissions: data.permissions,
       },
     });
 
-    await logAction("CREATE_USER", `Criou o usuário ${name} (${email}) com perfil ${role}`);
+    await logAction(
+      "CREATE_USER",
+      `Criou administrador ${name} (${email}) — acesso: ${data.permissions ?? "total"}`
+    );
     revalidatePath("/admin/users");
     return { success: true };
   } catch {
