@@ -180,7 +180,7 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
       />
       <DialogContent
         showCloseButton={false}
-        className="fixed !inset-0 sm:!inset-auto z-50 flex flex-col w-full h-full sm:h-[90vh] sm:w-[95vw] lg:max-w-6xl sm:top-1/2 sm:left-1/2 sm:!translate-x-[-50%] sm:!translate-y-[-50%] !translate-x-0 !translate-y-0 bg-[#F1F5F9] rounded-none sm:rounded-[2.5rem] border-none p-0 overflow-hidden shadow-none sm:shadow-[0_32px_64px_-15px_rgba(0,0,0,0.2)]"
+        className="flex flex-col w-[95vw] max-w-6xl h-[90vh] bg-[#F1F5F9] rounded-[2rem] border-none p-0 overflow-hidden shadow-[0_32px_64px_-15px_rgba(0,0,0,0.25)]"
       >
         {/* Header */}
         <div className="bg-slate-950 p-4 sm:p-8 text-white shrink-0 relative overflow-hidden">
