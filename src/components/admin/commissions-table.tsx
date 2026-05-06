@@ -219,31 +219,29 @@ export function CommissionsTable({
                 <td className="p-4 text-right">
                   <div className="flex items-center justify-end opacity-0 group-hover:opacity-100 transition-all">
                     {(c.status === "PENDING" || c.status === "INVOICED") && (
-                      <CommissionModal
-                        commission={c}
-                        candidateName={c.candidateName}
-                        companyName={c.companyName}
-                        onUpdate={handleUpdate}
-                      >
-                        <Tooltip>
-                          <TooltipTrigger render={
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600"
-                            >
+                      <Tooltip>
+                        <TooltipTrigger render={<span className="inline-flex" />}>
+                          <CommissionModal
+                            commission={c}
+                            candidateName={c.candidateName}
+                            companyName={c.companyName}
+                            onUpdate={handleUpdate}
+                          >
+                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600">
                               <DollarSign className="h-4 w-4" />
                             </Button>
-                          } />
-                          <TooltipContent>
-                            {c.status === "PENDING" ? "Registrar faturamento (NF)" : "Registrar pagamento recebido"}
-                          </TooltipContent>
-                        </Tooltip>
-                      </CommissionModal>
+                          </CommissionModal>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {c.status === "PENDING" ? "Registrar faturamento (NF)" : "Registrar pagamento recebido"}
+                        </TooltipContent>
+                      </Tooltip>
                     )}
                     {c.status === "PAID" && (
                       <Tooltip>
-                        <TooltipTrigger render={<CheckCircle2 className="h-4 w-4 text-emerald-400" />} />
+                        <TooltipTrigger render={<span className="inline-flex items-center" />}>
+                          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                        </TooltipTrigger>
                         <TooltipContent>Comissão recebida — pago em {c.paidAt ? new Date(c.paidAt).toLocaleDateString("pt-BR") : "—"}</TooltipContent>
                       </Tooltip>
                     )}

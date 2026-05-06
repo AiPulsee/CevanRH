@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { confirmEffective, terminatePlacement } from "@/actions/placements";
 import { PaginationBar } from "@/components/ui/pagination-bar";
+import { toast } from "sonner";
 
 const PAGE_SIZE = 10;
 
@@ -143,6 +144,9 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
               : p
           )
         );
+        toast.success("Candidato efetivado! Comissão gerada em Finanças.");
+      } else {
+        toast.error((r as any).error || "Erro ao efetivar candidato.");
       }
     });
   }
@@ -156,6 +160,9 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
             p.id === id ? { ...p, status: "TERMINATED" as PlacementStatus } : p
           )
         );
+        toast.success("Trial encerrado.");
+      } else {
+        toast.error((r as any).error || "Erro ao encerrar trial.");
       }
     });
   }
@@ -379,75 +386,57 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                       <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
                         {p.status === "TRIAL" && (
                           <>
-                            <ConfirmAction
-                              title="Confirmar Efetivação?"
-                              description={`${p.candidate.name} será marcado como efetivado na ${p.company.name} e a comissão de ${fmt(Math.round(p.monthlySalary * 0.5))} será gerada automaticamente.`}
-                              actionText="Sim, Efetivar"
-                              onConfirm={() => handleConfirm(p.id)}
-                            >
-                              <Tooltip>
-                                <TooltipTrigger
-                                  render={
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      className="h-8 w-8 rounded-lg hover:bg-emerald-50 hover:text-emerald-600"
-                                    />
-                                  }
+                            <Tooltip>
+                              <TooltipTrigger render={<span className="inline-flex" />}>
+                                <ConfirmAction
+                                  title="Confirmar Efetivação?"
+                                  description={`${p.candidate.name} será marcado como efetivado na ${p.company.name} e a comissão de ${fmt(Math.round(p.monthlySalary * 0.5))} será gerada automaticamente.`}
+                                  actionText="Sim, Efetivar"
+                                  onConfirm={() => handleConfirm(p.id)}
                                 >
-                                  <CheckCircle2 className="h-4 w-4" />
-                                </TooltipTrigger>
-                                <TooltipContent>Confirmar Efetivação</TooltipContent>
-                              </Tooltip>
-                            </ConfirmAction>
-                            <ConfirmAction
-                              title="Encerrar Trial?"
-                              description={`O período de experiência de ${p.candidate.name} será encerrado sem efetivação.`}
-                              variant="danger"
-                              actionText="Sim, Encerrar"
-                              onConfirm={() => handleTerminate(p.id)}
-                            >
-                              <Tooltip>
-                                <TooltipTrigger
-                                  render={
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600"
-                                    />
-                                  }
+                                  <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-emerald-50 hover:text-emerald-600">
+                                    <CheckCircle2 className="h-4 w-4" />
+                                  </Button>
+                                </ConfirmAction>
+                              </TooltipTrigger>
+                              <TooltipContent>Confirmar Efetivação</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger render={<span className="inline-flex" />}>
+                                <ConfirmAction
+                                  title="Encerrar Trial?"
+                                  description={`O período de experiência de ${p.candidate.name} será encerrado sem efetivação.`}
+                                  variant="danger"
+                                  actionText="Sim, Encerrar"
+                                  onConfirm={() => handleTerminate(p.id)}
                                 >
-                                  <XCircle className="h-4 w-4" />
-                                </TooltipTrigger>
-                                <TooltipContent>Encerrar Trial</TooltipContent>
-                              </Tooltip>
-                            </ConfirmAction>
+                                  <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600">
+                                    <XCircle className="h-4 w-4" />
+                                  </Button>
+                                </ConfirmAction>
+                              </TooltipTrigger>
+                              <TooltipContent>Encerrar Trial</TooltipContent>
+                            </Tooltip>
                           </>
                         )}
                         {p.commission &&
                           (p.commission.status === "PENDING" ||
                             p.commission.status === "INVOICED") && (
-                            <CommissionModal
-                              commission={p.commission}
-                              candidateName={p.candidate.name}
-                              companyName={p.company.name}
-                              onUpdate={handleCommissionUpdate}
-                            >
-                              <Tooltip>
-                                <TooltipTrigger
-                                  render={
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600"
-                                    />
-                                  }
+                            <Tooltip>
+                              <TooltipTrigger render={<span className="inline-flex" />}>
+                                <CommissionModal
+                                  commission={p.commission}
+                                  candidateName={p.candidate.name}
+                                  companyName={p.company.name}
+                                  onUpdate={handleCommissionUpdate}
                                 >
-                                  <DollarSign className="h-4 w-4" />
-                                </TooltipTrigger>
-                                <TooltipContent>Gerenciar Comissão</TooltipContent>
-                              </Tooltip>
-                            </CommissionModal>
+                                  <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600">
+                                    <DollarSign className="h-4 w-4" />
+                                  </Button>
+                                </CommissionModal>
+                              </TooltipTrigger>
+                              <TooltipContent>Gerenciar Comissão</TooltipContent>
+                            </Tooltip>
                           )}
                       </div>
                     </td>
