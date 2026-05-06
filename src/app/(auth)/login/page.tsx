@@ -6,15 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { 
-  Briefcase, 
-  Lock, 
-  Mail, 
-  ArrowRight, 
-  ShieldCheck, 
-  Zap, 
-  UserCircle 
-} from "lucide-react";
+import { Lock, Mail, ArrowRight, Zap } from "lucide-react";
 import { loginWithCredentials } from "@/actions/auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -39,14 +31,6 @@ export default function LoginPage() {
       setError(result.error);
       setIsLoading(false);
     }
-  };
-
-  const quickLogin = async (e: string, p: string) => {
-    setIsLoading(true);
-    const formData = new FormData();
-    formData.append("email", e);
-    formData.append("password", p);
-    await loginWithCredentials(formData);
   };
 
   return (
@@ -116,28 +100,6 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Quick Access Divider */}
-          <div className="relative flex items-center gap-4 py-4">
-            <div className="flex-1 h-px bg-slate-100" />
-            <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Acesso Rápido</span>
-            <div className="flex-1 h-px bg-slate-100" />
-          </div>
-
-          {/* Quick Access Buttons */}
-          <div className="grid grid-cols-1">
-            <button 
-              onClick={() => quickLogin("admin@cevan.com.br", "123456")}
-              className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all group"
-            >
-              <div className="h-12 w-12 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-white group-hover:shadow-md transition-all">
-                <ShieldCheck className="h-6 w-6 text-slate-400 group-hover:text-blue-600" />
-              </div>
-              <div className="text-left">
-                <span className="text-xs font-black text-slate-900 group-hover:text-blue-600 uppercase block">Login Admin</span>
-                <span className="text-[10px] text-slate-400 font-bold block">admin@cevan.com.br</span>
-              </div>
-            </button>
-          </div>
         </div>
       </div>
 

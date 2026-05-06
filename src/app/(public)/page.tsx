@@ -1,11 +1,10 @@
 export const dynamic = "force-dynamic";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { 
-  Search, MapPin, Zap, Code, Database, BarChart, Palette, HeartPulse, Headset, 
-  Briefcase, ChevronRight, Star, CheckCircle2, Smartphone, 
-  Building2, Clock, ChevronDown
+import { Button } from "@/components/ui/button";
+import {
+  Users, TrendingUp, ShieldCheck, ChevronRight,
+  MapPin, Building2, Clock, ArrowRight, Briefcase,
+  Mail, Phone, Star, CheckCircle2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,238 +14,272 @@ import { ptBR } from "date-fns/locale";
 
 export default async function HomePage() {
   const featuredJobs = await prisma.job.findMany({
-    where: {
-      status: "ACTIVE"
-    },
-    include: {
-      company: true
-    },
-    take: 4,
-    orderBy: {
-      createdAt: 'desc'
-    }
+    where: { status: "ACTIVE" },
+    include: { company: true },
+    take: 6,
+    orderBy: { createdAt: "desc" },
   });
 
   return (
     <div className="flex flex-col w-full bg-[#fdfdfd] font-sans text-[#202124] selection:bg-blue-100 selection:text-blue-900">
-      
-      {/* --- HERO SECTION --- */}
+
+      {/* ── HERO ── */}
       <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-40 overflow-hidden flex items-center min-h-[750px]">
-        {/* Background Shapes for Depth */}
-        <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-blue-50/50 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-        
-        {/* Background Curvo Avançado */}
-        <div className="absolute top-0 right-0 w-full lg:w-[50%] h-full z-0 lg:rounded-bl-[350px] overflow-hidden shadow-[-20px_0_50px_rgba(0,0,0,0.05)]">
-           <div className="absolute inset-0 bg-gradient-to-tr from-[#1967D2]/95 via-[#1967D2]/80 to-blue-500/40 mix-blend-multiply z-10" />
-           <div className="absolute inset-0 bg-blue-900/10 backdrop-blur-[1px] z-10" />
-           <Image src="/feature-woman.png" alt="Cevan Hero" fill className="object-cover opacity-90 scale-105 hover:scale-110 transition-transform duration-[10000ms]" priority />
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-50/60 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+
+        <div className="absolute top-0 right-0 w-full lg:w-[48%] h-full z-0 lg:rounded-bl-[350px] overflow-hidden shadow-[-20px_0_50px_rgba(0,0,0,0.05)]">
+          <div className="absolute inset-0 bg-gradient-to-tr from-[#1967D2]/95 via-[#1967D2]/75 to-blue-400/40 mix-blend-multiply z-10" />
+          <div className="absolute inset-0 bg-blue-900/10 backdrop-blur-[1px] z-10" />
+          <Image src="/hero-man.png" alt="Cevan Serviços Empresariais" fill className="object-cover opacity-90 scale-105 hover:scale-110 transition-transform duration-[10000ms]" priority />
         </div>
-        
+
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
-          <div className="w-full lg:w-[58%] pr-0 lg:pr-12 space-y-8 sm:space-y-12">
-            <div className="space-y-4 sm:space-y-6 text-center lg:text-left">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[64px] font-black tracking-tight text-slate-900 leading-[1.1] lg:leading-[1.05]">
-                Existem <span className="text-[#1967D2]">93.178</span> <br className="hidden sm:block" /> 
-                Vagas para você!
+          <div className="w-full lg:w-[58%] pr-0 lg:pr-16 space-y-8 sm:space-y-10">
+            <div className="space-y-5 text-center lg:text-left">
+              <Badge className="bg-[#1967D2]/10 text-[#1967D2] border-none rounded-full px-4 py-1.5 font-black uppercase tracking-widest text-[10px]">
+                Cevan Serviços Empresariais
+              </Badge>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[62px] font-black tracking-tight text-slate-900 leading-[1.1] lg:leading-[1.05]">
+                Gestão empresarial<br />
+                <span className="text-[#1967D2]">com quem entende.</span>
               </h1>
-              <p className="text-slate-500 text-base sm:text-lg lg:text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                Conecte-se com as organizações mais inovadoras do mercado e dispare na frente em processos seletivos exclusivos.
+              <p className="text-slate-500 text-base sm:text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                Terceirização de RH, Gestão Financeira e Estratégia Tributária — e as melhores vagas do mercado para quem busca crescer.
               </p>
             </div>
 
-            {/* Search Box Refined & Aligned */}
-            <div className="p-2 sm:p-1.5 bg-white rounded-2xl sm:rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-slate-100 flex flex-col md:flex-row items-center w-full max-w-3xl transition-all duration-500 hover:shadow-[0_30px_60px_rgba(0,0,0,0.1)] group/search gap-2 md:gap-0">
-                <div className="flex-[1.2] w-full flex items-center px-4 gap-3 group border-b md:border-b-0 md:border-r border-slate-100 pb-2 md:pb-0">
-                  <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0 group-focus-within:bg-blue-600 group-focus-within:text-white transition-all">
-                    <Search className="h-5 w-5 text-blue-600 group-focus-within:text-current transition-colors" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto lg:mx-0">
+              <Link href="/servicos">
+                <div className="group flex items-center gap-4 bg-[#1967D2] hover:bg-blue-700 text-white rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-xl shadow-blue-200/50">
+                  <div className="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                    <Building2 className="h-6 w-6 text-white" />
                   </div>
-                  <input 
-                    placeholder="Qual cargo ou tecnologia?" 
-                    className="h-12 sm:h-14 w-full bg-transparent border-none outline-none focus:ring-0 text-sm sm:text-[16px] font-bold placeholder:text-slate-300 px-2"
-                  />
-                </div>
-                <div className="flex-1 w-full flex items-center px-4 gap-3 group pb-2 md:pb-0">
-                  <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center shrink-0 group-focus-within:bg-blue-600 group-focus-within:text-white transition-all">
-                    <MapPin className="h-5 w-5 text-slate-400 group-focus-within:text-current transition-colors" />
+                  <div>
+                    <p className="font-black text-[15px] leading-tight">Sou Empresário</p>
+                    <p className="text-blue-200 text-[12px] font-medium mt-0.5">Ver serviços empresariais</p>
                   </div>
-                  <input 
-                    placeholder="Localização (Ex: Remoto)" 
-                    className="h-12 sm:h-14 w-full bg-transparent border-none outline-none focus:ring-0 text-sm sm:text-[16px] font-bold placeholder:text-slate-300 px-2"
-                  />
+                  <ArrowRight className="h-5 w-5 ml-auto opacity-60 group-hover:translate-x-1 transition-transform" />
                 </div>
-                <Button className="w-full md:w-auto h-12 sm:h-14 md:rounded-full rounded-xl px-12 bg-[#1967D2] hover:bg-blue-700 font-black shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all uppercase tracking-widest text-[10px] sm:text-xs">
-                  Buscar Vagas
-                </Button>
-            </div>
-            
-            <div className="flex flex-col gap-8">
-              <p className="text-[13px] text-slate-400 font-bold flex gap-3 items-center">
-                <span className="text-slate-900 uppercase tracking-widest text-[11px]">Tendência:</span> 
-                {["Designer", "Engenheiro", "PHP"].map(t => (
-                  <span key={t} className="hover:text-[#1967D2] cursor-pointer transition-colors border-b border-transparent hover:border-blue-200">{t}</span>
-                ))}
-              </p>
-
-              {/* Logos Inline Interativos - Better Aligned */}
-              <div className="flex flex-wrap items-center gap-x-12 gap-y-8 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
-                 <span className="flex items-center gap-2 font-black text-xl tracking-tighter uppercase cursor-default">
-                   <div className="w-6 h-6 bg-black rounded flex items-center justify-center text-white text-[12px]">M</div> Medium
-                 </span>
-                 <span className="font-black text-xl tracking-tighter uppercase cursor-default">Linear</span>
-                 <span className="italic font-serif lowercase text-xl tracking-tighter cursor-default">mailchimp</span>
-                 <span className="tracking-tight lowercase text-xl font-bold cursor-default">stripe</span>
-                 <span className="normal-case tracking-tight font-bold text-xl cursor-default">inVision</span>
-              </div>
+              </Link>
+              <Link href="/jobs">
+                <div className="group flex items-center gap-4 bg-white hover:bg-slate-50 text-slate-900 rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg border border-slate-100">
+                  <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+                    <Briefcase className="h-6 w-6 text-slate-600" />
+                  </div>
+                  <div>
+                    <p className="font-black text-[15px] leading-tight">Busco Emprego</p>
+                    <p className="text-slate-400 text-[12px] font-medium mt-0.5">Ver vagas disponíveis</p>
+                  </div>
+                  <ArrowRight className="h-5 w-5 ml-auto opacity-30 group-hover:opacity-60 group-hover:translate-x-1 transition-all" />
+                </div>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- FEATURED JOBS --- */}
-      <section className="py-24 bg-white relative">
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent opacity-50" />
-        <div className="container mx-auto px-6 max-w-6xl relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
-            <div className="text-center md:text-left">
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-3">Vagas em <span className="text-[#1967D2]">Destaque</span></h2>
-              <p className="text-slate-500 text-sm sm:text-[16px] max-w-lg font-medium mx-auto md:mx-0">Vagas selecionadas rigorosamente nas melhores empresas do mercado.</p>
+      {/* ── VAGAS EM DESTAQUE ── */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-6 max-w-5xl">
+
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+            <div>
+              <p className="text-[11px] font-black text-[#1967D2] uppercase tracking-[0.2em] mb-1">Para Candidatos</p>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Vagas em Destaque</h2>
             </div>
-            <div className="mt-6 md:mt-0">
-              <Button variant="outline" className="border border-slate-200 text-slate-600 rounded-xl flex items-center gap-3 font-semibold h-11 px-5 bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:bg-blue-50/50 hover:text-[#1967D2] hover:border-blue-100 transition-all">
-                Mais Recentes <ChevronDown className="h-4 w-4" />
+            <Link href="/jobs">
+              <Button variant="outline" className="h-10 px-5 rounded-xl border-slate-200 text-slate-600 font-bold text-[13px] hover:border-[#1967D2]/30 hover:text-[#1967D2] hover:bg-blue-50/40 transition-all shrink-0">
+                Ver todas as vagas <ChevronRight className="ml-1 h-4 w-4" />
               </Button>
-            </div>
+            </Link>
           </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-14">
-            {featuredJobs.map((job) => (
-              <Link key={job.id} href={`/jobs/${job.slug}`}>
-                <Card className="group p-5 sm:p-8 border-slate-100 hover:border-[#1967D2]/30 hover:shadow-[0_20px_40px_rgb(25,103,210,0.06)] hover:-translate-y-1.5 transition-all duration-500 cursor-pointer rounded-[1.5rem] sm:rounded-[2rem] bg-white relative overflow-hidden h-full">
-                  <div className="flex items-center gap-4 sm:gap-6 relative z-10">
-                    <div className={`h-14 w-14 sm:h-[72px] sm:w-[72px] rounded-xl sm:rounded-2xl ${job.type === 'MANAGED' ? 'bg-blue-600' : 'bg-slate-600'} flex items-center justify-center text-white font-black text-xl sm:text-2xl shadow-lg group-hover:scale-110 transition-transform duration-500 shrink-0`}>
-                      {job.company.logoUrl ? (
-                         <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-cover rounded-xl sm:rounded-2xl" />
-                      ) : (
-                         job.company.name.charAt(0)
-                      )}
+
+          {/* Job list */}
+          {featuredJobs.length > 0 ? (
+            <div className="flex flex-col divide-y divide-slate-100">
+              {featuredJobs.map((job) => (
+                <Link key={job.id} href={`/jobs/${job.slug}`} className="group">
+                  <div className="flex items-center gap-5 py-5 hover:bg-slate-50/70 -mx-4 px-4 rounded-2xl transition-all duration-200">
+                    {/* Logo */}
+                    <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-2xl ${job.type === "MANAGED" ? "bg-[#1967D2]" : "bg-slate-700"} flex items-center justify-center text-white font-black text-lg shrink-0 group-hover:scale-105 transition-transform duration-300`}>
+                      {job.company.logoUrl
+                        ? <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-cover rounded-2xl" />
+                        : job.company.name.charAt(0)}
                     </div>
-                    <div className="space-y-0.5 sm:space-y-1">
-                      <h4 className="font-extrabold text-base sm:text-[19px] text-slate-900 group-hover:text-[#1967D2] transition-colors line-clamp-1">{job.title}</h4>
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-slate-500 text-[11px] sm:text-[13px] font-bold uppercase tracking-wider">
-                        <span className="flex items-center gap-1.5"><Building2 className="h-3.5 w-3.5 text-[#1967D2]" /> {job.company.name}</span>
-                        <span className="hidden sm:block w-1 h-1 bg-slate-200 rounded-full" />
-                        <span className="flex items-center gap-1.5 font-black text-green-600">{job.salaryRange || "A combinar"}</span>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4">
+                        <h3 className="font-extrabold text-[15px] sm:text-[17px] text-slate-900 group-hover:text-[#1967D2] transition-colors truncate">{job.title}</h3>
+                        <span className="font-black text-green-600 text-[14px] shrink-0">{job.salaryRange || "A combinar"}</span>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-[12px] text-slate-400 font-medium">
+                        <span className="flex items-center gap-1.5"><Building2 className="h-3 w-3" />{job.company.name}</span>
+                        <span className="flex items-center gap-1.5"><MapPin className="h-3 w-3" />{job.isRemote ? "Remoto" : job.location}</span>
+                        <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" />{formatDistanceToNow(new Date(job.createdAt), { addSuffix: true, locale: ptBR })}</span>
                       </div>
                     </div>
-                  </div>
-                  {job.type === 'MANAGED' && (
-                    <Badge className="absolute top-6 right-6 bg-blue-50 text-blue-600 border-none font-black text-[10px] px-3 py-1 uppercase tracking-widest">Patrocinada</Badge>
-                  )}
-                  <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-slate-50 flex items-center justify-between text-[11px] sm:text-[13px] font-bold">
-                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-slate-400 uppercase tracking-widest text-[9px] sm:text-[10px]">
-                      <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> {job.isRemote ? "Remoto" : job.location}</span>
-                      <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> {formatDistanceToNow(new Date(job.createdAt), { addSuffix: true, locale: ptBR })}</span>
-                    </div>
-                    <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#1967D2] group-hover:text-white transition-all duration-500">
-                      <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
+
+                    {/* Arrow */}
+                    <div className="hidden sm:flex h-9 w-9 rounded-full border border-slate-100 items-center justify-center group-hover:border-[#1967D2] group-hover:bg-[#1967D2] group-hover:text-white transition-all duration-300 shrink-0">
+                      <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-white transition-colors" />
                     </div>
                   </div>
-                </Card>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="py-16 text-center">
+              <Briefcase className="h-10 w-10 text-slate-200 mx-auto mb-3" />
+              <p className="text-slate-400 font-medium">Nenhuma vaga ativa no momento. Volte em breve!</p>
+            </div>
+          )}
+
+          {/* CTA inferior */}
+          {featuredJobs.length > 0 && (
+            <div className="mt-8 pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p className="text-slate-400 text-[13px] font-medium">
+                Mostrando {featuredJobs.length} vagas em destaque
+              </p>
+              <Link href="/jobs">
+                <Button className="h-11 px-7 rounded-xl bg-[#1967D2] hover:bg-blue-700 font-black text-[11px] uppercase tracking-widest shadow-lg shadow-blue-100 transition-all">
+                  Explorar todas as vagas <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
               </Link>
-            ))}
-          </div>
-
-          <div className="flex justify-center">
-             <Link href="/jobs">
-               <Button size="lg" className="rounded-full h-14 px-10 font-black text-xs uppercase tracking-[0.2em] bg-slate-900 text-white hover:bg-[#1967D2] shadow-xl shadow-slate-200 hover:shadow-blue-200 hover:-translate-y-1 transition-all duration-500">
-                 Explorar Todas as Vagas <ChevronRight className="ml-2 h-4 w-4" />
-               </Button>
-             </Link>
-          </div>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* --- CULTURA E CURADORIA --- */}
-      <section className="py-24 bg-slate-50">
-        <div className="container mx-auto px-6 max-w-7xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-             <div className="relative group order-2 lg:order-1">
-                <div className="absolute inset-0 bg-blue-600/10 rounded-[2rem] sm:rounded-[3rem] blur-3xl group-hover:bg-blue-600/20 transition-all duration-700" />
-                <div className="relative rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-2xl border-4 sm:border-8 border-white">
-                  <Image src="/feature-woman.png" alt="Curadoria de talentos" width={800} height={600} className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-1000" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                  <div className="absolute bottom-6 left-6 sm:bottom-10 sm:left-10 text-white">
-                    <p className="text-[9px] sm:text-[11px] font-black uppercase tracking-[0.3em] mb-2 text-blue-400">Metodologia Cevan</p>
-                    <h3 className="text-xl sm:text-3xl font-black leading-tight">Curadoria Humana <br/> + Inteligência Artificial</h3>
-                  </div>
-                </div>
-             </div>
-             
-             <div className="space-y-6 sm:space-y-10 order-1 lg:order-2">
-                <div className="space-y-4 sm:space-y-6 text-center lg:text-left">
-                  <Badge className="bg-[#1967D2]/10 text-[#1967D2] border-none rounded-full px-4 py-1.5 font-black uppercase tracking-widest text-[9px] sm:text-[10px]">Nossa Missão</Badge>
-                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">O Fim da Triagem <br/> <span className="text-[#1967D2]">Interminável.</span></h2>
-                  <p className="text-slate-500 text-base sm:text-lg font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
-                    Nossa plataforma não apenas lista currículos. Nós utilizamos IA de última geração para filtrar talentos técnicos e nossa equipe humana para validar o "soft skill" e a cultura.
-                  </p>
-                </div>
+      {/* ── SERVIÇOS (dark, impactful) ── */}
+      <section className="py-24 bg-slate-900 relative overflow-hidden">
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#1967D2] to-transparent opacity-50" />
+        <div className="absolute -top-60 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-[#1967D2]/10 rounded-full blur-[120px] pointer-events-none" />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-                   {[
-                     { icon: Zap, title: "Velocidade Real", desc: "Aprovações em menos de 48h." },
-                     { icon: Star, title: "Qualidade Premium", desc: "Apenas o Top 3% dos talentos." },
-                     { icon: CheckCircle2, title: "Match Perfeito", desc: "Foco total na cultura organizacional." },
-                     { icon: Building2, title: "Global Network", desc: "Vagas em mais de 12 países." },
-                   ].map((item, i) => (
-                     <div key={i} className="flex gap-4">
-                        <div className="h-12 w-12 rounded-xl bg-white shadow-sm flex items-center justify-center shrink-0">
-                          <item.icon className="h-5 w-5 text-[#1967D2]" />
-                        </div>
-                        <div className="space-y-1">
-                          <h4 className="font-black text-slate-900 text-[15px]">{item.title}</h4>
-                          <p className="text-slate-500 text-[13px] font-medium leading-snug">{item.desc}</p>
-                        </div>
-                     </div>
-                   ))}
-                </div>
-
-                <div className="pt-6">
-                  <Button className="h-14 px-10 rounded-2xl bg-[#1967D2] hover:bg-blue-700 font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100">
-                    Saber Mais Sobre a Curadoria
-                  </Button>
-                </div>
-             </div>
+        <div className="container mx-auto px-6 max-w-6xl relative z-10">
+          {/* Header */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
+            <div className="space-y-4 max-w-xl">
+              <p className="text-[11px] font-black text-[#1967D2] uppercase tracking-[0.2em]">Para Empresas</p>
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+                Sua empresa mais organizada.<br />
+                <span className="text-[#1967D2]">Você mais tranquilo.</span>
+              </h2>
+            </div>
+            <p className="text-slate-400 text-[15px] font-medium leading-relaxed max-w-sm">
+              RH, Financeiro e Tributário em um único parceiro — para você focar nas vendas enquanto a Cevan resolve o resto.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* --- CATEGORIES --- */}
-      <section className="py-16 sm:py-24 bg-white">
-        <div className="container mx-auto px-6 max-w-7xl text-center mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-4 tracking-tight">Onde Precisamos de Você?</h2>
-          <p className="text-sm sm:text-base text-slate-500 font-medium">Categorias com maior volume de contratações esta semana.</p>
-        </div>
-        
-        <div className="container mx-auto px-6 max-w-7xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          {/* Service cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
             {[
-              { icon: Code, title: "Desenvolvimento", jobs: "12.4k" },
-              { icon: Palette, title: "Design & UX", jobs: "5.1k" },
-              { icon: BarChart, title: "Marketing Digital", jobs: "8.2k" },
-              { icon: Headset, title: "Vendas & CS", jobs: "15.9k" },
-              { icon: Database, title: "Data Science", jobs: "3.2k" },
-              { icon: HeartPulse, title: "Recursos Humanos", jobs: "4.5k" },
-              { icon: Briefcase, title: "Finanças", jobs: "2.8k" },
-              { icon: Smartphone, title: "Mobile Apps", jobs: "6.7k" },
-            ].map((cat, i) => (
-              <Card key={i} className="group p-5 sm:p-8 border-slate-100 hover:border-[#1967D2]/20 hover:bg-blue-50/10 transition-all duration-300 cursor-pointer rounded-[1.5rem] sm:rounded-[2rem] flex flex-col items-center text-center shadow-sm">
-                <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl sm:rounded-2xl bg-slate-50 flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-[#1967D2] transition-colors duration-500">
-                  <cat.icon className="h-5 w-5 sm:h-6 sm:w-6 text-slate-600 group-hover:text-white transition-colors duration-500" />
+              {
+                icon: Users,
+                title: "Terceirização de RH",
+                desc: "Recrutamento, admissão, ponto eletrônico, férias e desligamentos. Nós somos o RH da sua empresa.",
+                items: ["Recrutamento & Seleção", "Controle de Ponto", "Gestão de Férias"],
+                color: "#1967D2",
+              },
+              {
+                icon: TrendingUp,
+                title: "Gestão Financeira",
+                desc: "Fluxo de caixa, DRE e controle de despesas. Você saberá exatamente quanto lucra.",
+                items: ["Fluxo de Caixa", "DRE Mensal", "Relatórios de Desempenho"],
+                color: "#059669",
+              },
+              {
+                icon: ShieldCheck,
+                title: "Estratégia Tributária",
+                desc: "Pague menos imposto, dentro da lei. Regularizamos o faturamento com total segurança.",
+                items: ["Redução Legal de Impostos", "Regularização Fiscal", "Enquadramento Correto"],
+                color: "#7c3aed",
+              },
+            ].map(({ icon: Icon, title, desc, items, color }) => (
+              <div key={title} className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-[1.75rem] p-7 transition-all duration-300">
+                <div className="h-12 w-12 rounded-2xl flex items-center justify-center mb-5" style={{ background: `${color}25` }}>
+                  <Icon className="h-6 w-6" style={{ color }} />
                 </div>
-                <h4 className="font-extrabold text-slate-900 mb-1 text-[13px] sm:text-[16px]">{cat.title}</h4>
-                <p className="text-[10px] sm:text-[12px] font-black text-[#1967D2] uppercase tracking-widest">{cat.jobs} Vagas</p>
-              </Card>
+                <h3 className="font-black text-white text-[17px] mb-2">{title}</h3>
+                <p className="text-slate-400 text-[13px] font-medium leading-relaxed mb-5">{desc}</p>
+                <div className="space-y-2">
+                  {items.map(item => (
+                    <div key={item} className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 shrink-0" style={{ color }} />
+                      <span className="text-[12px] font-semibold text-slate-300">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             ))}
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-white/10">
+            <div className="flex items-center gap-6 text-slate-400 text-[13px] font-medium">
+              {["RH Completo", "Financeiro", "Tributário"].map((s) => (
+                <span key={s} className="flex items-center gap-1.5">
+                  <Star className="h-3.5 w-3.5 text-[#1967D2]" />{s}
+                </span>
+              ))}
+            </div>
+            <Link href="/servicos">
+              <Button className="h-12 px-8 rounded-xl bg-[#1967D2] hover:bg-blue-500 font-black text-[11px] uppercase tracking-widest shadow-xl shadow-blue-900/40 transition-all hover:-translate-y-0.5">
+                Ver serviços e preços <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA FINAL ── */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+            {/* Texto */}
+            <div className="space-y-6">
+              <p className="text-[11px] font-black text-[#1967D2] uppercase tracking-[0.2em]">Vamos Conversar</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                Enquanto você cuida<br />
+                das vendas, a Cevan<br />
+                <span className="text-[#1967D2]">cuida da gestão.</span>
+              </h2>
+              <p className="text-slate-500 text-[15px] sm:text-[17px] font-medium leading-relaxed max-w-md">
+                Fale agora com um especialista e descubra como eliminar os custos invisíveis que travam o crescimento da sua empresa.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <a href="mailto:atendimento@cevan.com.br">
+                  <Button size="lg" className="h-13 w-full sm:w-auto px-8 rounded-2xl bg-[#1967D2] hover:bg-blue-700 font-black text-[11px] uppercase tracking-[0.15em] shadow-xl shadow-blue-200/60 hover:-translate-y-0.5 transition-all">
+                    <Mail className="mr-2.5 h-4 w-4" /> Enviar E-mail
+                  </Button>
+                </a>
+                <a href="tel:+551234567890">
+                  <Button size="lg" variant="outline" className="h-13 w-full sm:w-auto px-8 rounded-2xl border-slate-200 text-slate-700 font-black text-[11px] uppercase tracking-[0.15em] hover:border-[#1967D2]/30 hover:bg-blue-50/40 transition-all">
+                    <Phone className="mr-2.5 h-4 w-4" /> Ligar Agora
+                  </Button>
+                </a>
+              </div>
+            </div>
+
+            {/* Imagem + overlay */}
+            <div className="relative group">
+              <div className="absolute inset-0 bg-[#1967D2]/10 rounded-[2.5rem] blur-3xl group-hover:bg-[#1967D2]/20 transition-all duration-700" />
+              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white">
+                <Image
+                  src="/feature-woman.png"
+                  alt="Equipe Cevan"
+                  width={700}
+                  height={520}
+                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-1000"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent" />
+                <div className="absolute bottom-7 left-7 right-7">
+                  <p className="text-[10px] font-black uppercase tracking-[0.25em] text-blue-300 mb-1.5">Cevan Serviços Empresariais</p>
+                  <p className="text-white font-black text-xl leading-tight">Gestão profissional para empresas que querem crescer de verdade.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

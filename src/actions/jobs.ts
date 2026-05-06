@@ -12,7 +12,11 @@ const createJobSchema = z.object({
   location: z.string().min(2, "Localização obrigatória"),
   isRemote: z.boolean().default(false),
   salaryRange: z.string().optional(),
-  type: z.nativeEnum(JobType),
+  type: z.nativeEnum(JobType).default(JobType.MANAGED),
+  requirements: z.string().optional(),
+  responsibilities: z.string().optional(),
+  benefits: z.string().optional(),
+  tips: z.string().optional(),
 });
 
 export type CreateJobState = {
@@ -37,14 +41,26 @@ export async function createJob(prevState: any, formData: FormData): Promise<Cre
     location: formData.get("location"),
     isRemote: formData.get("isRemote") === "true",
     salaryRange: formData.get("salaryRange"),
-    type: formData.get("type"),
+    type: formData.get("type") || JobType.MANAGED,
+    requirements: formData.get("requirements"),
+    responsibilities: formData.get("responsibilities"),
+    benefits: formData.get("benefits"),
+    tips: formData.get("tips"),
   });
 
   if (!validatedFields.success) {
     return { error: "Dados inválidos. Verifique os campos." };
   }
 
-  const { title, description, location, isRemote, salaryRange, type } = validatedFields.data;
+  const { title, description, location, isRemote, salaryRange, type, requirements, responsibilities, benefits, tips } = validatedFields.data;
+
+  const targetCompanyId = session.user.role === "ADMIN" 
+    ? (formData.get("companyId") as string || session.user.companyId)
+    : session.user.companyId;
+
+  if (!targetCompanyId) {
+    return { error: "ID da empresa não fornecido ou não autorizado." };
+  }
 
   try {
     const slug = `${title.toLowerCase().replace(/ /g, "-")}-${Math.random().toString(36).substring(2, 7)}`;
@@ -58,8 +74,12 @@ export async function createJob(prevState: any, formData: FormData): Promise<Cre
         isRemote,
         salaryRange,
         type,
+        requirements,
+        responsibilities,
+        benefits,
+        tips,
         status: JobStatus.ACTIVE,
-        companyId: session.user.companyId!, 
+        companyId: targetCompanyId, 
       },
     });
 

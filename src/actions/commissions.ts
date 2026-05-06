@@ -21,7 +21,7 @@ export async function markCommissionAsInvoiced(commissionId: string, invoiceNumb
       },
     });
 
-    revalidatePath("/admin/finance");
+    revalidatePath("/admin/placements");
     return { success: true };
   } catch (err) {
     console.error(err);
@@ -45,7 +45,7 @@ export async function markCommissionAsPaid(commissionId: string) {
       },
     });
 
-    revalidatePath("/admin/finance");
+    revalidatePath("/admin/placements");
     return { success: true };
   } catch (err) {
     console.error(err);
@@ -68,7 +68,7 @@ export async function waiveCommission(commissionId: string) {
       },
     });
 
-    revalidatePath("/admin/finance");
+    revalidatePath("/admin/placements");
     return { success: true };
   } catch (err) {
     console.error(err);

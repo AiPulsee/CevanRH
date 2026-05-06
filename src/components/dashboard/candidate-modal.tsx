@@ -24,7 +24,7 @@ import {
   MoreHorizontal
 } from "lucide-react";
 
-export function CandidateModal({ children, candidate }: { children: React.ReactNode, candidate: any }) {
+export function CandidateModal({ children, candidate }: { children: React.ReactElement, candidate: any }) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("resume");
   const [note, setNote] = useState("");
@@ -41,9 +41,7 @@ export function CandidateModal({ children, candidate }: { children: React.ReactN
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger nativeButton={true}>
-        {children}
-      </DialogTrigger>
+      <DialogTrigger render={children} />
       <DialogContent className="sm:max-w-5xl w-[95vw] bg-slate-50 rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden h-[85vh] flex flex-col">
         {/* Header Profile */}
         <div className="bg-white p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-start justify-between gap-6 relative z-10 shadow-sm">

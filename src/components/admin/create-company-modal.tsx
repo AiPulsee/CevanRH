@@ -13,15 +13,47 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Building2, Globe, ShieldCheck, Plus } from "lucide-react";
+import { Building2, Plus, Loader2 } from "lucide-react";
+import { createCompany } from "@/actions/companies";
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 export function CreateCompanyModal() {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [plan, setPlan] = useState("PRO");
+  const [description, setDescription] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [location, setLocation] = useState("");
+
+  const handleSubmit = () => {
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("plan", plan);
+      formData.append("description", description);
+      formData.append("industry", industry);
+      formData.append("location", location);
+
+      const result = await createCompany({}, formData);
+      if (result.success) {
+        setIsOpen(false);
+        setName("");
+        setEmail("");
+        router.refresh();
+      } else {
+        alert(result.error || "Erro ao criar empresa");
+      }
+    });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger 
-        nativeButton={false}
         render={
           <Button className="rounded-xl font-bold h-12 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200">
             <Plus className="h-4 w-4 mr-2" />
@@ -48,24 +80,73 @@ export function CreateCompanyModal() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="font-bold text-slate-700">Nome da Empresa</Label>
-              <Input id="name" placeholder="Ex: Acme Corp" className="h-12 bg-slate-50 border-slate-200 rounded-xl" />
+              <Input 
+                id="name" 
+                placeholder="Ex: Acme Corp" 
+                className="h-12 bg-slate-50 border-slate-200 rounded-xl font-bold" 
+                value={name}
+                onChange={e => setName(e.target.value)}
+              />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="slug" className="font-bold text-slate-700">Slug / URL</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">cevan.com.br/</span>
-                <Input id="slug" placeholder="acme" className="h-12 pl-[90px] bg-slate-50 border-slate-200 rounded-xl text-sm" />
-              </div>
+              <Label htmlFor="email" className="font-bold text-slate-700">E-mail de Contato</Label>
+              <Input 
+                id="email" 
+                type="email"
+                placeholder="contato@empresa.com.br" 
+                className="h-12 bg-slate-50 border-slate-200 rounded-xl font-bold text-blue-600" 
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="plan" className="font-bold text-slate-700">Plano Inicial</Label>
-              <select id="plan" className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 outline-none">
-                <option>FREE</option>
-                <option selected>PRO</option>
-                <option>ENTERPRISE</option>
+              <select 
+                id="plan" 
+                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 outline-none"
+                value={plan}
+                onChange={e => setPlan(e.target.value)}
+              >
+                <option value="FREE">FREE</option>
+                <option value="PRO">PRO</option>
+                <option value="ENTERPRISE">ENTERPRISE</option>
               </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="industry" className="font-bold text-slate-700">Setor / Indústria</Label>
+                <Input 
+                  id="industry" 
+                  placeholder="Ex: Tecnologia" 
+                  className="h-12 bg-slate-50 border-slate-200 rounded-xl"
+                  value={industry}
+                  onChange={e => setIndustry(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="location" className="font-bold text-slate-700">Sede (Cidade/UF)</Label>
+                <Input 
+                  id="location" 
+                  placeholder="Ex: São José dos Campos/SP" 
+                  className="h-12 bg-slate-50 border-slate-200 rounded-xl"
+                  value={location}
+                  onChange={e => setLocation(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description" className="font-bold text-slate-700">Descrição da Empresa</Label>
+              <textarea 
+                id="description" 
+                placeholder="Conte sobre a empresa..." 
+                className="w-full min-h-[100px] p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-500/20 outline-none"
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+              />
             </div>
 
             <div className="flex items-center justify-between p-5 rounded-3xl bg-indigo-50 border border-indigo-100 mt-2">
@@ -79,19 +160,17 @@ export function CreateCompanyModal() {
               </select>
             </div>
           </div>
-
-          <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100 flex items-start gap-3">
-            <ShieldCheck className="h-5 w-5 text-blue-500 mt-0.5" />
-            <p className="text-[10px] text-blue-700 leading-relaxed font-medium">
-              Após o cadastro, um e-mail de convite será enviado automaticamente para o administrador da empresa configurado abaixo.
-            </p>
-          </div>
         </div>
 
         <DialogFooter className="p-8 bg-slate-50 border-t border-slate-100 gap-3">
-          <Button variant="ghost" className="rounded-xl font-bold h-12 px-8" onClick={() => setIsOpen(false)}>Cancelar</Button>
-          <Button className="rounded-xl font-black h-12 px-10 bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200 uppercase text-xs tracking-widest">
-            Criar Registro
+          <Button variant="ghost" className="rounded-xl font-bold h-12 px-8" onClick={() => setIsOpen(false)} disabled={isPending}>Cancelar</Button>
+          <Button 
+            onClick={handleSubmit}
+            disabled={isPending || !name || !email}
+            className="rounded-xl font-black h-12 px-10 bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200 uppercase text-xs tracking-widest"
+          >
+            {isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
+            {isPending ? "Criando..." : "Criar Registro"}
           </Button>
         </DialogFooter>
       </DialogContent>

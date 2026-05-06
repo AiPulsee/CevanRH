@@ -112,7 +112,7 @@ export async function confirmEffective(placementId: string) {
     });
 
     revalidatePath("/admin/placements");
-    revalidatePath("/admin/finance");
+    revalidatePath("/admin/placements");
     revalidatePath("/dashboard/placements");
 
     return { success: true };
@@ -167,6 +167,53 @@ export async function terminatePlacement(placementId: string, reason?: string) {
   } catch (err) {
     console.error(err);
     return { error: "Erro interno ao encerrar alocação." };
+  }
+}
+
+// --- Contratar candidato e criar alocação em uma transação ---
+export async function hireAndPlace(data: {
+  applicationId: string;
+  monthlySalary: number;
+  startDate: string;
+}) {
+  const session = await auth();
+  if (!session || (session.user as any).role !== "ADMIN") {
+    return { error: "Não autorizado." };
+  }
+
+  try {
+    const start = new Date(data.startDate);
+    const trialEnd = new Date(start);
+    trialEnd.setDate(trialEnd.getDate() + 90);
+
+    await prisma.$transaction(async (tx) => {
+      const existing = await tx.placement.findUnique({
+        where: { applicationId: data.applicationId },
+      });
+      if (existing) throw new Error("Alocação já existe para esta candidatura.");
+
+      await tx.application.update({
+        where: { id: data.applicationId },
+        data: { status: "HIRED" },
+      });
+
+      await tx.placement.create({
+        data: {
+          applicationId: data.applicationId,
+          monthlySalary: data.monthlySalary,
+          startDate: start,
+          trialEndDate: trialEnd,
+          status: PlacementStatus.TRIAL,
+        },
+      });
+    });
+
+    revalidatePath("/admin/placements");
+    revalidatePath("/admin/managed");
+    return { success: true };
+  } catch (err: any) {
+    console.error(err);
+    return { error: err.message || "Erro ao contratar candidato." };
   }
 }
 

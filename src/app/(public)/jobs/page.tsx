@@ -19,19 +19,32 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { PaginationBar } from "@/components/ui/pagination-bar";
 
-export default async function JobsPublicPage() {
-  const jobs = await prisma.job.findMany({
-    where: {
-      status: "ACTIVE"
-    },
-    include: {
-      company: true
-    },
-    orderBy: {
-      createdAt: 'desc'
-    }
-  });
+const PAGE_SIZE = 12;
+
+export default async function JobsPublicPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, parseInt(pageParam ?? "1"));
+
+  const [jobs, totalJobs] = await Promise.all([
+    prisma.job.findMany({
+      where: { status: "ACTIVE" },
+      include: { company: true },
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.job.count({ where: { status: "ACTIVE" } }),
+  ]);
+
+  const totalPages = Math.ceil(totalJobs / PAGE_SIZE);
+  const from = (page - 1) * PAGE_SIZE + 1;
+  const to = Math.min(page * PAGE_SIZE, totalJobs);
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FAFBFC] font-sans selection:bg-blue-100 selection:text-blue-900 mt-24">
@@ -128,7 +141,7 @@ export default async function JobsPublicPage() {
           {/* Control Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6">
             <div className="text-slate-500 text-sm sm:text-[15px] font-medium text-center sm:text-left">
-              Mostrando <span className="font-bold text-slate-900">1 - {jobs.length}</span> de {jobs.length} vagas
+              Mostrando <span className="font-bold text-slate-900">{from}–{to}</span> de {totalJobs} vagas
             </div>
             <div className="flex items-center justify-center sm:justify-end gap-2 sm:gap-3">
               <span className="text-[12px] sm:text-sm font-medium text-slate-500">Ordenar:</span>
@@ -148,13 +161,16 @@ export default async function JobsPublicPage() {
           <div className="space-y-4">
             {jobs.map((job) => (
               <Card key={job.id} className="p-4 sm:p-6 border border-slate-100 bg-white hover:border-[#1967D2]/40 hover:shadow-[0_12px_40px_rgb(25,103,210,0.06)] hover:-translate-y-1 transition-all duration-300 rounded-[1.2rem] sm:rounded-[1.5rem] relative group cursor-pointer">
-                
-                <button className="absolute top-4 right-4 sm:top-6 sm:right-6 text-slate-300 hover:text-[#1967D2] bg-slate-50 hover:bg-blue-50 transition-colors h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-full z-10">
+
+                {/* overlay link — cobre o card inteiro */}
+                <Link href={`/jobs/${job.slug}`} className="absolute inset-0 z-[1] rounded-[1.2rem] sm:rounded-[1.5rem]" aria-label={`Ver vaga: ${job.title}`} />
+
+                <button className="absolute top-4 right-4 sm:top-6 sm:right-6 text-slate-300 hover:text-[#1967D2] bg-slate-50 hover:bg-blue-50 transition-colors h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-full z-[2]">
                   <Bookmark className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </button>
 
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-                  <Link href={`/jobs/${job.slug}`} className="flex items-start sm:items-center gap-4 sm:gap-5 flex-1">
+                  <div className="flex items-start sm:items-center gap-4 sm:gap-5 flex-1">
                     <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl flex-shrink-0 flex items-center justify-center font-bold text-white text-base sm:text-xl shadow-sm ${job.type === 'MANAGED' ? 'bg-blue-600' : 'bg-slate-600'}`}>
                       {job.company.logoUrl ? (
                          <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-cover rounded-xl" />
@@ -171,9 +187,9 @@ export default async function JobsPublicPage() {
                         <span className="flex items-center gap-1.5 font-black text-green-600 text-xs sm:text-sm">{job.salaryRange || "A combinar"}</span>
                       </div>
                     </div>
-                  </Link>
+                  </div>
 
-                  <div className="flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-end gap-3 w-full md:w-auto mt-2 md:mt-0 pt-4 md:pt-0 border-t border-slate-50 md:border-none relative z-10">
+                  <div className="flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-end gap-3 w-full md:w-auto mt-2 md:mt-0 pt-4 md:pt-0 border-t border-slate-50 md:border-none relative z-[2]">
                     <div className="flex flex-wrap gap-2">
                       <Badge className="bg-blue-50/80 hover:bg-blue-100 text-[#1967D2] border-none rounded-full px-3 py-1 text-[10px] sm:text-[11px] font-bold transition-colors">{job.isRemote ? "Remoto" : "Presencial"}</Badge>
                       {job.type === 'MANAGED' && (
@@ -183,9 +199,11 @@ export default async function JobsPublicPage() {
                       )}
                     </div>
                     <div className="hidden md:block">
-                      <Button className="rounded-lg h-9 w-9 p-0 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm border border-slate-200 bg-white text-slate-400">
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
+                      <Link href={`/jobs/${job.slug}`} className="relative z-[2]">
+                        <Button className="rounded-lg h-9 w-9 p-0 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm border border-slate-200 bg-white text-slate-400">
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -193,16 +211,13 @@ export default async function JobsPublicPage() {
             ))}
           </div>
 
-          {/* Pagination Box */}
-          {jobs.length > 10 && (
-            <div className="pt-10 flex justify-center pb-8">
-              <div className="flex items-center gap-2">
-                <button className="h-10 w-10 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-500 hover:text-[#1967D2] hover:border-[#1967D2] font-semibold transition-colors">1</button>
-                <button className="h-10 w-10 flex items-center justify-center rounded-full bg-[#1967D2] border border-[#1967D2] text-white font-semibold shadow-md">2</button>
-                <button className="h-10 w-10 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-500 hover:text-[#1967D2] hover:border-[#1967D2] font-semibold transition-colors">3</button>
-                <span className="text-slate-400 font-bold px-2">...</span>
-                <button className="h-10 w-10 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-500 hover:text-[#1967D2] hover:border-[#1967D2] font-semibold transition-colors">24</button>
-              </div>
+          {totalPages > 1 && (
+            <div className="pt-10 pb-8">
+              <PaginationBar
+                page={page}
+                totalPages={totalPages}
+                baseHref="/jobs"
+              />
             </div>
           )}
 

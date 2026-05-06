@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx next *)",
+      "Bash(npx tsc *)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\danil\\\\Desktop\\\\CevanRH\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(npm install *)",
+      "Bash(npm uninstall *)",
+      "Bash(curl -s \"http://localhost:3000/jobs/sr-frontend\" -w \"\\\\n\\\\nHTTP Status: %{http_code}\")",
+      "Bash(curl -s \"http://localhost:3000/jobs\" -w \"\\\\n\\\\nHTTP Status: %{http_code}\")",
+      "Bash(npx prisma *)",
+      "Bash(npx ts-node *)",
+      "Bash(node -e 'const {PrismaClient} = require\\('\\\\''@prisma/client'\\\\''\\); const p = new PrismaClient\\(\\); p.job.findMany\\({select:{slug:true,title:true,status:true}}\\).then\\(j=>console.log\\(JSON.stringify\\(j,null,2\\)\\)\\).finally\\(\\(\\)=>p.$disconnect\\(\\)\\)')",
+      "Bash(curl -s \"http://localhost:3000/jobs/analista-fin\" -w \"\\\\nHTTP Status: %{http_code}\")",
+      "Bash(curl -s \"http://localhost:3000/about\" -w \"\\\\nHTTP Status: %{http_code}\")",
+      "Bash(curl -s \"http://localhost:3000/servicos\" -w \"\\\\nHTTP Status: %{http_code}\")",
+      "Bash(curl -s \"http://localhost:3000/login\" -w \"\\\\nHTTP Status: %{http_code}\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('next:', p.dependencies.next, 'react:', p.dependencies.react\\)\")",
+      "Bash(curl -s \"http://localhost:3000/jobs/analista-fin\" -o /dev/null -w \"%{http_code}\")",
+      "Bash(curl -s \"http://localhost:3000/jobs/analista-fin\" -w \"\\\\nHTTP: %{http_code}\")"
+    ]
+  }
+}

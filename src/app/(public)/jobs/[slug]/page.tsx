@@ -191,17 +191,17 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
                 <div className="md:col-span-2">
                   <p className="text-[15px] text-slate-500 leading-relaxed font-medium">
-                    {job.company.description || "Líder no segmento, com foco total em inovação e pessoas. Uma empresa que valoriza o desenvolvimento profissional e a diversidade em seus times."}
+                    {job.company.description || "Empresa parceira da Cevan focada em excelência e crescimento profissional."}
                   </p>
                 </div>
                 <div className="space-y-4">
                   <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Tamanho</p>
-                    <p className="text-[14px] font-black text-slate-900">500+ Colaboradores</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Setor</p>
+                    <p className="text-[14px] font-black text-slate-900">{job.company.industry || "Serviços"}</p>
                   </div>
                   <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Indústria</p>
-                    <p className="text-[14px] font-black text-slate-900">Tecnologia & Inovação</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Localização</p>
+                    <p className="text-[14px] font-black text-slate-900">{job.company.location || "Brasil"}</p>
                   </div>
                 </div>
               </div>

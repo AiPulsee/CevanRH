@@ -42,7 +42,6 @@ export function ApplicationDetailsModal({ jobTitle, companyName, status, color }
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger 
-        nativeButton={true}
         render={
           <Button variant="ghost" size="icon" className="rounded-xl border border-border bg-white group-hover:bg-primary group-hover:text-white transition-all shadow-sm h-12 w-12">
             <ArrowRight className="h-5 w-5" />

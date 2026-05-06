@@ -11,7 +11,7 @@ export function PublicFooter() {
                <Image src="/logoprincipal.png" alt="Cevan Serviços Empresariais" width={320} height={96} className="h-12 sm:h-16 w-auto object-contain brightness-0 invert opacity-90" />
              </div>
              <div className="space-y-1">
-               <p className="text-slate-400 text-[11px] sm:text-[13px] font-black tracking-widest uppercase">Plantão VIP Ininterrupto</p>
+               <p className="text-slate-400 text-[11px] sm:text-[13px] font-black tracking-widest uppercase">Fale com um Especialista</p>
                <p className="text-white text-[24px] sm:text-[32px] font-black tracking-tight leading-none">123 456 7890</p>
              </div>
              <p className="text-sm sm:text-[15px] text-slate-400 leading-relaxed font-medium">
@@ -21,9 +21,9 @@ export function PublicFooter() {
           </div>
           
           {[
-            { title: "Para Candidatos", items: ["Pesquisar Vagas", "Perfil Campeão", "Blog de Carreira"] },
-            { title: "Para Empresas", items: ["Anunciar Vaga", "Curadoria Especializada", "Planos e Preços"] },
-            { title: "A Cevan", items: ["Nossa História", "Como Funciona", "Termos de Uso", "Privacidade"] },
+            { title: "Serviços", items: ["Terceirização de RH", "Recrutamento Pontual", "Gestão Financeira", "Estratégia Tributária"] },
+            { title: "Empresa", items: ["Quem Somos", "Diferenciais", "Tabela de Investimento", "Proposta Completa"] },
+            { title: "A Cevan", items: ["Nossa História", "Termos de Uso", "Privacidade"] },
           ].map((col) => (
             <div key={col.title} className="space-y-6 sm:space-y-8 lg:ml-auto text-center lg:text-left">
               <h4 className="font-extrabold text-[16px] sm:text-[18px] text-white tracking-wide">{col.title}</h4>

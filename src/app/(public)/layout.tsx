@@ -18,16 +18,14 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   const navLinks = [
     { name: "Início", href: "/" },
     { name: "Vagas", href: "/jobs" },
-    { name: "Como Funciona", href: "/how-it-works" },
-    { name: "Sobre a Cevan", href: "/about" },
-    { name: "Proposta", href: "/proposta-detalhada" },
+    { name: "Serviços", href: "/servicos" },
+    { name: "Quem Somos", href: "/about" },
   ];
 
   return (
     <div className="flex min-h-screen flex-col bg-[#fafafa] text-foreground">
       {/* Refined Navigation Bar with Glassmorphism */}
-      {!pathname.includes("/proposta-detalhada") && (
-        <nav className="fixed top-0 left-0 right-0 z-50 flex items-center bg-white/80 backdrop-blur-xl border-b border-slate-200/60 h-20 lg:h-24 px-6 lg:px-16 transition-all duration-300">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center bg-white/80 backdrop-blur-xl border-b border-slate-200/60 h-20 lg:h-24 px-6 lg:px-16 transition-all duration-300">
             
             {/* Left: Logo Area */}
             <div className="flex-1 flex justify-start">
@@ -81,8 +79,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 </div>
                 Área Restrita
               </Link>
-              <Link 
-                href="/about"
+              <Link
+                href="/#contato"
                 className={cn(
                   buttonVariants({ size: "lg" }),
                   "rounded-2xl font-black bg-[#1967D2] hover:bg-[#1557b0] h-14 px-10 shadow-xl shadow-blue-200/50 hover:shadow-blue-300/60 transition-all hover:-translate-y-0.5 active:scale-95 text-[13px] tracking-widest uppercase flex items-center justify-center text-white border-none"
@@ -104,7 +102,6 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               </Button>
             </div>
         </nav>
-      )}
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
@@ -168,8 +165,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                     <UserCircle className="h-6 w-6 text-slate-400" />
                     Área Restrita
                   </Link>
-                  <Link 
-                    href="/about" 
+                  <Link
+                    href="/#contato"
                     onClick={() => setIsMenuOpen(false)}
                     className={cn(
                       buttonVariants({ size: "lg" }),
@@ -193,7 +190,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <main className="flex-1">
         {children}
       </main>
-      {!pathname.includes("/proposta") && <PublicFooter />}
+      <PublicFooter />
     </div>
   );
 }
