@@ -1,10 +1,15 @@
 export const dynamic = "force-dynamic";
 
 import { getUsers } from "@/actions/users";
+import { prisma } from "@/lib/prisma";
 import { UsersTable } from "@/components/admin/users-table";
+import { CreateUserModal } from "@/components/admin/create-user-modal";
 
 export default async function AdminUsers() {
-  const users = await getUsers();
+  const [users, companies] = await Promise.all([
+    getUsers(),
+    prisma.company.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+  ]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -15,6 +20,7 @@ export default async function AdminUsers() {
             Gerencie permissões e visualize a base total de usuários. ({users.length} cadastrados)
           </p>
         </div>
+        <CreateUserModal companies={companies} />
       </div>
 
       <UsersTable users={users} />
