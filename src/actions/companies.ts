@@ -2,14 +2,12 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { PlanType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const createCompanySchema = z.object({
   name: z.string().min(2, "Nome muito curto"),
   email: z.string().email("E-mail inválido").optional().or(z.literal("")),
-  plan: z.nativeEnum(PlanType),
   description: z.string().optional(),
   industry: z.string().optional(),
   location: z.string().optional(),
@@ -26,7 +24,6 @@ export async function createCompany(prevState: unknown, formData: FormData) {
   const validatedFields = createCompanySchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
-    plan: formData.get("plan"),
     description: formData.get("description"),
     industry: formData.get("industry"),
     location: formData.get("location"),
@@ -36,7 +33,7 @@ export async function createCompany(prevState: unknown, formData: FormData) {
     return { error: "Dados inválidos." };
   }
 
-  const { name, email, plan, description, industry, location } = validatedFields.data;
+  const { name, email, description, industry, location } = validatedFields.data;
   const slug = name.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "") + "-" + Math.random().toString(36).substring(2, 7);
 
   try {
@@ -45,7 +42,6 @@ export async function createCompany(prevState: unknown, formData: FormData) {
         name,
         slug,
         email: email || null,
-        plan,
         description,
         industry,
         location,

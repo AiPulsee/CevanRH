@@ -24,7 +24,6 @@ export function CreateCompanyModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [plan, setPlan] = useState("PRO");
   const [description, setDescription] = useState("");
   const [industry, setIndustry] = useState("");
   const [location, setLocation] = useState("");
@@ -34,7 +33,6 @@ export function CreateCompanyModal() {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("email", email);
-      formData.append("plan", plan);
       formData.append("description", description);
       formData.append("industry", industry);
       formData.append("location", location);
@@ -99,20 +97,6 @@ export function CreateCompanyModal() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="plan" className="font-bold text-slate-700">Plano Inicial</Label>
-              <select 
-                id="plan" 
-                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 outline-none"
-                value={plan}
-                onChange={e => setPlan(e.target.value)}
-              >
-                <option value="FREE">FREE</option>
-                <option value="PRO">PRO</option>
-                <option value="ENTERPRISE">ENTERPRISE</option>
-              </select>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

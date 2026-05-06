@@ -5,7 +5,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Building2, Globe, Search, Users2, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { PaginationBar } from "@/components/ui/pagination-bar";
 
 const PAGE_SIZE = 12;
@@ -15,7 +14,6 @@ type Company = {
   name: string;
   slug: string;
   logoUrl: string | null;
-  plan: string;
   _count: { jobs: number; users: number };
 };
 
@@ -74,17 +72,8 @@ export function CompaniesGrid({ companies }: { companies: Company[] }) {
                       company.name.charAt(0)
                     )}
                   </div>
-                  <Badge
-                    className={cn(
-                      "rounded-lg px-2 py-1 text-[10px] font-black uppercase border-none",
-                      company.plan === "ENTERPRISE"
-                        ? "bg-slate-900 text-white"
-                        : company.plan === "PRO"
-                        ? "bg-blue-600 text-white"
-                        : "bg-slate-100 text-slate-600"
-                    )}
-                  >
-                    {company.plan}
+                  <Badge className="rounded-lg px-2 py-1 text-[10px] font-black uppercase border-none bg-blue-50 text-blue-600">
+                    Cliente
                   </Badge>
                 </div>
 

@@ -23,7 +23,6 @@ export default async function AdminPage() {
     monthlyRevenue,
     curationJobs,
     recentApplications,
-    planDistribution,
     trialCount,
     effectiveCount,
   ] = await Promise.all([
@@ -48,7 +47,6 @@ export default async function AdminPage() {
         candidate: { select: { name: true } },
       },
     }),
-    prisma.company.groupBy({ by: ["plan"], _count: { plan: true } }),
     prisma.placement.count({ where: { status: "TRIAL" } }),
     prisma.placement.count({ where: { status: "EFFECTIVE" } }),
   ]);
@@ -74,16 +72,6 @@ export default async function AdminPage() {
     ...m,
     pct: Math.round((m.amount / maxRevenue) * 100),
   }));
-
-  // Plan distribution percentages
-  const totalCompanies = companiesCount || 1;
-  const planMap: Record<string, number> = {};
-  planDistribution.forEach((p) => { planMap[p.plan] = p._count.plan; });
-  const planBars = [
-    { name: "Enterprise", val: Math.round(((planMap["ENTERPRISE"] || 0) / totalCompanies) * 100), color: "bg-blue-600" },
-    { name: "Pro", val: Math.round(((planMap["PRO"] || 0) / totalCompanies) * 100), color: "bg-emerald-500" },
-    { name: "Free", val: Math.round(((planMap["FREE"] || totalCompanies) / totalCompanies) * 100), color: "bg-slate-300" },
-  ];
 
   const revenueFormatted = new Intl.NumberFormat("pt-BR", { notation: "compact", maximumFractionDigits: 1 }).format(
     (monthlyRevenue._sum.amount || 0) / 100
@@ -127,52 +115,27 @@ export default async function AdminPage() {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Revenue chart */}
-        <Card className="lg:col-span-2 p-6 border-slate-200 bg-white rounded-2xl shadow-sm">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h3 className="text-lg font-bold text-slate-900">Evolução de Receita</h3>
-              <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">Últimos 6 Meses (Comissões Pagas)</p>
+      <Card className="p-6 border-slate-200 bg-white rounded-2xl shadow-sm">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h3 className="text-lg font-bold text-slate-900">Evolução de Receita</h3>
+            <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">Últimos 6 Meses (Comissões Pagas)</p>
+          </div>
+        </div>
+        <div className="h-[200px] w-full flex items-end gap-3 px-2">
+          {revenueChartBars.map((bar, i) => (
+            <div key={i} className="flex-1 flex flex-col items-center gap-3 group">
+              <div className="w-full flex flex-col justify-end" style={{ height: "100%" }}>
+                <div
+                  className={`w-full rounded-lg transition-all duration-500 ${i === 5 ? "bg-blue-600" : "bg-slate-100"} group-hover:bg-blue-400`}
+                  style={{ height: `${Math.max(bar.pct, 4)}%` }}
+                />
+              </div>
+              <span className="text-[9px] font-bold text-slate-400 uppercase">{bar.label}</span>
             </div>
-          </div>
-          <div className="h-[200px] w-full flex items-end gap-3 px-2">
-            {revenueChartBars.map((bar, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-3 group">
-                <div className="w-full flex flex-col justify-end" style={{ height: "100%" }}>
-                  <div
-                    className={`w-full rounded-lg transition-all duration-500 ${i === 5 ? "bg-blue-600" : "bg-slate-100"} group-hover:bg-blue-400`}
-                    style={{ height: `${Math.max(bar.pct, 4)}%` }}
-                  />
-                </div>
-                <span className="text-[9px] font-bold text-slate-400 uppercase">{bar.label}</span>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Plan distribution */}
-        <Card className="p-6 border-slate-200 bg-white rounded-2xl shadow-sm">
-          <h3 className="text-lg font-bold text-slate-900 mb-6">Divisão de Clientes</h3>
-          <div className="space-y-5">
-            {planBars.map((p) => (
-              <div key={p.name} className="space-y-1.5">
-                <div className="flex justify-between text-[10px] font-bold uppercase">
-                  <span className="text-slate-500">{p.name}</span>
-                  <span className="text-slate-900">{p.val}%</span>
-                </div>
-                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                  <div className={`h-full ${p.color} rounded-full transition-all duration-700`} style={{ width: `${p.val}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 p-4 rounded-xl bg-slate-50 border border-slate-100">
-            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Total de Empresas</p>
-            <p className="text-xs font-bold text-slate-700">{companiesCount} empresas cadastradas na plataforma.</p>
-          </div>
-        </Card>
-      </div>
+          ))}
+        </div>
+      </Card>
 
       {/* Operations row */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

@@ -30,7 +30,6 @@ model Company {
   logoUrl     String?  @map("logo_url")
   website     String?
   description String?
-  plan        PlanType @default(FREE)
   stripeId    String?  @unique @map("stripe_customer_id")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
@@ -209,12 +208,6 @@ enum ApplicationStatus {
   INTERVIEW
   REJECTED
   HIRED
-}
-
-enum PlanType {
-  FREE
-  PRO
-  ENTERPRISE
 }
 
 enum PlacementStatus {

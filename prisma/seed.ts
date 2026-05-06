@@ -1,4 +1,4 @@
-import { PrismaClient, Role, PlanType, JobType, JobStatus, ApplicationStatus, PlacementStatus, CommissionStatus } from "@prisma/client";
+import { PrismaClient, Role, JobType, JobStatus, ApplicationStatus, PlacementStatus, CommissionStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -9,12 +9,12 @@ async function main() {
 
   // 1. Criar Empresas
   const companiesData = [
-    { name: "Google Cloud", slug: "google-cloud", industry: "Tecnologia", location: "São Paulo, SP", plan: PlanType.ENTERPRISE },
-    { name: "Nubank", slug: "nubank", industry: "Fintech", location: "São Paulo, SP", plan: PlanType.PRO },
-    { name: "Stripe", slug: "stripe", industry: "Tecnologia / Pagamentos", location: "Remoto / Global", plan: PlanType.PRO },
-    { name: "Ambev", slug: "ambev", industry: "Bebidas", location: "Jaguariúna, SP", plan: PlanType.ENTERPRISE },
-    { name: "Magazine Luiza", slug: "magalu", industry: "Varejo", location: "Franca, SP", plan: PlanType.PRO },
-    { name: "Cevan RH", slug: "cevan-rh", industry: "Serviços", location: "Goiânia, GO", plan: PlanType.PRO },
+    { name: "Google Cloud", slug: "google-cloud", industry: "Tecnologia", location: "São Paulo, SP" },
+    { name: "Nubank", slug: "nubank", industry: "Fintech", location: "São Paulo, SP" },
+    { name: "Stripe", slug: "stripe", industry: "Tecnologia / Pagamentos", location: "Remoto / Global" },
+    { name: "Ambev", slug: "ambev", industry: "Bebidas", location: "Jaguariúna, SP" },
+    { name: "Magazine Luiza", slug: "magalu", industry: "Varejo", location: "Franca, SP" },
+    { name: "Cevan RH", slug: "cevan-rh", industry: "Serviços", location: "Goiânia, GO" },
   ];
 
   const companies = await Promise.all(
