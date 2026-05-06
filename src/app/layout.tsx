@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0",
 };
 
+import { Toaster } from "sonner";
+
 export default function RootLayout({
   children,
 }: {
@@ -26,6 +28,7 @@ export default function RootLayout({
     <html lang="pt-BR" className="h-full" suppressHydrationWarning>
       <body className={`${inter.className} h-full bg-background text-foreground antialiased`}>
         {children}
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

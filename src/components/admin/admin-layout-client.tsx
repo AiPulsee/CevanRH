@@ -31,25 +31,25 @@ const ALL_SECTIONS = [
   {
     label: "Painel de Controle",
     items: [
-      { name: "Painel", href: "/admin", icon: LayoutDashboard, key: "painel" },
-      { name: "Relatórios Gerais", href: "/admin/analytics", icon: LineChart, key: "analytics" },
+      { name: "Painel", href: "/admin", icon: LayoutDashboard },
+      { name: "Relatórios Gerais", href: "/admin/analytics", icon: LineChart, key: "ANALYTICS" },
     ],
   },
   {
     label: "Recrutamento & Seleção",
     items: [
-      { name: "Banco de Currículos", href: "/admin/resumes", icon: FileText, key: "resumes" },
-      { name: "Curadoria (Vagas)", href: "/admin/managed", icon: Zap, key: "managed" },
-      { name: "Alocações", href: "/admin/placements", icon: UserCheck, key: "placements" },
-      { name: "Finanças", href: "/admin/finance", icon: Receipt, key: "finance" },
-      { name: "Empresas", href: "/admin/companies", icon: Building2, key: "companies" },
+      { name: "Banco de Currículos", href: "/admin/resumes", icon: FileText, key: "RESUMES" },
+      { name: "Curadoria (Vagas)", href: "/admin/managed", icon: Zap, key: "MANAGED" },
+      { name: "Alocações", href: "/admin/placements", icon: UserCheck, key: "PLACEMENTS" },
+      { name: "Finanças", href: "/admin/finance", icon: Receipt, key: "FINANCE" },
+      { name: "Empresas", href: "/admin/companies", icon: Building2, key: "COMPANIES" },
     ],
   },
   {
     label: "Sistema & Gestão",
     items: [
-      { name: "Usuários ADM", href: "/admin/users", icon: Users2, key: "users" },
-      { name: "Configurações", href: "/admin/settings", icon: Settings, key: "settings" },
+      { name: "Usuários ADM", href: "/admin/users", icon: Users2, key: "USERS" },
+      { name: "Configurações", href: "/admin/settings", icon: Settings, key: "SETTINGS" },
     ],
   },
 ];
@@ -68,10 +68,13 @@ export function AdminLayoutClient({ children, userName, permissions }: Props) {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
+  const allPermKeys = ALL_SECTIONS.flatMap(s => s.items.map(i => i.key)).filter(Boolean) as string[];
+  const isMaster = permissions === null || (Array.isArray(permissions) && allPermKeys.every(k => permissions.includes(k)));
+
   const menuSections = ALL_SECTIONS.map((section) => ({
     ...section,
     items: section.items.filter(
-      (item) => permissions === null || permissions.includes(item.key)
+      (item) => isMaster || !(item as any).key || (Array.isArray(permissions) && permissions.includes((item as any).key))
     ),
   })).filter((section) => section.items.length > 0);
 
@@ -141,7 +144,7 @@ export function AdminLayoutClient({ children, userName, permissions }: Props) {
                         {userName ?? "Administrador"}
                       </p>
                       <p className="text-[9px] font-bold text-blue-500 uppercase mt-1">
-                        {permissions === null ? "Mestre" : "Restrito"}
+                        {isMaster ? "Mestre" : "Restrito"}
                       </p>
                     </div>
                     <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-xs shadow-lg">
