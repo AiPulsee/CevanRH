@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   CalendarDays
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { differenceInDays } from "date-fns";
 
 export default async function AdminPlacementsPage() {
@@ -62,10 +63,10 @@ export default async function AdminPlacementsPage() {
   };
 
   const stats = [
-    { name: "Em Trial", value: inTrial.length.toString(), icon: Clock, change: `${inTrial.filter(p => p.daysRemaining <= 7).length} vencem em breve`, color: "amber" },
-    { name: "Efetivados", value: effective.length.toString(), icon: CheckCircle2, change: "Total histórico", color: "emerald" },
-    { name: "Taxa de Conversão", value: `${conversionRate}%`, icon: TrendingUp, change: "Trial para Efetivado", color: "blue" },
-    { name: "Receita Potencial", value: formatCurrencyCompact(potentialRevenue), icon: DollarSign, change: "Em trials ativos", color: "indigo" },
+    { name: "Em Trial", value: inTrial.length.toString(), icon: Clock, change: `${inTrial.filter(p => p.daysRemaining <= 7).length} vencem em breve`, tooltip: "Candidatos atualmente no período de experiência (90 dias)" },
+    { name: "Efetivados", value: effective.length.toString(), icon: CheckCircle2, change: "Total histórico", tooltip: "Candidatos que concluíram o trial e foram contratados definitivamente" },
+    { name: "Taxa de Conversão", value: `${conversionRate}%`, icon: TrendingUp, change: "Trial para Efetivado", tooltip: "Percentual de trials que resultaram em efetivação (Efetivados ÷ Total encerrados)" },
+    { name: "Receita Potencial", value: formatCurrencyCompact(potentialRevenue), icon: DollarSign, change: "Em trials ativos", tooltip: "Comissão esperada se todos os trials ativos forem efetivados (50% do 1º salário de cada)" },
   ];
 
   const urgentPlacements = inTrial.filter(p => p.daysRemaining <= 7);
@@ -89,9 +90,14 @@ export default async function AdminPlacementsPage() {
         {stats.map((stat, i) => (
           <Card key={i} className="p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
-                <stat.icon className="h-5 w-5 text-slate-600" />
-              </div>
+              <Tooltip>
+                <TooltipTrigger render={
+                  <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center cursor-default">
+                    <stat.icon className="h-5 w-5 text-slate-600" />
+                  </div>
+                } />
+                <TooltipContent>{stat.tooltip}</TooltipContent>
+              </Tooltip>
               <Badge className="bg-slate-100 text-slate-600 border-none font-bold text-[10px]">
                 {stat.change}
               </Badge>
@@ -138,10 +144,21 @@ export default async function AdminPlacementsPage() {
                 .map((p) => (
                   <div key={p.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
                     <div className="flex items-center gap-2.5">
-                      <div className={`h-2 w-2 rounded-full ${
-                        p.daysRemaining <= 7 ? "bg-rose-500 animate-pulse" :
-                        p.daysRemaining <= 15 ? "bg-amber-500" : "bg-blue-500"
-                      }`} />
+                      <Tooltip>
+                        <TooltipTrigger render={
+                          <div className={`h-2 w-2 rounded-full cursor-default ${
+                            p.daysRemaining <= 7 ? "bg-rose-500 animate-pulse" :
+                            p.daysRemaining <= 15 ? "bg-amber-500" : "bg-blue-500"
+                          }`} />
+                        } />
+                        <TooltipContent>
+                          {p.daysRemaining <= 7
+                            ? "Urgente — vence em até 7 dias"
+                            : p.daysRemaining <= 15
+                            ? "Atenção — vence em até 15 dias"
+                            : "Trial dentro do prazo"}
+                        </TooltipContent>
+                      </Tooltip>
                       <div>
                         <p className="text-[11px] font-bold text-slate-900">{p.candidate.name}</p>
                         <p className="text-[9px] text-slate-400 font-medium">{p.company.name}</p>

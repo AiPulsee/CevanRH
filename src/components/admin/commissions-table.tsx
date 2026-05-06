@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CommissionModal } from "@/components/admin/commission-modal";
 import { Search, DollarSign, CheckCircle2 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { PaginationBar } from "@/components/ui/pagination-bar";
 
 const PAGE_SIZE = 10;
@@ -224,17 +225,27 @@ export function CommissionsTable({
                         companyName={c.companyName}
                         onUpdate={handleUpdate}
                       >
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600"
-                        >
-                          <DollarSign className="h-4 w-4" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger render={
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600"
+                            >
+                              <DollarSign className="h-4 w-4" />
+                            </Button>
+                          } />
+                          <TooltipContent>
+                            {c.status === "PENDING" ? "Registrar faturamento (NF)" : "Registrar pagamento recebido"}
+                          </TooltipContent>
+                        </Tooltip>
                       </CommissionModal>
                     )}
                     {c.status === "PAID" && (
-                      <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                      <Tooltip>
+                        <TooltipTrigger render={<CheckCircle2 className="h-4 w-4 text-emerald-400" />} />
+                        <TooltipContent>Comissão recebida — pago em {c.paidAt ? new Date(c.paidAt).toLocaleDateString("pt-BR") : "—"}</TooltipContent>
+                      </Tooltip>
                     )}
                   </div>
                 </td>

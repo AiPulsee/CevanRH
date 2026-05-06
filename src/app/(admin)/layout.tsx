@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { logout } from "@/actions/auth";
 import { NotificationsPopover } from "@/components/admin/notifications-popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
 
@@ -67,6 +68,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
+    <TooltipProvider>
     <div className="flex min-h-screen bg-[#F8FAFC] text-foreground overflow-hidden relative">
       {/* Sidebar Administrativa - Desktop */}
       <aside className="w-76 border-r border-slate-800/50 bg-[#0B1222] text-slate-300 hidden lg:flex flex-col z-20 shadow-2xl transition-all duration-300">
@@ -139,9 +141,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <form action={async () => {
                   await logout();
                 }}>
-                  <Button type="submit" variant="ghost" size="icon" className="h-9 w-9 rounded-xl text-slate-400 hover:text-rose-500 transition-all">
-                    <LogOut className="h-4 w-4" />
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger render={
+                      <Button type="submit" variant="ghost" size="icon" className="h-9 w-9 rounded-xl text-slate-400 hover:text-rose-500 transition-all">
+                        <LogOut className="h-4 w-4" />
+                      </Button>
+                    } />
+                    <TooltipContent>Sair do painel</TooltipContent>
+                  </Tooltip>
                 </form>
               </div>
             </div>
@@ -156,6 +163,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </main>
       </div>
     </div>
+    </TooltipProvider>
   );
 }
 
