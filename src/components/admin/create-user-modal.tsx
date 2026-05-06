@@ -96,22 +96,22 @@ export function CreateUserModal() {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-lg w-[95vw] bg-white rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="bg-slate-900 p-8 text-white flex-shrink-0">
+      <DialogContent className="sm:max-w-lg w-[95vw] bg-white rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="bg-slate-900 p-6 sm:p-8 text-white flex-shrink-0">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-1">
-              <div className="h-10 w-10 rounded-xl bg-blue-500 flex items-center justify-center">
+              <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-blue-500 flex items-center justify-center">
                 <UserPlus className="h-5 w-5 text-white" />
               </div>
-              <DialogTitle className="text-xl font-black text-white">Novo Administrador</DialogTitle>
+              <DialogTitle className="text-lg sm:text-xl font-black text-white">Novo Administrador</DialogTitle>
             </div>
-            <DialogDescription className="text-slate-400 font-medium">
+            <DialogDescription className="text-slate-400 text-xs sm:text-sm font-medium">
               Crie uma conta de acesso ao painel administrativo.
             </DialogDescription>
           </DialogHeader>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-8 space-y-5">
+        <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-5">
           {/* Dados básicos */}
           <div className="space-y-4">
             <div className="space-y-2">

@@ -255,7 +255,8 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
+        {/* Desktop View (Table) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-100">
@@ -303,7 +304,6 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                     key={p.id}
                     className="border-b border-slate-50 hover:bg-slate-50/50 transition-all group"
                   >
-                    {/* Candidate */}
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="h-9 w-9 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-black text-xs shrink-0">
@@ -319,19 +319,16 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                         </div>
                       </div>
                     </td>
-                    {/* Company / Job */}
                     <td className="p-4">
                       <p className="font-bold text-xs text-slate-900">{p.company.name}</p>
                       <p className="text-[10px] text-slate-400 font-medium">{p.jobTitle}</p>
                     </td>
-                    {/* Salary */}
                     <td className="p-4">
                       <p className="font-black text-xs text-slate-900">
                         {fmt(p.monthlySalary)}
                       </p>
                       <p className="text-[9px] text-slate-400 font-bold uppercase">mensal</p>
                     </td>
-                    {/* Status */}
                     <td className="p-4">
                       <Badge
                         className={`${cfg.color} border font-bold text-[9px] uppercase tracking-wider rounded-lg px-2 py-0.5`}
@@ -340,7 +337,6 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                         {cfg.label}
                       </Badge>
                     </td>
-                    {/* Trial progress */}
                     <td className="p-4">
                       {p.status === "TRIAL" ? (
                         <div className="space-y-1.5 min-w-[120px]">
@@ -375,7 +371,6 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                         <span className="text-[10px] font-bold text-slate-400">—</span>
                       )}
                     </td>
-                    {/* Commission */}
                     <td className="p-4">
                       {p.commission ? (
                         <div>
@@ -415,63 +410,40 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                         <span className="text-[10px] font-bold text-slate-300">—</span>
                       )}
                     </td>
-                    {/* Actions */}
                     <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
+                      <div className="flex items-center justify-end gap-1.5 md:opacity-0 group-hover:opacity-100 transition-all">
                         {p.status === "TRIAL" && (
                           <>
-                            <Tooltip>
-                              <TooltipTrigger render={<span className="inline-flex" />}>
-                                <ConfirmAction
-                                  title="Confirmar Efetivação?"
-                                  description={`${p.candidate.name} será marcado como efetivado na ${p.company.name} e a comissão de ${fmt(Math.round(p.monthlySalary * 0.5))} será gerada automaticamente.`}
-                                  actionText="Sim, Efetivar"
-                                  onConfirm={() => handleConfirm(p.id)}
-                                >
-                                  <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-emerald-50 hover:text-emerald-600">
-                                    <CheckCircle2 className="h-4 w-4" />
-                                  </Button>
-                                </ConfirmAction>
-                              </TooltipTrigger>
-                              <TooltipContent>Confirmar Efetivação</TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger render={<span className="inline-flex" />}>
-                                <ConfirmAction
-                                  title="Encerrar Trial?"
-                                  description={`O período de experiência de ${p.candidate.name} será encerrado sem efetivação.`}
-                                  variant="danger"
-                                  actionText="Sim, Encerrar"
-                                  onConfirm={() => handleTerminate(p.id)}
-                                >
-                                  <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600">
-                                    <XCircle className="h-4 w-4" />
-                                  </Button>
-                                </ConfirmAction>
-                              </TooltipTrigger>
-                              <TooltipContent>Encerrar Trial</TooltipContent>
-                            </Tooltip>
+                            <ConfirmAction
+                              title="Confirmar Efetivação?"
+                              description={`${p.candidate.name} será marcado como efetivado na ${p.company.name}.`}
+                              actionText="Sim, Efetivar"
+                              onConfirm={() => handleConfirm(p.id)}
+                            >
+                              <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-emerald-50 hover:text-emerald-600">
+                                <CheckCircle2 className="h-4 w-4" />
+                              </Button>
+                            </ConfirmAction>
+                            <ConfirmAction
+                              title="Encerrar Trial?"
+                              description="O candidato será desligado e a alocação será encerrada."
+                              variant="danger"
+                              actionText="Encerrar"
+                              onConfirm={() => handleTerminate(p.id)}
+                            >
+                              <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600">
+                                <XCircle className="h-4 w-4" />
+                              </Button>
+                            </ConfirmAction>
                           </>
                         )}
-                        {p.commission &&
-                          (p.commission.status === "PENDING" ||
-                            p.commission.status === "INVOICED") && (
-                            <Tooltip>
-                              <TooltipTrigger render={<span className="inline-flex" />}>
-                                <CommissionModal
-                                  commission={p.commission}
-                                  candidateName={p.candidate.name}
-                                  companyName={p.company.name}
-                                  onUpdate={handleCommissionUpdate}
-                                >
-                                  <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600">
-                                    <DollarSign className="h-4 w-4" />
-                                  </Button>
-                                </CommissionModal>
-                              </TooltipTrigger>
-                              <TooltipContent>Gerenciar Comissão</TooltipContent>
-                            </Tooltip>
-                          )}
+                        {p.commission && (p.commission.status === "PENDING" || p.commission.status === "INVOICED") && (
+                          <CommissionModal commission={p.commission} candidateName={p.candidate.name} companyName={p.company.name} onUpdate={handleCommissionUpdate}>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600">
+                              <DollarSign className="h-4 w-4" />
+                            </Button>
+                          </CommissionModal>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -479,6 +451,104 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile View (Cards) */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {paginated.length === 0 ? (
+            <div className="p-10 text-center text-sm text-slate-400 font-medium">
+              Nenhuma alocação encontrada.
+            </div>
+          ) : (
+            paginated.map((p) => {
+              const cfg = STATUS_CONFIG[p.status];
+              const progress = p.status === "TRIAL" ? Math.round(Math.max(0, Math.min(100, ((90 - p.daysRemaining) / 90) * 100))) : 0;
+              return (
+                <div key={p.id} className="p-5 space-y-5">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-black">
+                        {p.candidate.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-slate-900">{p.candidate.name}</p>
+                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">{p.company.name}</p>
+                      </div>
+                    </div>
+                    <Badge className={`${cfg.color} border font-bold text-[8px] uppercase tracking-wider rounded px-1.5 py-0.5`}>
+                      {cfg.label}
+                    </Badge>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">Salário Mensal</p>
+                      <p className="text-xs font-black text-slate-900">{fmt(p.monthlySalary)}</p>
+                    </div>
+                    <div>
+                      <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">Comissão</p>
+                      <p className="text-xs font-black text-blue-600">{fmt(p.commission?.amount || Math.round(p.monthlySalary * 0.5))}</p>
+                    </div>
+                  </div>
+
+                  {p.status === "TRIAL" && (
+                    <div className="space-y-2 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                      <div className="flex items-center justify-between">
+                        <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-md ${urgency(p.daysRemaining)}`}>
+                          {p.daysRemaining} dias restantes
+                        </span>
+                        <span className="text-[10px] font-black text-slate-400">{progress}%</span>
+                      </div>
+                      <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all ${p.daysRemaining <= 7 ? "bg-rose-500" : p.daysRemaining <= 15 ? "bg-amber-500" : "bg-blue-500"}`}
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                    <div className="flex items-center gap-1">
+                      {p.status === "TRIAL" && (
+                        <>
+                          <ConfirmAction
+                            title="Efetivar?"
+                            description={`${p.candidate.name} será marcado como efetivado na ${p.company.name}.`}
+                            actionText="Sim, Efetivar"
+                            onConfirm={() => handleConfirm(p.id)}
+                          >
+                            <Button size="sm" variant="outline" className="rounded-lg h-8 text-[10px] font-black uppercase border-emerald-200 text-emerald-600 hover:bg-emerald-50">
+                              Efetivar
+                            </Button>
+                          </ConfirmAction>
+                          <ConfirmAction
+                            title="Encerrar?"
+                            description="O candidato será desligado e a alocação será encerrada."
+                            variant="danger"
+                            actionText="Encerrar"
+                            onConfirm={() => handleTerminate(p.id)}
+                          >
+                            <Button size="sm" variant="ghost" className="rounded-lg h-8 text-[10px] font-bold text-rose-500">
+                              Encerrar
+                            </Button>
+                          </ConfirmAction>
+                        </>
+                      )}
+                      {p.commission && (p.commission.status === "PENDING" || p.commission.status === "INVOICED") && (
+                        <CommissionModal commission={p.commission} candidateName={p.candidate.name} companyName={p.company.name} onUpdate={handleCommissionUpdate}>
+                          <Button size="sm" className="rounded-lg h-8 text-[10px] font-black uppercase bg-slate-900 text-white">
+                            Gerenciar $$
+                          </Button>
+                        </CommissionModal>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-slate-400 font-bold">{p.jobTitle}</p>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
         <div className="px-5 py-3 border-t border-slate-50 bg-slate-50/30 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[11px] text-slate-400 font-medium">

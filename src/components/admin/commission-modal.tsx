@@ -100,15 +100,15 @@ export function CommissionModal({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger render={children} />
-      <DialogContent className="sm:max-w-md bg-white rounded-[2rem] border-none shadow-2xl p-8">
+      <DialogContent className="sm:max-w-md w-[95vw] bg-white rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-2xl p-6 sm:p-8 max-h-[95vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="h-12 w-12 rounded-2xl bg-blue-50 flex items-center justify-center shrink-0">
-            <DollarSign className="h-6 w-6 text-blue-600" />
+          <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-blue-50 flex items-center justify-center shrink-0">
+            <DollarSign className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
           </div>
-          <div>
-            <h3 className="text-lg font-black text-slate-900">Gerenciar Comissão</h3>
-            <p className="text-xs text-slate-400 font-medium">
+          <div className="min-w-0">
+            <h3 className="text-base sm:text-lg font-black text-slate-900 truncate">Gerenciar Comissão</h3>
+            <p className="text-[10px] sm:text-xs text-slate-400 font-medium truncate">
               {candidateName} · {companyName}
             </p>
           </div>

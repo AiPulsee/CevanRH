@@ -87,8 +87,10 @@ export function UsersTable({ users: initial }: { users: User[] }) {
       </div>
 
       {/* Table */}
+      {/* Table & Cards Container */}
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
+        {/* Desktop View (Table) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50/50">
@@ -143,10 +145,8 @@ export function UsersTable({ users: initial }: { users: User[] }) {
                     {format(new Date(user.createdAt), "dd MMM yyyy", { locale: ptBR })}
                   </td>
                   <td className="px-5 py-4 text-right">
-                    <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
-                      
+                    <div className="flex items-center justify-end gap-1.5 md:opacity-0 group-hover:opacity-100 transition-all">
                       <EditUserModal user={user} />
-
                       <ConfirmAction
                         title="Excluir Usuário?"
                         description="Esta ação não pode ser desfeita. O usuário perderá acesso imediatamente."
@@ -164,6 +164,67 @@ export function UsersTable({ users: initial }: { users: User[] }) {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile View (Cards) */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {paginated.length === 0 ? (
+            <div className="p-10 text-center text-sm text-slate-400 font-medium">
+              Nenhum administrador encontrado.
+            </div>
+          ) : (
+            paginated.map((user) => (
+              <div key={user.id} className="p-4 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center font-bold text-slate-500 border border-slate-200">
+                      {(user.name ?? user.email ?? "?").charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-slate-900">{user.name ?? "—"}</p>
+                      <p className="text-[11px] text-slate-400 font-medium">{user.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <EditUserModal user={user} />
+                    <ConfirmAction
+                      title="Excluir Usuário?"
+                      description="Esta ação não pode ser desfeita. O usuário perderá acesso imediatamente."
+                      variant="danger"
+                      actionText="Sim, Excluir"
+                      onConfirm={() => handleDelete(user.id)}
+                    >
+                      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-400">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </ConfirmAction>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Permissões</p>
+                  <div className="flex flex-wrap gap-1">
+                    {user.permissions && user.permissions.length > 0 ? (
+                      user.permissions.map((p) => (
+                        <Badge key={p} className="bg-blue-50 text-blue-600 border-none rounded px-1.5 py-0.5 text-[8px] font-black uppercase">
+                          {PERMISSIONS_MAP[p] || p}
+                        </Badge>
+                      ))
+                    ) : (
+                      <span className="text-[10px] text-slate-300 font-bold italic">Nenhuma</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-slate-50">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Membro desde</p>
+                  <p className="text-[11px] font-black text-slate-600">
+                    {format(new Date(user.createdAt), "dd/MM/yyyy", { locale: ptBR })}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
         <div className="px-5 py-3 border-t border-slate-50 bg-slate-50/30 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[11px] text-slate-400 font-medium">

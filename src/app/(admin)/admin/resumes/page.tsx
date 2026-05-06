@@ -172,10 +172,10 @@ export default async function ResumesPage({
                 </div>
 
                 {/* Date & Actions */}
-                <div className="flex items-center justify-between lg:justify-end gap-6 border-t lg:border-none pt-4 lg:pt-0">
-                  <div className="text-right">
+                <div className="flex flex-row sm:flex-row items-center justify-between lg:justify-end gap-4 sm:gap-6 border-t lg:border-none pt-4 lg:pt-0">
+                  <div className="text-left lg:text-right">
                     <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Recebido em</p>
-                    <div className="flex items-center gap-1.5 justify-end mt-1">
+                    <div className="flex items-center gap-1.5 justify-start lg:justify-end mt-1">
                       <Calendar className="h-3.5 w-3.5 text-slate-400" />
                       <span className="text-xs font-bold text-slate-700">
                         {format(new Date(app.createdAt), "dd/MM/yyyy", { locale: ptBR })}
@@ -183,10 +183,10 @@ export default async function ResumesPage({
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button nativeButton={false} render={<a href={app.resumeUrl} target="_blank" rel="noopener noreferrer" />} size="icon" variant="outline" className="h-10 w-10 rounded-xl border-slate-200 bg-white">
+                    <Button nativeButton={false} render={<a href={app.resumeUrl} target="_blank" rel="noopener noreferrer" />} size="icon" variant="outline" className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl border-slate-200 bg-white">
                       <Download className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" variant="secondary" className="h-10 w-10 rounded-xl bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200">
+                    <Button size="icon" variant="secondary" className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200">
                       <ExternalLink className="h-4 w-4" />
                     </Button>
                   </div>

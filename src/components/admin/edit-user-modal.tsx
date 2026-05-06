@@ -78,21 +78,21 @@ export function EditUserModal({ user }: { user: User }) {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-[500px] bg-white border-none rounded-[2rem] shadow-2xl p-0 overflow-hidden">
-        <DialogHeader className="bg-slate-950 p-8 text-white relative overflow-hidden">
+      <DialogContent className="sm:max-w-[500px] w-[95vw] bg-white border-none rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl p-0 overflow-hidden max-h-[95vh] overflow-y-auto">
+        <DialogHeader className="bg-slate-950 p-6 sm:p-8 text-white relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent pointer-events-none" />
             <div className="flex items-center gap-4 relative z-10">
-                <div className="h-12 w-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                    <Shield className="h-6 w-6 text-white" />
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+                    <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
                 <div>
-                    <DialogTitle className="text-xl font-black tracking-tight">Editar Usuário</DialogTitle>
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Configurar Acessos e Perfil</p>
+                    <DialogTitle className="text-lg sm:text-xl font-black tracking-tight">Editar Usuário</DialogTitle>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5 sm:mt-1">Configurar Acessos e Perfil</p>
                 </div>
             </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Nome Completo</Label>

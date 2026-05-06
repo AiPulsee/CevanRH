@@ -59,22 +59,22 @@ export function CreateCompanyModal() {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-xl w-[95vw] bg-white rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden">
-        <div className="bg-slate-900 p-10 text-white">
+      <DialogContent className="sm:max-w-xl w-[95vw] bg-white rounded-[1.5rem] sm:rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden max-h-[95vh] overflow-y-auto">
+        <div className="bg-slate-900 p-6 sm:p-10 text-white flex-shrink-0">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
-              <div className="h-10 w-10 rounded-xl bg-blue-500 flex items-center justify-center">
-                <Building2 className="h-6 w-6 text-white" />
+              <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-blue-500 flex items-center justify-center shrink-0">
+                <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
               </div>
-              <DialogTitle className="text-2xl font-black">Cadastrar Empresa</DialogTitle>
+              <DialogTitle className="text-xl sm:text-2xl font-black">Cadastrar Empresa</DialogTitle>
             </div>
-            <DialogDescription className="text-slate-400 font-medium">
+            <DialogDescription className="text-slate-400 text-xs sm:text-sm font-medium">
               Registre um novo cliente corporativo no sistema.
             </DialogDescription>
           </DialogHeader>
         </div>
 
-        <div className="p-8 space-y-6">
+        <div className="p-6 sm:p-8 space-y-6">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="font-bold text-slate-700">Nome da Empresa</Label>

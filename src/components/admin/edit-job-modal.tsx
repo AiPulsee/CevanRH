@@ -90,17 +90,17 @@ export function EditJobModal({ job }: { job: Job }) {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-2xl w-[95vw] bg-white rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="bg-slate-900 p-8 text-white flex-shrink-0">
+      <DialogContent className="sm:max-w-2xl w-[95vw] bg-white rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="bg-slate-900 p-6 sm:p-8 text-white flex-shrink-0">
           <DialogHeader>
-            <DialogTitle className="text-xl font-black text-white">Editar Vaga</DialogTitle>
-            <DialogDescription className="text-slate-400 font-medium mt-1">
+            <DialogTitle className="text-lg sm:text-xl font-black text-white">Editar Vaga</DialogTitle>
+            <DialogDescription className="text-slate-400 text-xs sm:text-sm font-medium mt-0.5 sm:mt-1">
               Atualize as informações da vaga de curadoria.
             </DialogDescription>
           </DialogHeader>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-8 space-y-5">
+        <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="space-y-2 md:col-span-2">
               <Label className="font-bold text-slate-700">Título da Vaga</Label>

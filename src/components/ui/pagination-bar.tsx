@@ -15,11 +15,20 @@ interface PaginationBarProps {
 }
 
 function getPageRange(current: number, total: number): (number | "...")[] {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  // On mobile or general compact view, we want even fewer items
+  const isCompact = total > 5;
+  
+  if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
 
+  // If total > 5, we show: 1, current-1, current, current+1, total
   const core = new Set(
-    [1, total, current - 1, current, current + 1].filter((p) => p >= 1 && p <= total)
+    [1, total, current].filter((p) => p >= 1 && p <= total)
   );
+  
+  // Add neighbors only if we have space
+  if (current > 1) core.add(current - 1);
+  if (current < total) core.add(current + 1);
+
   const sorted = Array.from(core).sort((a, b) => a - b);
 
   const result: (number | "...")[] = [];

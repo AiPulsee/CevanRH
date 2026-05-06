@@ -135,41 +135,36 @@ export function AdminLayoutClient({ children, userName, permissions }: Props) {
                 />
               </div>
 
-              <div className="flex items-center gap-4 border-l border-slate-100 pl-6">
+            <div className="flex items-center gap-3 md:gap-4">
+              <div className="flex items-center gap-3 border-l border-slate-100 pl-4 md:pl-6">
                 <NotificationsPopover />
-                <div className="flex items-center gap-3 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
-                  <div className="flex items-center gap-3 px-2">
-                    <div className="text-right hidden sm:block leading-none">
-                      <p className="text-[11px] font-black text-slate-900">
-                        {userName ?? "Administrador"}
+                <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-xl border border-slate-100">
+                  <div className="flex items-center gap-2 px-1">
+                    <div className="text-right hidden md:block leading-none mr-1">
+                      <p className="text-[11px] font-black text-slate-900 truncate max-w-[100px]">
+                        {userName ?? "Admin"}
                       </p>
-                      <p className="text-[9px] font-bold text-blue-500 uppercase mt-1">
+                      <p className="text-[8px] font-black text-blue-500 uppercase mt-0.5">
                         {isMaster ? "Mestre" : "Restrito"}
                       </p>
                     </div>
-                    <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-xs shadow-lg">
+                    <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white text-[10px] shadow-md shrink-0">
                       {(userName ?? "AD").slice(0, 2).toUpperCase()}
                     </div>
                   </div>
                   <form action={async () => { await logout(); }}>
-                    <Tooltip>
-                      <TooltipTrigger
-                        render={
-                          <Button
-                            type="submit"
-                            variant="ghost"
-                            size="icon"
-                            className="h-9 w-9 rounded-xl text-slate-400 hover:text-rose-500 transition-all"
-                          >
-                            <LogOut className="h-4 w-4" />
-                          </Button>
-                        }
-                      />
-                      <TooltipContent>Sair do painel</TooltipContent>
-                    </Tooltip>
+                    <Button
+                      type="submit"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-lg text-slate-400 hover:text-rose-500 transition-all"
+                    >
+                      <LogOut className="h-3.5 w-3.5" />
+                    </Button>
                   </form>
                 </div>
               </div>
+            </div>
             </div>
           </header>
 

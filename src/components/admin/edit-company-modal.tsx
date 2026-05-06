@@ -71,22 +71,22 @@ export function EditCompanyModal({ company }: { company: Company }) {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-xl w-[95vw] bg-white rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden">
-        <div className="bg-slate-900 p-8 text-white">
+      <DialogContent className="sm:max-w-xl w-[95vw] bg-white rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden max-h-[95vh] overflow-y-auto">
+        <div className="bg-slate-900 p-6 sm:p-8 text-white flex-shrink-0">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-1">
-              <div className="h-10 w-10 rounded-xl bg-blue-500 flex items-center justify-center">
-                <Building2 className="h-6 w-6 text-white" />
+              <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-blue-500 flex items-center justify-center shrink-0">
+                <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
               </div>
-              <DialogTitle className="text-xl font-black text-white">Editar Empresa</DialogTitle>
+              <DialogTitle className="text-lg sm:text-xl font-black text-white">Editar Empresa</DialogTitle>
             </div>
-            <DialogDescription className="text-slate-400 font-medium">
+            <DialogDescription className="text-slate-400 text-xs sm:text-sm font-medium mt-0.5">
               Atualize os dados do cliente corporativo.
             </DialogDescription>
           </DialogHeader>
         </div>
 
-        <div className="p-8 space-y-5">
+        <div className="p-6 sm:p-8 space-y-5">
           <div className="space-y-2">
             <Label className="font-bold text-slate-700">Nome da Empresa</Label>
             <Input

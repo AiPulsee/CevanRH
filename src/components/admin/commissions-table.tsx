@@ -138,7 +138,8 @@ export function CommissionsTable({
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      {/* Desktop View (Table) */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-100">
@@ -169,7 +170,6 @@ export function CommissionsTable({
                 key={c.id}
                 className="border-b border-slate-50 hover:bg-slate-50/50 transition-all group"
               >
-                {/* Candidate */}
                 <td className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="h-9 w-9 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-black text-xs shrink-0">
@@ -181,19 +181,16 @@ export function CommissionsTable({
                     </div>
                   </div>
                 </td>
-                {/* Company / Job */}
                 <td className="p-4">
                   <p className="font-bold text-xs text-slate-900">{c.companyName}</p>
                   <p className="text-[10px] text-slate-400 font-medium">{c.jobTitle}</p>
                 </td>
-                {/* Amount */}
                 <td className="p-4">
                   <p className="font-black text-xs text-slate-900">{fmt(c.amount)}</p>
                   {c.invoiceNumber && (
                     <p className="text-[9px] text-slate-400 font-medium">{c.invoiceNumber}</p>
                   )}
                 </td>
-                {/* Status */}
                 <td className="p-4">
                   <Badge
                     className={`${STATUS_COLOR[c.status]} border-none font-bold text-[9px] uppercase tracking-wider rounded-lg px-2 py-0.5`}
@@ -206,7 +203,6 @@ export function CommissionsTable({
                     </p>
                   )}
                 </td>
-                {/* Due date */}
                 <td className="p-4">
                   {c.dueDate ? (
                     <p className="text-xs font-bold text-slate-600">
@@ -216,35 +212,22 @@ export function CommissionsTable({
                     <span className="text-[10px] text-slate-300">—</span>
                   )}
                 </td>
-                {/* Actions */}
                 <td className="p-4 text-right">
-                  <div className="flex items-center justify-end opacity-0 group-hover:opacity-100 transition-all">
+                  <div className="flex items-center justify-end md:opacity-0 group-hover:opacity-100 transition-all">
                     {(c.status === "PENDING" || c.status === "INVOICED") && (
-                      <Tooltip>
-                        <TooltipTrigger render={<span className="inline-flex" />}>
-                          <CommissionModal
-                            commission={c}
-                            candidateName={c.candidateName}
-                            companyName={c.companyName}
-                            onUpdate={handleUpdate}
-                          >
-                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600">
-                              <DollarSign className="h-4 w-4" />
-                            </Button>
-                          </CommissionModal>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          {c.status === "PENDING" ? "Registrar faturamento (NF)" : "Registrar pagamento recebido"}
-                        </TooltipContent>
-                      </Tooltip>
+                      <CommissionModal
+                        commission={c}
+                        candidateName={c.candidateName}
+                        companyName={c.companyName}
+                        onUpdate={handleUpdate}
+                      >
+                        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600">
+                          <DollarSign className="h-4 w-4" />
+                        </Button>
+                      </CommissionModal>
                     )}
                     {c.status === "PAID" && (
-                      <Tooltip>
-                        <TooltipTrigger render={<span className="inline-flex items-center" />}>
-                          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                        </TooltipTrigger>
-                        <TooltipContent>Comissão recebida — pago em {c.paidAt ? new Date(c.paidAt).toLocaleDateString("pt-BR") : "—"}</TooltipContent>
-                      </Tooltip>
+                      <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                     )}
                   </div>
                 </td>
@@ -252,6 +235,69 @@ export function CommissionsTable({
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile View (Cards) */}
+      <div className="md:hidden divide-y divide-slate-100">
+        {paginated.length === 0 ? (
+          <div className="p-10 text-center text-sm text-slate-400 font-medium">
+            Nenhuma comissão encontrada.
+          </div>
+        ) : (
+          paginated.map((c) => (
+            <div key={c.id} className="p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-black">
+                    {c.candidateName.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-black text-slate-900">{c.candidateName}</p>
+                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">{c.companyName}</p>
+                  </div>
+                </div>
+                <Badge className={`${STATUS_COLOR[c.status]} border-none font-bold text-[8px] uppercase tracking-wider rounded px-1.5 py-0.5`}>
+                  {STATUS_LABEL[c.status]}
+                </Badge>
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <div>
+                  <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">Valor</p>
+                  <p className="text-sm font-black text-slate-900">{fmt(c.amount)}</p>
+                </div>
+                {(c.status === "PENDING" || c.status === "INVOICED") && (
+                  <CommissionModal commission={c} candidateName={c.candidateName} companyName={c.companyName} onUpdate={handleUpdate}>
+                    <Button size="sm" className="rounded-lg h-9 text-[10px] font-black uppercase bg-slate-900 text-white px-4">
+                      Gerenciar $$
+                    </Button>
+                  </CommissionModal>
+                )}
+                {c.status === "PAID" && (
+                  <div className="flex items-center gap-1.5 text-emerald-600">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span className="text-[10px] font-black uppercase">Recebido</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div className="space-y-1">
+                  <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Vencimento</p>
+                  <p className="text-[11px] font-bold text-slate-600">
+                    {c.dueDate ? format(new Date(c.dueDate), "dd/MM/yyyy", { locale: ptBR }) : "—"}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">NF / Fatura</p>
+                  <p className="text-[11px] font-bold text-slate-600 truncate px-2">
+                    {c.invoiceNumber || "Não emitida"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
       <div className="px-5 py-3 border-t border-slate-50 bg-slate-50/30 flex flex-col sm:flex-row items-center justify-between gap-3">
         <p className="text-[11px] text-slate-400 font-medium">
