@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ConfirmAction } from "@/components/ui/confirm-action";
 import {
   Search,
   Building2,
@@ -11,9 +13,14 @@ import {
   Users2,
   CheckCircle2,
   Briefcase,
+  Trash2,
 } from "lucide-react";
 import { ScreeningModal } from "@/components/admin/screening-modal";
+import { EditJobModal } from "@/components/admin/edit-job-modal";
+import { deleteJob } from "@/actions/jobs";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type App = {
   id: string;
@@ -26,10 +33,15 @@ type App = {
 type ManagedJob = {
   id: string;
   title: string;
+  description: string;
   status: string;
   location: string;
   isRemote: boolean;
   salaryRange: string | null;
+  requirements: string | null;
+  responsibilities: string | null;
+  benefits: string | null;
+  tips: string | null;
   company: { name: string; logoUrl: string | null };
   _count: { applications: number };
   applications: App[];
@@ -37,15 +49,18 @@ type ManagedJob = {
 
 function statusLabel(status: string) {
   if (status === "ACTIVE") return "Triagem Ativa";
-  if (status === "DRAFT") return "Aguardando Início";
-  return "Finalizado";
+  if (status === "DRAFT") return "Rascunho";
+  return "Encerrada";
 }
 
 type StatusFilter = "ALL" | "ACTIVE" | "CLOSED";
 
-export function ManagedJobsList({ jobs }: { jobs: ManagedJob[] }) {
+export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
+  const router = useRouter();
+  const [jobs, setJobs] = useState(initial);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
+  const [, startTransition] = useTransition();
 
   const filtered = jobs.filter((job) => {
     const matchesSearch =
@@ -58,6 +73,19 @@ export function ManagedJobsList({ jobs }: { jobs: ManagedJob[] }) {
       (statusFilter === "CLOSED" && (job.status === "CLOSED" || job.status === "ARCHIVED"));
     return matchesSearch && matchesStatus;
   });
+
+  function handleDelete(jobId: string) {
+    startTransition(async () => {
+      const result = await deleteJob(jobId);
+      if (result.success) {
+        setJobs((prev) => prev.filter((j) => j.id !== jobId));
+        toast.success("Vaga excluída com sucesso.");
+        router.refresh();
+      } else {
+        toast.error(result.error || "Erro ao excluir vaga.");
+      }
+    });
+  }
 
   if (jobs.length === 0) {
     return (
@@ -93,7 +121,7 @@ export function ManagedJobsList({ jobs }: { jobs: ManagedJob[] }) {
                   : "text-slate-500 hover:text-slate-700"
               }`}
             >
-              {s === "ALL" ? "Todos" : s === "ACTIVE" ? "Triagem Ativa" : "Finalizados"}
+              {s === "ALL" ? "Todos" : s === "ACTIVE" ? "Triagem Ativa" : "Encerradas"}
             </button>
           ))}
         </div>
@@ -191,12 +219,28 @@ export function ManagedJobsList({ jobs }: { jobs: ManagedJob[] }) {
                     </div>
                   </div>
 
-                  <div className="w-full xl:w-auto">
+                  <div className="flex items-center gap-2 w-full xl:w-auto">
                     <ScreeningModal
                       jobTitle={job.title}
                       companyName={job.company.name}
                       applications={job.applications}
                     />
+                    <EditJobModal job={job} />
+                    <ConfirmAction
+                      title="Excluir Vaga?"
+                      description="Esta ação não pode ser desfeita. Todas as candidaturas vinculadas também serão removidas."
+                      variant="danger"
+                      actionText="Sim, Excluir"
+                      onConfirm={() => handleDelete(job.id)}
+                    >
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </ConfirmAction>
                   </div>
                 </div>
               </Card>

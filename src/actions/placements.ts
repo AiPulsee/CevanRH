@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { PlacementStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { getSettings } from "@/actions/settings";
 
 // --- Criar Placement (somente ADMIN) ---
 export async function createPlacement(data: {
@@ -88,6 +89,9 @@ export async function confirmEffective(placementId: string) {
 
     const now = new Date();
 
+    const settings = await getSettings(["managed.fee_percentage"]);
+    const feePercentage = parseFloat(settings["managed.fee_percentage"] ?? "50");
+
     // Atualizar placement para EFFECTIVE
     await prisma.placement.update({
       where: { id: placementId },
@@ -97,8 +101,8 @@ export async function confirmEffective(placementId: string) {
       },
     });
 
-    // Gerar comissão automaticamente (50% fixo)
-    const commissionAmount = Math.round(placement.monthlySalary * 50 / 100);
+    // Gerar comissão usando a taxa configurada em /admin/settings
+    const commissionAmount = Math.round(placement.monthlySalary * feePercentage / 100);
     const dueDate = new Date(now);
     dueDate.setDate(dueDate.getDate() + 30); // Vencimento em 30 dias
 
@@ -106,7 +110,7 @@ export async function confirmEffective(placementId: string) {
       data: {
         placementId: placementId,
         baseSalary: placement.monthlySalary,
-        percentage: 50,
+        percentage: feePercentage,
         amount: commissionAmount,
         status: "PENDING",
         dueDate: dueDate,

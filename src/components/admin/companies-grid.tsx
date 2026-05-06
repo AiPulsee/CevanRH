@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Building2, Globe, Search, Users2, Zap } from "lucide-react";
+import { ConfirmAction } from "@/components/ui/confirm-action";
+import { Building2, Globe, Search, Users2, Zap, Trash2 } from "lucide-react";
 import { PaginationBar } from "@/components/ui/pagination-bar";
+import { EditCompanyModal } from "@/components/admin/edit-company-modal";
+import { deleteCompany } from "@/actions/companies";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const PAGE_SIZE = 12;
 
@@ -13,13 +19,20 @@ type Company = {
   id: string;
   name: string;
   slug: string;
+  email: string | null;
+  description: string | null;
+  industry: string | null;
+  location: string | null;
   logoUrl: string | null;
   _count: { jobs: number; users: number };
 };
 
-export function CompaniesGrid({ companies }: { companies: Company[] }) {
+export function CompaniesGrid({ companies: initial }: { companies: Company[] }) {
+  const router = useRouter();
+  const [companies, setCompanies] = useState(initial);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [, startTransition] = useTransition();
 
   const filtered = companies.filter(
     (c) =>
@@ -34,6 +47,19 @@ export function CompaniesGrid({ companies }: { companies: Company[] }) {
   function handleSearch(v: string) {
     setSearch(v);
     setCurrentPage(1);
+  }
+
+  function handleDelete(companyId: string) {
+    startTransition(async () => {
+      const result = await deleteCompany(companyId);
+      if (result.success) {
+        setCompanies((prev) => prev.filter((c) => c.id !== companyId));
+        toast.success("Empresa excluída com sucesso.");
+        router.refresh();
+      } else {
+        toast.error(result.error || "Erro ao excluir empresa.");
+      }
+    });
   }
 
   return (
@@ -72,9 +98,27 @@ export function CompaniesGrid({ companies }: { companies: Company[] }) {
                       company.name.charAt(0)
                     )}
                   </div>
-                  <Badge className="rounded-lg px-2 py-1 text-[10px] font-black uppercase border-none bg-blue-50 text-blue-600">
-                    Cliente
-                  </Badge>
+                  <div className="flex items-center gap-1">
+                    <Badge className="rounded-lg px-2 py-1 text-[10px] font-black uppercase border-none bg-blue-50 text-blue-600">
+                      Cliente
+                    </Badge>
+                    <EditCompanyModal company={company} />
+                    <ConfirmAction
+                      title="Excluir Empresa?"
+                      description="Esta ação é irreversível. Todas as vagas e dados relacionados serão removidos."
+                      variant="danger"
+                      actionText="Sim, Excluir"
+                      onConfirm={() => handleDelete(company.id)}
+                    >
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </ConfirmAction>
+                  </div>
                 </div>
 
                 <div className="space-y-1">

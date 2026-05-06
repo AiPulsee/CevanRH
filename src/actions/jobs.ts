@@ -95,3 +95,49 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
     return { error: "Erro interno ao criar vaga." };
   }
 }
+
+export async function updateJob(
+  jobId: string,
+  data: {
+    title: string;
+    description: string;
+    location: string;
+    isRemote: boolean;
+    salaryRange?: string;
+    requirements?: string;
+    responsibilities?: string;
+    benefits?: string;
+    tips?: string;
+    status: JobStatus;
+  }
+) {
+  const session = await auth();
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
+  if (!session || userRole !== "ADMIN") return { error: "Não autorizado." };
+
+  try {
+    await prisma.job.update({ where: { id: jobId }, data });
+    revalidatePath("/admin/managed");
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (err) {
+    console.error(err);
+    return { error: "Erro interno ao atualizar vaga." };
+  }
+}
+
+export async function deleteJob(jobId: string) {
+  const session = await auth();
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
+  if (!session || userRole !== "ADMIN") return { error: "Não autorizado." };
+
+  try {
+    await prisma.job.delete({ where: { id: jobId } });
+    revalidatePath("/admin/managed");
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (err) {
+    console.error(err);
+    return { error: "Erro interno ao excluir vaga." };
+  }
+}

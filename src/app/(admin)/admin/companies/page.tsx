@@ -7,7 +7,17 @@ import { CompaniesGrid } from "@/components/admin/companies-grid";
 export default async function AdminCompaniesPage() {
   const [companies, totalJobs, totalShortlists] = await Promise.all([
     prisma.company.findMany({
-      include: { _count: { select: { jobs: true, users: true } } },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        email: true,
+        description: true,
+        industry: true,
+        location: true,
+        logoUrl: true,
+        _count: { select: { jobs: true, users: true } },
+      },
       orderBy: { createdAt: "desc" },
     }),
     prisma.job.count(),
@@ -20,7 +30,7 @@ export default async function AdminCompaniesPage() {
         <div>
           <h1 className="text-2xl font-black text-slate-900">Empresas Clientes</h1>
           <p className="text-sm text-slate-500 font-medium">
-            Gestão de parceiros e configurações de plano.
+            Gestão de clientes e parceiros corporativos.
           </p>
         </div>
         <CreateCompanyModal />

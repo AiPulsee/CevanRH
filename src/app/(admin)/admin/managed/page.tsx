@@ -20,8 +20,19 @@ export default async function AdminManagedJobs({
   const [managedJobs, totalManagedJobs, totalActive, totalShortlisted, companies] = await Promise.all([
     prisma.job.findMany({
       where: { type: "MANAGED" },
-      include: {
-        company: true,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        status: true,
+        location: true,
+        isRemote: true,
+        salaryRange: true,
+        requirements: true,
+        responsibilities: true,
+        benefits: true,
+        tips: true,
+        company: { select: { name: true, logoUrl: true } },
         _count: { select: { applications: true } },
         applications: {
           select: {

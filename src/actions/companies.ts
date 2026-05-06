@@ -55,3 +55,36 @@ export async function createCompany(prevState: unknown, formData: FormData) {
     return { error: "Erro interno ao criar empresa." };
   }
 }
+
+export async function updateCompany(
+  companyId: string,
+  data: { name: string; email?: string | null; description?: string; industry?: string; location?: string }
+) {
+  const session = await auth();
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
+  if (!session || userRole !== "ADMIN") return { error: "Não autorizado." };
+
+  try {
+    await prisma.company.update({ where: { id: companyId }, data });
+    revalidatePath("/admin/companies");
+    return { success: true };
+  } catch (err) {
+    console.error(err);
+    return { error: "Erro interno ao atualizar empresa." };
+  }
+}
+
+export async function deleteCompany(companyId: string) {
+  const session = await auth();
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
+  if (!session || userRole !== "ADMIN") return { error: "Não autorizado." };
+
+  try {
+    await prisma.company.delete({ where: { id: companyId } });
+    revalidatePath("/admin/companies");
+    return { success: true };
+  } catch (err) {
+    console.error(err);
+    return { error: "Erro interno ao excluir empresa." };
+  }
+}

@@ -336,7 +336,7 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
                       <iframe
                         src={`${currentApp.resumeUrl}#toolbar=0`}
                         className="w-full h-full border-none"
-                        title="Resume Preview"
+                        title="Visualizar Currículo"
                       />
                     ) : (
                       <div className="flex-1 flex flex-col items-center justify-center text-center p-8 sm:p-12">
@@ -387,7 +387,7 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
                     onClick={() => currentApp && window.open(currentApp.resumeUrl, '_blank')}
                   >
                     <Download className="h-4 w-4 mr-2" />
-                    Download
+                    Baixar Currículo
                   </Button>
                 </div>
               </div>
