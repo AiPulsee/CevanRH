@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CommissionModal } from "@/components/admin/commission-modal";
 import { Search, DollarSign, CheckCircle2 } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { PaginationBar } from "@/components/ui/pagination-bar";
 
 const PAGE_SIZE = 10;
@@ -107,6 +107,7 @@ export function CommissionsTable({
   }
 
   return (
+    <TooltipProvider>
     <div className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden border">
       {/* Filters */}
       <div className="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
@@ -259,5 +260,6 @@ export function CommissionsTable({
         <PaginationBar page={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       </div>
     </div>
+    </TooltipProvider>
   );
 }

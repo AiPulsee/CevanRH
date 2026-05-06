@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { 
-  MapPin, DollarSign, Clock, Zap, Building2, ChevronLeft, 
+  MapPin, DollarSign, Zap, Building2, ChevronLeft, 
   ShieldCheck, Share2, Info, Star, CheckCircle2, Lightbulb
 } from "lucide-react";
 import Link from "next/link";

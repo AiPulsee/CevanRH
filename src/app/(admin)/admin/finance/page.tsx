@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { Receipt, TrendingUp, Clock, CheckCircle2, Ban } from "lucide-react";

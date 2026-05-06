@@ -101,7 +101,7 @@ export function ManagedJobsList({ jobs }: { jobs: ManagedJob[] }) {
 
       {filtered.length === 0 ? (
         <div className="py-8 text-center text-sm text-slate-400 font-medium">
-          Nenhuma vaga encontrada para "{search}".
+          Nenhuma vaga encontrada para &quot;{search}&quot;.
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-3">

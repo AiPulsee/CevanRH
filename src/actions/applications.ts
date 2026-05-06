@@ -52,7 +52,7 @@ export async function applyToJob(data: {
     revalidatePath("/admin");
     revalidatePath("/admin/managed");
 
-    return { success: true, applicationId: application.id };
+    return { success: true, applicationId: createdApplication.id };
   } catch (error: any) {
     console.error("Erro ao processar candidatura:", error);
     if (error.code === 'P2002') {
@@ -62,12 +62,13 @@ export async function applyToJob(data: {
   }
 }
 
-export async function getApplications(filters?: { jobId?: string; status?: any }) {
+export async function getApplications(filters?: { jobId?: string; status?: string }) {
   try {
     return await prisma.application.findMany({
       where: {
         ...(filters?.jobId && { jobId: filters.jobId }),
         ...(filters?.status && { status: filters.status }),
+      },
       },
       include: {
         candidate: { select: { id: true, name: true, email: true } },
@@ -92,6 +93,7 @@ export async function rejectApplication(applicationId: string) {
       data: { status: "REJECTED" },
     });
     revalidatePath("/admin/managed");
+    revalidatePath("/admin");
     return { success: true };
   } catch (error) {
     console.error("Erro ao reprovar candidatura:", error);
@@ -115,6 +117,7 @@ export async function shortlistApplication(applicationId: string, feedback?: str
     });
 
     revalidatePath("/admin/managed");
+    revalidatePath("/admin");
     return { success: true };
   } catch (error) {
     console.error("Erro ao favoritar candidatura:", error);

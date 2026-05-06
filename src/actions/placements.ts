@@ -8,11 +8,12 @@ import { revalidatePath } from "next/cache";
 // --- Criar Placement (somente ADMIN) ---
 export async function createPlacement(data: {
   applicationId: string;
-  monthlySalary: number; // em centavos
-  startDate: string;     // ISO string
+  monthlySalary: number;
+  startDate: string;
 }) {
   const session = await auth();
-  if (!session || (session.user as any).role !== "ADMIN") {
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
+  if (!session || userRole !== "ADMIN") {
     return { error: "Não autorizado." };
   }
 
@@ -41,6 +42,7 @@ export async function createPlacement(data: {
     });
 
     revalidatePath("/admin/placements");
+    revalidatePath("/admin");
     revalidatePath("/dashboard/placements");
 
     return { success: true };
@@ -55,7 +57,8 @@ export async function confirmEffective(placementId: string) {
   const session = await auth();
   if (!session) return { error: "Não autorizado." };
 
-  const role = (session.user as any).role;
+  const user = session.user as { role: string; companyId?: string };
+  const role = user.role;
   if (role !== "ADMIN" && role !== "EMPLOYER") {
     return { error: "Não autorizado." };
   }
@@ -112,7 +115,8 @@ export async function confirmEffective(placementId: string) {
     });
 
     revalidatePath("/admin/placements");
-    revalidatePath("/admin/placements");
+    revalidatePath("/admin/finance");
+    revalidatePath("/admin");
     revalidatePath("/dashboard/placements");
 
     return { success: true };
@@ -127,7 +131,8 @@ export async function terminatePlacement(placementId: string, reason?: string) {
   const session = await auth();
   if (!session) return { error: "Não autorizado." };
 
-  const role = (session.user as any).role;
+  const user = session.user as { role: string; companyId?: string };
+  const role = user.role;
   if (role !== "ADMIN" && role !== "EMPLOYER") {
     return { error: "Não autorizado." };
   }
@@ -161,6 +166,7 @@ export async function terminatePlacement(placementId: string, reason?: string) {
     });
 
     revalidatePath("/admin/placements");
+    revalidatePath("/admin");
     revalidatePath("/dashboard/placements");
 
     return { success: true };
@@ -177,7 +183,8 @@ export async function hireAndPlace(data: {
   startDate: string;
 }) {
   const session = await auth();
-  if (!session || (session.user as any).role !== "ADMIN") {
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
+  if (!session || userRole !== "ADMIN") {
     return { error: "Não autorizado." };
   }
 
@@ -210,10 +217,12 @@ export async function hireAndPlace(data: {
 
     revalidatePath("/admin/placements");
     revalidatePath("/admin/managed");
+    revalidatePath("/admin");
     return { success: true };
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
     console.error(err);
-    return { error: err.message || "Erro ao contratar candidato." };
+    return { error: errorMessage || "Erro ao contratar candidato." };
   }
 }
 
@@ -222,11 +231,12 @@ export async function getPlacements(filters?: { status?: PlacementStatus }) {
   const session = await auth();
   if (!session) return [];
 
-  const role = (session.user as any).role;
-  const companyId = (session.user as any).companyId;
+  const user = session.user as { role: string; companyId?: string };
+  const role = user.role;
+  const companyId = user.companyId;
 
   try {
-    const where: any = {};
+    const where: { status?: PlacementStatus; application?: { job: { companyId: string } } } = {};
     
     if (filters?.status) {
       where.status = filters.status;

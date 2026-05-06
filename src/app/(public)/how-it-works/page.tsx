@@ -7,15 +7,12 @@ import {
   UserPlus, 
   Cpu, 
   Trophy,
-  Building2,
   Zap,
   Users2,
   FileSearch,
-  ChevronRight,
   Sparkles,
   Target,
   ArrowRight,
-  MousePointer2,
   BarChart3,
   Search
 } from "lucide-react";
@@ -157,7 +154,7 @@ export default function HowItWorksPage() {
                   transition={{ duration: 0.5 }}
                   className="space-y-16"
                 >
-                  {(activeTab === 'company' ? companySteps : candidateSteps).map((step, i) => (
+                  {(activeTab === 'company' ? companySteps : candidateSteps).map((step) => (
                     <div key={step.step} className="flex gap-8 group relative z-10">
                       <div className={cn(
                         "h-16 w-16 rounded-[1.2rem] flex items-center justify-center shrink-0 transition-all duration-500 shadow-xl border-4 border-white",
@@ -223,7 +220,7 @@ export default function HowItWorksPage() {
                             <span className="text-[10px] font-black uppercase tracking-widest text-blue-100">Inteligência Preditiva</span>
                           </div>
                           <p className="text-[13px] font-medium leading-relaxed text-slate-300 italic">
-                            "Este candidato possui as hard skills essenciais para o cargo e apresenta um alinhamento cultural superior à média do setor."
+                            &quot;Este candidato possui as hard skills essenciais para o cargo e apresenta um alinhamento cultural superior à média do setor.&quot;
                           </p>
                        </div>
 

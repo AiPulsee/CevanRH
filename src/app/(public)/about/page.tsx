@@ -1,9 +1,8 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Building2, Heart, ShieldCheck, Target, TrendingUp, Users } from "lucide-react";
+import { Building2, Heart, ShieldCheck, Target, TrendingUp } from "lucide-react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 export default function AboutPage() {
   return (
@@ -20,7 +19,7 @@ export default function AboutPage() {
                 Unindo Expertise Humana à <span className="text-blue-600">Inteligência Artificial</span>.
               </h1>
               <p className="text-slate-600 text-lg leading-relaxed">
-                A **Cevan Serviços Empresariais** nasceu com uma missão clara: desburocratizar o RH e encontrar o "match" perfeito entre empresas e talentos. 
+                A **Cevan Serviços Empresariais** nasceu com uma missão clara: desburocratizar o RH e encontrar o &quot;match&quot; perfeito entre empresas e talentos. 
                 <br /><br />
                 Acreditamos que a tecnologia deve ser uma ponte, não uma barreira. Por isso, desenvolvemos a **Cevan Serviços Empresariais**, uma plataforma que utiliza IA de ponta para o trabalho pesado, permitindo que nossos especialistas foquem no que realmente importa: **o potencial humano**.
               </p>

@@ -4,10 +4,7 @@ import { useState } from "react";
 import { 
   Dialog, 
   DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
   DialogTrigger,
-  DialogDescription,
   DialogFooter
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -15,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Briefcase, 
   MapPin, 
-  Clock, 
   CheckCircle2, 
   ArrowRight,
   Building2,
@@ -96,7 +92,7 @@ export function ApplicationDetailsModal({ jobTitle, companyName, status, color }
               <p className="text-sm font-bold text-slate-900">Mensagem do Recrutador</p>
             </div>
             <p className="text-xs text-slate-600 italic">
-              "Olá Danilo! Gostamos muito do seu portfólio. Estamos finalizando a primeira triagem e entraremos em contato em breve."
+              &quot;Olá Danilo! Gostamos muito do seu portfólio. Estamos finalizando a primeira triagem e entraremos em contato em breve.&quot;
             </p>
           </div>
         </div>

@@ -3,16 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { 
+import {
   Building2, 
   Users2, 
   Zap, 
   Settings, 
   LogOut,
   Search,
-  Bell,
   LineChart,
-  BrainCircuit,
   LayoutDashboard,
   UserCheck,
   Receipt,
@@ -23,7 +21,6 @@ import {
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { logout } from "@/actions/auth";
 import { NotificationsPopover } from "@/components/admin/notifications-popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -43,19 +40,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     {
       label: "Painel de Controle",
       items: [
-        { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+        { name: "Painel", href: "/admin", icon: LayoutDashboard },
         { name: "Relatórios Gerais", href: "/admin/analytics", icon: LineChart },
       ]
     },
     {
-      label: "Operações ATS",
+      label: "Recrutamento & Seleção",
       items: [
         { name: "Banco de Currículos", href: "/admin/resumes", icon: FileText },
         { name: "Curadoria (Vagas)", href: "/admin/managed", icon: Zap },
         { name: "Alocações", href: "/admin/placements", icon: UserCheck },
         { name: "Finanças", href: "/admin/finance", icon: Receipt },
         { name: "Empresas", href: "/admin/companies", icon: Building2 },
-        { name: "Motor de IA", href: "/admin/ai", icon: BrainCircuit },
       ]
     },
     {
@@ -131,8 +127,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <div className="flex items-center gap-3 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
                 <div className="flex items-center gap-3 px-2">
                   <div className="text-right hidden sm:block leading-none">
-                    <p className="text-[11px] font-black text-slate-900">Super Admin</p>
-                    <p className="text-[9px] font-bold text-blue-500 uppercase mt-1">Master</p>
+                    <p className="text-[11px] font-black text-slate-900">Super Administrador</p>
+                    <p className="text-[9px] font-bold text-blue-500 uppercase mt-1">Mestre</p>
                   </div>
                   <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-xs shadow-lg">
                     AD

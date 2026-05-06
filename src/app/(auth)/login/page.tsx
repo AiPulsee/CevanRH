@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
 import { Lock, Mail, ArrowRight, Zap } from "lucide-react";
 import { loginWithCredentials } from "@/actions/auth";
 import Image from "next/image";
@@ -21,11 +19,11 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    
+
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
-    
+
     const result = await loginWithCredentials(formData);
     if (result?.error) {
       setError(result.error);
@@ -52,6 +50,12 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {error && (
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-medium text-center">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
@@ -73,7 +77,6 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between ml-1">
                   <Label htmlFor="password" className="font-bold text-slate-700">Senha</Label>
-                  <Link href="/forgot-password" className="text-xs font-bold text-blue-600 hover:underline">Esqueceu a senha?</Link>
                 </div>
                 <div className="relative group">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />

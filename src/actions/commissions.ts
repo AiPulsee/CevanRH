@@ -8,7 +8,8 @@ import { revalidatePath } from "next/cache";
 // --- Marcar comissão como faturada ---
 export async function markCommissionAsInvoiced(commissionId: string, invoiceNumber: string) {
   const session = await auth();
-  if (!session || (session.user as any).role !== "ADMIN") {
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
+  if (!session || userRole !== "ADMIN") {
     return { error: "Não autorizado." };
   }
 
@@ -22,6 +23,8 @@ export async function markCommissionAsInvoiced(commissionId: string, invoiceNumb
     });
 
     revalidatePath("/admin/placements");
+    revalidatePath("/admin/finance");
+    revalidatePath("/admin");
     return { success: true };
   } catch (err) {
     console.error(err);
@@ -32,7 +35,8 @@ export async function markCommissionAsInvoiced(commissionId: string, invoiceNumb
 // --- Registrar pagamento ---
 export async function markCommissionAsPaid(commissionId: string) {
   const session = await auth();
-  if (!session || (session.user as any).role !== "ADMIN") {
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
+  if (!session || userRole !== "ADMIN") {
     return { error: "Não autorizado." };
   }
 
@@ -46,6 +50,8 @@ export async function markCommissionAsPaid(commissionId: string) {
     });
 
     revalidatePath("/admin/placements");
+    revalidatePath("/admin/finance");
+    revalidatePath("/admin");
     return { success: true };
   } catch (err) {
     console.error(err);
@@ -56,7 +62,8 @@ export async function markCommissionAsPaid(commissionId: string) {
 // --- Dispensar comissão ---
 export async function waiveCommission(commissionId: string) {
   const session = await auth();
-  if (!session || (session.user as any).role !== "ADMIN") {
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
+  if (!session || userRole !== "ADMIN") {
     return { error: "Não autorizado." };
   }
 
@@ -69,6 +76,8 @@ export async function waiveCommission(commissionId: string) {
     });
 
     revalidatePath("/admin/placements");
+    revalidatePath("/admin/finance");
+    revalidatePath("/admin");
     return { success: true };
   } catch (err) {
     console.error(err);
@@ -81,11 +90,12 @@ export async function getCommissions(filters?: { status?: CommissionStatus; comp
   const session = await auth();
   if (!session) return [];
 
-  const role = (session.user as any).role;
-  const userCompanyId = (session.user as any).companyId;
+  const user = session.user as { role: string; companyId?: string };
+  const role = user.role;
+  const userCompanyId = user.companyId;
 
   try {
-    const where: any = {};
+    const where: { status?: CommissionStatus; companyId?: string } = {};
 
     if (filters?.status) where.status = filters.status;
 

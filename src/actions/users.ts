@@ -8,7 +8,8 @@ import { logAction } from "@/lib/audit";
 
 export async function getUsers() {
   const session = await auth();
-  if (!session || (session.user as any).role !== "ADMIN") return [];
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
+  if (!session || userRole !== "ADMIN") return [];
 
   return prisma.user.findMany({
     select: {
@@ -25,7 +26,8 @@ export async function getUsers() {
 
 export async function deleteUser(userId: string) {
   const session = await auth();
-  if (!session || (session.user as any).role !== "ADMIN") {
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
+  if (!session || userRole !== "ADMIN") {
     return { error: "Não autorizado." };
   }
 

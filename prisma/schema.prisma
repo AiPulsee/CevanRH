@@ -154,6 +154,14 @@ model Commission {
   @@map("commissions")
 }
 
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}
+
 model AuditLog {
   id        String   @id @default(uuid())
   action    String

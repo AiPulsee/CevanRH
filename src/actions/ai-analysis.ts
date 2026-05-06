@@ -105,10 +105,11 @@ Formato obrigatório da resposta:
     const text = result.response.text();
     const parsed = JSON.parse(text) as AIAnalysisResult;
     return { success: true, data: parsed };
-  } catch (error: any) {
-    console.error("AI Analysis Error:", error);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("AI Analysis Error:", errorMessage);
     
-    if (error.message?.includes("429") || error.message?.includes("quota")) {
+    if (errorMessage?.includes("429") || errorMessage?.includes("quota")) {
       return { 
         success: false, 
         error: "Limite de uso da IA atingido para este minuto. Por favor, aguarde alguns segundos e tente novamente." 

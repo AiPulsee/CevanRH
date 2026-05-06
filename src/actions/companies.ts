@@ -15,10 +15,11 @@ const createCompanySchema = z.object({
   location: z.string().optional(),
 });
 
-export async function createCompany(prevState: any, formData: FormData) {
+export async function createCompany(prevState: unknown, formData: FormData) {
   const session = await auth();
+  const userRole = session?.user ? (session.user as { role: string }).role : null;
 
-  if (!session || session.user.role !== "ADMIN") {
+  if (!session || userRole !== "ADMIN") {
     return { error: "Não autorizado." };
   }
 

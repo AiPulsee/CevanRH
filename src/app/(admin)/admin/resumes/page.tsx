@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  FileText,
   Search,
   Download,
   ExternalLink,
@@ -32,7 +31,7 @@ export default async function ResumesPage({
   const page = Math.max(1, parseInt(pageParam ?? "1"));
 
   const where = {
-    ...(typeFilter && { job: { type: typeFilter as any } }),
+    ...(typeFilter && { job: { type: typeFilter as "MANAGED" | "CURATION" | undefined } }),
     ...(query && {
       OR: [
         { candidate: { name: { contains: query, mode: "insensitive" as const } } },

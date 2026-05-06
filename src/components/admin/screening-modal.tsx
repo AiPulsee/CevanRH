@@ -180,7 +180,7 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
       />
       <DialogContent
         showCloseButton={false}
-        className="flex flex-col w-[95vw] max-w-6xl h-[90vh] bg-[#F1F5F9] rounded-[2rem] border-none p-0 overflow-hidden shadow-[0_32px_64px_-15px_rgba(0,0,0,0.25)]"
+        className="flex flex-col w-[95vw] max-w-6xl h-[90vh] bg-[#F1F5F9] rounded-[2.5rem] border-none p-0 overflow-hidden shadow-[0_32px_64px_-15px_rgba(0,0,0,0.25)]"
       >
         {/* Header */}
         <div className="bg-slate-950 p-4 sm:p-8 text-white shrink-0 relative overflow-hidden">
@@ -365,7 +365,7 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
                   <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Apresentação</p>
                 </div>
                 <p className="text-sm text-slate-600 leading-relaxed italic">
-                  "{currentApp?.coverLetter || "O candidato não enviou uma mensagem."}"
+                  &quot;{currentApp?.coverLetter || "O candidato não enviou uma mensagem."}&quot;
                 </p>
                 
                 <div className="mt-6 pt-6 border-t border-slate-100 space-y-4">

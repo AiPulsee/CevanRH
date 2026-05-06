@@ -24,14 +24,15 @@ export type CreateJobState = {
   error?: string;
 };
 
-export async function createJob(prevState: any, formData: FormData): Promise<CreateJobState> {
+export async function createJob(prevState: unknown, formData: FormData): Promise<CreateJobState> {
   const session = await auth();
+  const user = session?.user as { role: string; companyId?: string } | null | undefined;
 
-  if (!session || (session.user.role !== "ADMIN" && session.user.role !== "EMPLOYER")) {
+  if (!session || !user || (user.role !== "ADMIN" && user.role !== "EMPLOYER")) {
     return { error: "Não autorizado." };
   }
 
-  if (session.user.role === "EMPLOYER" && !session.user.companyId) {
+  if (user.role === "EMPLOYER" && !user.companyId) {
     return { error: "Sua conta não está vinculada a nenhuma empresa." };
   }
 
@@ -84,6 +85,8 @@ export async function createJob(prevState: any, formData: FormData): Promise<Cre
     });
 
     revalidatePath("/jobs");
+    revalidatePath("/admin");
+    revalidatePath("/admin/managed");
     revalidatePath("/dashboard/jobs");
 
     return { success: true };

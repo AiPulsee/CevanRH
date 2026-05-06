@@ -52,7 +52,7 @@ export function CompaniesGrid({ companies }: { companies: Company[] }) {
 
       {filtered.length === 0 ? (
         <div className="py-10 text-center text-sm text-slate-400 font-medium">
-          Nenhuma empresa encontrada para "{search}".
+          Nenhuma empresa encontrada para &quot;{search}&quot;.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

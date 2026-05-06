@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPlacements } from "@/actions/placements";
 import { PlacementsTable } from "@/components/admin/placements-table";
 import { Card } from "@/components/ui/card";
@@ -22,7 +24,7 @@ export default async function AdminPlacementsPage() {
     const daysRemaining = p.status === "TRIAL" ? differenceInDays(new Date(p.trialEndDate), new Date()) : 0;
     return {
       id: p.id,
-      status: p.status as any,
+      status: p.status as "TRIAL" | "EFFECTIVE" | "TERMINATED",
       monthlySalary: p.monthlySalary,
       trialEndDate: p.trialEndDate,
       daysRemaining: Math.max(0, daysRemaining),
@@ -35,7 +37,7 @@ export default async function AdminPlacementsPage() {
       commission: p.commission ? {
         id: p.commission.id,
         amount: p.commission.amount,
-        status: p.commission.status as any,
+        status: p.commission.status as "PENDING" | "INVOICED" | "PAID" | "WAIVED",
         invoiceNumber: p.commission.invoiceNumber,
       } : null,
     };
