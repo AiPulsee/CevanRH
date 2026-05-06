@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Zap, Filter } from "lucide-react";
+import { Zap } from "lucide-react";
 import { ManagedJobsList } from "@/components/admin/managed-jobs-list";
 import { CreateJobModal } from "@/components/dashboard/create-job-modal";
 import { PaginationBar } from "@/components/ui/pagination-bar";
@@ -62,15 +61,7 @@ export default async function AdminManagedJobs({
             Gestão de triagem e seleção para clientes estratégicos.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            className="rounded-lg h-9 px-4 border-slate-200 bg-white font-bold text-xs text-slate-600"
-          >
-            <Filter className="h-4 w-4 mr-2" /> Filtros
-          </Button>
-          <CreateJobModal companies={companies} />
-        </div>
+        <CreateJobModal companies={companies} />
       </div>
 
       {/* Stats */}

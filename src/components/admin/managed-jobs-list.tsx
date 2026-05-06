@@ -41,15 +41,23 @@ function statusLabel(status: string) {
   return "Finalizado";
 }
 
+type StatusFilter = "ALL" | "ACTIVE" | "CLOSED";
+
 export function ManagedJobsList({ jobs }: { jobs: ManagedJob[] }) {
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
 
-  const filtered = jobs.filter(
-    (job) =>
+  const filtered = jobs.filter((job) => {
+    const matchesSearch =
       !search ||
       job.title.toLowerCase().includes(search.toLowerCase()) ||
-      job.company.name.toLowerCase().includes(search.toLowerCase())
-  );
+      job.company.name.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus =
+      statusFilter === "ALL" ||
+      (statusFilter === "ACTIVE" && job.status === "ACTIVE") ||
+      (statusFilter === "CLOSED" && (job.status === "CLOSED" || job.status === "ARCHIVED"));
+    return matchesSearch && matchesStatus;
+  });
 
   if (jobs.length === 0) {
     return (
@@ -64,14 +72,31 @@ export function ManagedJobsList({ jobs }: { jobs: ManagedJob[] }) {
 
   return (
     <div className="space-y-4">
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-        <Input
-          placeholder="Buscar vaga ou empresa..."
-          className="pl-10 h-10 bg-white border-slate-200 rounded-lg text-sm"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Input
+            placeholder="Buscar vaga ou empresa..."
+            className="pl-10 h-10 bg-white border-slate-200 rounded-lg text-sm"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="flex items-center gap-1.5 bg-slate-100 rounded-lg p-1">
+          {(["ALL", "ACTIVE", "CLOSED"] as StatusFilter[]).map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s)}
+              className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+                statusFilter === s
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              {s === "ALL" ? "Todos" : s === "ACTIVE" ? "Triagem Ativa" : "Finalizados"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {filtered.length === 0 ? (
