@@ -26,6 +26,7 @@ export default async function AdminPlacementsPage() {
       id: p.id,
       status: p.status as "TRIAL" | "EFFECTIVE" | "TERMINATED",
       monthlySalary: p.monthlySalary,
+      startDate: p.startDate,
       trialEndDate: p.trialEndDate,
       daysRemaining: Math.max(0, daysRemaining),
       candidate: { 

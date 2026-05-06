@@ -19,9 +19,9 @@ export default function AboutPage() {
                 Unindo Expertise Humana à <span className="text-blue-600">Inteligência Artificial</span>.
               </h1>
               <p className="text-slate-600 text-lg leading-relaxed">
-                A **Cevan Serviços Empresariais** nasceu com uma missão clara: desburocratizar o RH e encontrar o &quot;match&quot; perfeito entre empresas e talentos. 
+                A <strong>Cevan Serviços Empresariais</strong> nasceu com uma missão clara: desburocratizar o RH e encontrar o &quot;match&quot; perfeito entre empresas e talentos.
                 <br /><br />
-                Acreditamos que a tecnologia deve ser uma ponte, não uma barreira. Por isso, desenvolvemos a **Cevan Serviços Empresariais**, uma plataforma que utiliza IA de ponta para o trabalho pesado, permitindo que nossos especialistas foquem no que realmente importa: **o potencial humano**.
+                Acreditamos que a tecnologia deve ser uma ponte, não uma barreira. Por isso, desenvolvemos a <strong>Cevan Serviços Empresariais</strong>, uma plataforma que utiliza IA de ponta para o trabalho pesado, permitindo que nossos especialistas foquem no que realmente importa: <strong>o potencial humano</strong>.
               </p>
               
               <div className="grid grid-cols-2 gap-8 pt-4">
@@ -108,7 +108,7 @@ export default function AboutPage() {
               </div>
               <h2 className="text-3xl lg:text-5xl font-black mb-8 leading-tight">Nossa Visão de Futuro</h2>
               <p className="text-slate-400 text-lg leading-relaxed">
-                Queremos ser a maior referência em **Recrutamento Inteligente** do Brasil, provando que é possível escalar um negócio de RH mantendo a essência humana e a qualidade impecável de cada entrega.
+                Queremos ser a maior referência em <strong>Recrutamento Inteligente</strong> do Brasil, provando que é possível escalar um negócio de RH mantendo a essência humana e a qualidade impecável de cada entrega.
               </p>
             </div>
             <div className="flex-1 grid grid-cols-1 gap-6 w-full">

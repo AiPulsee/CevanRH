@@ -19,6 +19,7 @@ import {
   Ban,
   Search,
   DollarSign,
+  CalendarRange,
 } from "lucide-react";
 import { confirmEffective, terminatePlacement } from "@/actions/placements";
 import { PaginationBar } from "@/components/ui/pagination-bar";
@@ -33,6 +34,7 @@ type Placement = {
   id: string;
   status: PlacementStatus;
   monthlySalary: number;
+  startDate: Date;
   trialEndDate: Date;
   daysRemaining: number;
   candidate: { name: string; email: string };
@@ -97,6 +99,8 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
   const [placements, setPlacements] = useState(initial);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<(typeof FILTERS)[number]>("Todos");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [, startTransition] = useTransition();
 
@@ -108,7 +112,11 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
       p.company.name.toLowerCase().includes(s) ||
       p.jobTitle.toLowerCase().includes(s);
     const statusFilter = FILTER_MAP[activeFilter];
-    return matchSearch && (!statusFilter || p.status === statusFilter);
+    const matchStatus = !statusFilter || p.status === statusFilter;
+    const start = new Date(p.startDate);
+    const matchFrom = !dateFrom || start >= new Date(dateFrom);
+    const matchTo = !dateTo || start <= new Date(dateTo + "T23:59:59");
+    return matchSearch && matchStatus && matchFrom && matchTo;
   });
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
@@ -193,7 +201,7 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
     <TooltipProvider>
       <div className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden border">
         {/* Search & filter bar */}
-        <div className="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 border-b border-slate-100 flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[200px] max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
@@ -203,7 +211,33 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
               onChange={(e) => handleSearchChange(e.target.value)}
             />
           </div>
-          <div className="flex gap-1.5 flex-wrap">
+
+          <div className="flex items-center gap-2">
+            <CalendarRange className="h-4 w-4 text-slate-400 shrink-0" />
+            <Input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => { setDateFrom(e.target.value); setCurrentPage(1); }}
+              className="h-9 border-slate-200 rounded-xl text-xs font-medium w-36"
+            />
+            <span className="text-xs text-slate-400 font-bold">até</span>
+            <Input
+              type="date"
+              value={dateTo}
+              onChange={(e) => { setDateTo(e.target.value); setCurrentPage(1); }}
+              className="h-9 border-slate-200 rounded-xl text-xs font-medium w-36"
+            />
+            {(dateFrom || dateTo) && (
+              <button
+                onClick={() => { setDateFrom(""); setDateTo(""); setCurrentPage(1); }}
+                className="text-[10px] font-bold text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                Limpar
+              </button>
+            )}
+          </div>
+
+          <div className="flex gap-1.5 flex-wrap ml-auto">
             {FILTERS.map((f) => (
               <button
                 key={f}
