@@ -8,6 +8,11 @@ export async function getNotifications() {
   const session = await auth();
   if (!session) return [];
 
+  // Trigger check in background (not awaiting to avoid blocking)
+  if ((session.user as any).role === "ADMIN") {
+    checkTrialExpirations();
+  }
+
   return prisma.notification.findMany({
     where: {
       OR: [
@@ -43,4 +48,52 @@ export async function createNotification(data: {
     }
   });
   revalidatePath("/admin");
+}
+
+export async function checkTrialExpirations() {
+  const session = await auth();
+  if (!session || (session.user as any).role !== "ADMIN") return;
+
+  const sevenDaysFromNow = new Date();
+  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+
+  const expiringTrials = await prisma.placement.findMany({
+    where: {
+      status: "TRIAL",
+      trialEndDate: {
+        lte: sevenDaysFromNow,
+        gt: new Date() // Ainda não venceu
+      }
+    },
+    include: {
+      application: {
+        include: {
+          candidate: { select: { name: true } },
+          job: { select: { company: { select: { name: true } } } }
+        }
+      }
+    }
+  });
+
+  for (const trial of expiringTrials) {
+    const title = "Trial Vencendo";
+    const message = `O trial de ${trial.application.candidate.name} na ${trial.application.job.company.name} vence em ${trial.trialEndDate.toLocaleDateString()}.`;
+
+    // Evitar spam: checar se já notificamos sobre este trial nas últimas 48h
+    const recent = await prisma.notification.findFirst({
+      where: {
+        title,
+        message,
+        createdAt: { gte: new Date(Date.now() - 48 * 60 * 60 * 1000) }
+      }
+    });
+
+    if (!recent) {
+      await createNotification({
+        title,
+        message,
+        type: "WARNING"
+      });
+    }
+  }
 }

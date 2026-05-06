@@ -17,7 +17,25 @@ export const authConfig = {
 
       if (nextUrl.pathname.startsWith("/admin")) {
         if (!isLoggedIn) return false;
-        return role === "ADMIN";
+        if (role !== "ADMIN") return false;
+
+        const permissions = (auth?.user as any)?.permissions || [];
+        const path = nextUrl.pathname;
+
+        // Se for admin raiz (/) pode entrar
+        if (path === "/admin") return true;
+
+        // Mapeamento de abas
+        if (path.startsWith("/admin/managed") && !permissions.includes("MANAGED")) return false;
+        if (path.startsWith("/admin/resumes") && !permissions.includes("RESUMES")) return false;
+        if (path.startsWith("/admin/companies") && !permissions.includes("COMPANIES")) return false;
+        if (path.startsWith("/admin/placements") && !permissions.includes("PLACEMENTS")) return false;
+        if (path.startsWith("/admin/analytics") && !permissions.includes("ANALYTICS")) return false;
+        if (path.startsWith("/admin/finance") && !permissions.includes("FINANCE")) return false;
+        if (path.startsWith("/admin/users") && !permissions.includes("USERS")) return false;
+        if (path.startsWith("/admin/settings") && !permissions.includes("SETTINGS")) return false;
+
+        return true;
       }
 
       return true;

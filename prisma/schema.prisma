@@ -14,8 +14,8 @@ model User {
   password     String?
   image        String?
   role         Role          @default(CANDIDATE)
+  permissions  String[]      @default([])
   companyId    String?
-  permissions  String?
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
   applications Application[]
@@ -171,7 +171,6 @@ model AuditLog {
 
   @@map("audit_logs")
 }
-
 model Notification {
   id        String   @id @default(uuid())
   title     String

@@ -15,9 +15,12 @@ import {
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { differenceInDays } from "date-fns";
+import { getSetting } from "@/actions/settings";
 
 export default async function AdminPlacementsPage() {
   const allPlacements = await getPlacements();
+  const revenuePercentStr = await getSetting("managed.fee_percentage", "50");
+  const revenuePercent = parseInt(revenuePercentStr) / 100;
 
   // Map to the format expected by PlacementsTable
   const mappedPlacements = allPlacements.map((p) => {
@@ -54,7 +57,7 @@ export default async function AdminPlacementsPage() {
     ? ((effective.length / totalConversions) * 100).toFixed(1) 
     : "0";
 
-  const potentialRevenue = inTrial.reduce((acc, p) => acc + (p.monthlySalary * 0.5), 0);
+  const potentialRevenue = inTrial.reduce((acc, p) => acc + (p.monthlySalary * revenuePercent), 0);
   
   const formatCurrencyCompact = (cents: number) => {
     return new Intl.NumberFormat("pt-BR", { 
@@ -69,7 +72,7 @@ export default async function AdminPlacementsPage() {
     { name: "Em Trial", value: inTrial.length.toString(), icon: Clock, change: `${inTrial.filter(p => p.daysRemaining <= 7).length} vencem em breve`, tooltip: "Candidatos atualmente no período de experiência (90 dias)" },
     { name: "Efetivados", value: effective.length.toString(), icon: CheckCircle2, change: "Total histórico", tooltip: "Candidatos que concluíram o trial e foram contratados definitivamente" },
     { name: "Taxa de Conversão", value: `${conversionRate}%`, icon: TrendingUp, change: "Trial para Efetivado", tooltip: "Percentual de trials que resultaram em efetivação (Efetivados ÷ Total encerrados)" },
-    { name: "Receita Potencial", value: formatCurrencyCompact(potentialRevenue), icon: DollarSign, change: "Em trials ativos", tooltip: "Comissão esperada se todos os trials ativos forem efetivados (50% do 1º salário de cada)" },
+    { name: "Receita Potencial", value: formatCurrencyCompact(potentialRevenue), icon: DollarSign, change: "Em trials ativos", tooltip: `Comissão esperada se todos os trials ativos forem efetivados (${revenuePercentStr}% do 1º salário de cada)` },
   ];
 
   const urgentPlacements = inTrial.filter(p => p.daysRemaining <= 7);

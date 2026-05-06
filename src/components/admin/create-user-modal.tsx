@@ -19,15 +19,14 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 const PERMISSION_OPTIONS = [
-  { key: "painel",     label: "Painel",             group: "Painel de Controle" },
-  { key: "analytics",  label: "Relatórios Gerais",  group: "Painel de Controle" },
-  { key: "resumes",    label: "Banco de Currículos", group: "Recrutamento & Seleção" },
-  { key: "managed",    label: "Curadoria (Vagas)",   group: "Recrutamento & Seleção" },
-  { key: "placements", label: "Alocações",           group: "Recrutamento & Seleção" },
-  { key: "finance",    label: "Finanças",            group: "Recrutamento & Seleção" },
-  { key: "companies",  label: "Empresas",            group: "Recrutamento & Seleção" },
-  { key: "users",      label: "Usuários ADM",        group: "Sistema & Gestão" },
-  { key: "settings",   label: "Configurações",       group: "Sistema & Gestão" },
+  { key: "MANAGED",    label: "Curadoria (Vagas)",   group: "Recrutamento & Seleção" },
+  { key: "RESUMES",    label: "Banco de Currículos", group: "Recrutamento & Seleção" },
+  { key: "COMPANIES",  label: "Empresas",            group: "Recrutamento & Seleção" },
+  { key: "PLACEMENTS", label: "Alocações",           group: "Recrutamento & Seleção" },
+  { key: "ANALYTICS",  label: "Relatórios Gerais",   group: "Painel de Controle" },
+  { key: "FINANCE",    label: "Finanças",            group: "Recrutamento & Seleção" },
+  { key: "USERS",      label: "Usuários ADM",        group: "Sistema & Gestão" },
+  { key: "SETTINGS",   label: "Configurações",       group: "Sistema & Gestão" },
 ];
 
 const GROUPS = ["Painel de Controle", "Recrutamento & Seleção", "Sistema & Gestão"];
@@ -71,7 +70,10 @@ export function CreateUserModal() {
 
   function handleSubmit() {
     startTransition(async () => {
-      const permissions = isMaster ? null : Array.from(selected).join(",");
+      const permissions = isMaster 
+        ? PERMISSION_OPTIONS.map(p => p.key) // Master = todas
+        : Array.from(selected);
+
       const result = await createUser({ name, email, password, permissions });
       if (result.success) {
         toast.success("Administrador criado com sucesso!");
