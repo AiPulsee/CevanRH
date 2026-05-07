@@ -69,10 +69,10 @@ export default async function AdminPlacementsPage() {
   };
 
   const stats = [
-    { name: "Em Trial", value: inTrial.length.toString(), icon: Clock, change: `${inTrial.filter(p => p.daysRemaining <= 7).length} vencem em breve`, tooltip: "Candidatos atualmente no período de experiência (90 dias)" },
+    { name: "Em Andamento", value: inTrial.length.toString(), icon: Clock, change: `${inTrial.filter(p => p.daysRemaining <= 7).length} vencem em breve`, tooltip: "Candidatos atualmente no período de experiência (90 dias)" },
     { name: "Efetivados", value: effective.length.toString(), icon: CheckCircle2, change: "Total histórico", tooltip: "Candidatos que concluíram o trial e foram contratados definitivamente" },
-    { name: "Taxa de Conversão", value: `${conversionRate}%`, icon: TrendingUp, change: "Trial para Efetivado", tooltip: "Percentual de trials que resultaram em efetivação (Efetivados ÷ Total encerrados)" },
-    { name: "Receita Potencial", value: formatCurrencyCompact(potentialRevenue), icon: DollarSign, change: "Em trials ativos", tooltip: `Comissão esperada se todos os trials ativos forem efetivados (${revenuePercentStr}% do 1º salário de cada)` },
+    { name: "Taxa de Conversão", value: `${conversionRate}%`, icon: TrendingUp, change: "Andamento para Efetivado", tooltip: "Percentual de andamentos que resultaram em efetivação (Efetivados ÷ Total encerrados)" },
+    { name: "Receita Potencial", value: formatCurrencyCompact(potentialRevenue), icon: DollarSign, change: "Em andamentos ativos", tooltip: `Comissão esperada se todos os andamentos ativos forem efetivados (${revenuePercentStr}% do 1º salário de cada)` },
   ];
 
   const urgentPlacements = inTrial.filter(p => p.daysRemaining <= 7);
@@ -124,7 +124,7 @@ export default async function AdminPlacementsPage() {
             <div>
               <h4 className="text-sm font-bold text-amber-900">Atenção: Alocações prestes a vencer</h4>
               <p className="text-xs text-amber-700 font-medium">
-                {urgentPlacements.length} alocação(ões) com menos de 7 dias para o fim do trial. Contate as empresas para confirmar efetivação.
+                {urgentPlacements.length} alocação(ões) com menos de 7 dias para o fim do período. Contate as empresas para confirmar efetivação.
               </p>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default async function AdminPlacementsPage() {
       )}
 
       {/* Tabela de Alocações */}
-      <PlacementsTable placements={mappedPlacements} />
+      <PlacementsTable placements={mappedPlacements} feePercentage={revenuePercent} />
 
       {/* Timeline/Insights */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -162,7 +162,7 @@ export default async function AdminPlacementsPage() {
                             ? "Urgente — vence em até 7 dias"
                             : p.daysRemaining <= 15
                             ? "Atenção — vence em até 15 dias"
-                            : "Trial dentro do prazo"}
+                            : "Andamento dentro do prazo"}
                         </TooltipContent>
                       </Tooltip>
                       <div>
@@ -180,7 +180,7 @@ export default async function AdminPlacementsPage() {
                   </div>
                 ))
             ) : (
-              <p className="text-xs text-slate-400 font-medium py-4 text-center">Nenhum trial ativo no momento.</p>
+              <p className="text-xs text-slate-400 font-medium py-4 text-center">Nenhum em andamento no momento.</p>
             )}
           </div>
         </Card>
@@ -198,7 +198,7 @@ export default async function AdminPlacementsPage() {
             </div>
             <div className="p-3 rounded-lg bg-white/5 border border-white/10">
               <p className="text-[9px] text-blue-200 font-medium leading-relaxed">
-                Com {inTrial.length} candidatos em trial, a receita potencial de comissões (50% do primeiro salário) é de <span className="font-black text-white">{new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(potentialRevenue / 100)}</span>.
+                Com {inTrial.length} candidatos em andamento, a receita potencial de comissões (50% do primeiro salário) é de <span className="font-black text-white">{new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(potentialRevenue / 100)}</span>.
               </p>
             </div>
           </div>

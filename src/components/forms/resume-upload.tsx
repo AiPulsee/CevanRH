@@ -29,7 +29,7 @@ export function ResumeUpload({ onUploadComplete, variant = "light" }: ResumeUplo
       setUploading(true);
       setProgress(0);
 
-      const { uploadUrl, fileUrl } = await getPresignedUrl(file.name, file.type);
+      const { uploadUrl, fileUrl } = await getPresignedUrl(file.name, file.type, file.size);
 
       await new Promise<void>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -130,7 +130,7 @@ export function ResumeUpload({ onUploadComplete, variant = "light" }: ResumeUplo
           {uploading ? `Enviando... ${progress}%` : "Enviar Currículo"}
         </p>
         <p className={`text-[10px] font-medium ${isDark ? "text-slate-500" : "text-slate-400"}`}>
-          {uploading ? "" : "Clique ou arraste o arquivo — PDF ou DOCX (Max 5MB)"}
+          {uploading ? "" : "Clique ou arraste o arquivo — PDF ou DOCX (Max 10MB)"}
         </p>
 
         {uploading && (

@@ -1,6 +1,37 @@
 export const dynamic = "force-dynamic";
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const job = await prisma.job.findUnique({
+    where: { slug },
+    select: { title: true, description: true, location: true, salaryRange: true, company: { select: { name: true } } },
+  });
+  if (!job) return { title: "Vaga não encontrada" };
+
+  const title = `${job.title} — ${job.company.name}`;
+  const description = job.description
+    ? job.description.slice(0, 155).replace(/\n/g, " ").trim() + "…"
+    : `Vaga de ${job.title} na ${job.company.name}${job.location ? ` em ${job.location}` : ""}. Candidate-se pela Cevan Serviços Empresariais.`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/jobs/${slug}` },
+    openGraph: {
+      title,
+      description,
+      url: `/jobs/${slug}`,
+      type: "article",
+    },
+  };
+}
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -25,7 +56,37 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
 
   if (!job) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title,
+    description: job.description ?? "",
+    datePosted: job.createdAt.toISOString().split("T")[0],
+    hiringOrganization: {
+      "@type": "Organization",
+      name: job.company.name,
+      ...(job.company.logoUrl ? { logo: job.company.logoUrl } : {}),
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: job.location,
+        addressCountry: "BR",
+      },
+    },
+    ...(job.isRemote ? { jobLocationType: "TELECOMMUTE" } : {}),
+    ...(job.salaryRange ? { baseSalary: { "@type": "MonetaryAmount", currency: "BRL", value: job.salaryRange } } : {}),
+    employmentType: "FULL_TIME",
+    directApply: true,
+  };
+
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     <div className="bg-[#FAFBFC] min-h-screen pt-24 pb-20">
       
       {/* Hero Header Section */}
@@ -156,6 +217,12 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
                     <div className="space-y-2.5">
                       <p className="text-[13px] text-slate-500 font-medium m-0">Tipo: <span className="text-slate-900 font-bold">{job.type === "MANAGED" ? "Curadoria Premium" : "CLT"}</span></p>
                       <p className="text-[13px] text-slate-500 font-medium m-0">Modelo: <span className="text-slate-900 font-bold">{job.isRemote ? "Remoto" : "Presencial"}</span></p>
+                      {job.contractType && (
+                        <p className="text-[13px] text-slate-500 font-medium m-0">Contrato: <span className="text-slate-900 font-bold">{job.contractType}</span></p>
+                      )}
+                      {job.experienceLevel && (
+                        <p className="text-[13px] text-slate-500 font-medium m-0">Nível: <span className="text-slate-900 font-bold">{job.experienceLevel}</span></p>
+                      )}
                       <p className="text-[13px] text-slate-500 font-medium m-0">Postada: <span className="text-slate-900 font-bold">{formatDistanceToNow(new Date(job.createdAt), { addSuffix: true, locale: ptBR })}</span></p>
                     </div>
                   </div>
@@ -250,6 +317,7 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
 
       </div>
     </div>
+    </>
   );
 }
 

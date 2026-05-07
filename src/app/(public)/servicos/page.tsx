@@ -1,3 +1,17 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Serviços de RH",
+  description: "Conheça os serviços da Cevan Serviços Empresariais: Curadoria de Talentos, Recrutamento Gerenciado, Self-Service e Consultoria de RH para empresas no Maranhão e no Brasil.",
+  alternates: { canonical: "/servicos" },
+  openGraph: {
+    title: "Serviços de RH — Cevan Serviços Empresariais",
+    description: "Curadoria de Talentos, Recrutamento Gerenciado e Consultoria de RH para empresas no Maranhão e no Brasil.",
+    url: "/servicos",
+    type: "website",
+  },
+};
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

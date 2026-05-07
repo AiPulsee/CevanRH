@@ -31,25 +31,25 @@ const ALL_SECTIONS = [
   {
     label: "Painel de Controle",
     items: [
-      { name: "Painel", href: "/admin", icon: LayoutDashboard },
-      { name: "Relatórios Gerais", href: "/admin/analytics", icon: LineChart, key: "ANALYTICS" },
+      { name: "Painel", href: "/admin", icon: LayoutDashboard, tooltip: "Visão geral do sistema: candidaturas recentes, vagas ativas e alocações em andamento" },
+      { name: "Relatórios Gerais", href: "/admin/analytics", icon: LineChart, key: "ANALYTICS", tooltip: "Funil de contratações, métricas de desempenho e taxa de conversão" },
     ],
   },
   {
     label: "Recrutamento & Seleção",
     items: [
-      { name: "Banco de Currículos", href: "/admin/resumes", icon: FileText, key: "RESUMES" },
-      { name: "Curadoria (Vagas)", href: "/admin/managed", icon: Zap, key: "MANAGED" },
-      { name: "Alocações", href: "/admin/placements", icon: UserCheck, key: "PLACEMENTS" },
-      { name: "Finanças", href: "/admin/finance", icon: Receipt, key: "FINANCE" },
-      { name: "Empresas", href: "/admin/companies", icon: Building2, key: "COMPANIES" },
+      { name: "Banco de Currículos", href: "/admin/resumes", icon: FileText, key: "RESUMES", tooltip: "Todos os currículos recebidos — filtre por tipo de vaga, busque candidatos e exporte planilha" },
+      { name: "Curadoria (Vagas)", href: "/admin/managed", icon: Zap, key: "MANAGED", tooltip: "Vagas com triagem especializada pela Cevan — analise candidatos e selecione os melhores perfis" },
+      { name: "Alocações", href: "/admin/placements", icon: UserCheck, key: "PLACEMENTS", tooltip: "Candidatos contratados — acompanhe o período de experiência e confirme efetivações" },
+      { name: "Finanças", href: "/admin/finance", icon: Receipt, key: "FINANCE", tooltip: "Comissões geradas pelas efetivações — emita faturas e registre pagamentos recebidos" },
+      { name: "Empresas", href: "/admin/companies", icon: Building2, key: "COMPANIES", tooltip: "Empresas clientes cadastradas, suas vagas e usuários vinculados" },
     ],
   },
   {
     label: "Sistema & Gestão",
     items: [
-      { name: "Usuários ADM", href: "/admin/users", icon: Users2, key: "USERS" },
-      { name: "Configurações", href: "/admin/settings", icon: Settings, key: "SETTINGS" },
+      { name: "Usuários ADM", href: "/admin/users", icon: Users2, key: "USERS", tooltip: "Gerenciar administradores do sistema, suas funções e permissões de acesso" },
+      { name: "Configurações", href: "/admin/settings", icon: Settings, key: "SETTINGS", tooltip: "Taxa administrativa e outras variáveis globais do sistema" },
     ],
   },
 ];
@@ -135,35 +135,35 @@ export function AdminLayoutClient({ children, userName, permissions }: Props) {
                 />
               </div>
 
-            <div className="flex items-center gap-3 md:gap-4">
-              <div className="flex items-center gap-3 border-l border-slate-100 pl-4 md:pl-6">
-                <NotificationsPopover />
-                <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-xl border border-slate-100">
-                  <div className="flex items-center gap-2 px-1">
-                    <div className="text-right hidden md:block leading-none mr-1">
-                      <p className="text-[11px] font-black text-slate-900 truncate max-w-[100px]">
-                        {userName ?? "Admin"}
-                      </p>
-                      <p className="text-[8px] font-black text-blue-500 uppercase mt-0.5">
-                        {isMaster ? "Mestre" : "Restrito"}
-                      </p>
-                    </div>
-                    <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white text-[10px] shadow-md shrink-0">
-                      {(userName ?? "AD").slice(0, 2).toUpperCase()}
-                    </div>
-                  </div>
-                  <form action={async () => { await logout(); }}>
+            <div className="flex items-center gap-2 md:gap-3 border-l border-slate-100 pl-4 md:pl-6">
+              <NotificationsPopover />
+
+              <div className="flex items-center gap-2.5">
+                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center font-black text-white text-[11px] shadow-md shrink-0 select-none">
+                  {(userName ?? "AD").slice(0, 2).toUpperCase()}
+                </div>
+                <p className="text-[12px] font-bold text-slate-700 truncate max-w-[90px] hidden md:block">
+                  {userName ?? "Admin"}
+                </p>
+              </div>
+
+              <div className="w-px h-5 bg-slate-200 hidden md:block" />
+
+              <Tooltip>
+                <form action={async () => { await logout(); }}>
+                  <TooltipTrigger render={
                     <Button
                       type="submit"
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 rounded-lg text-slate-400 hover:text-rose-500 transition-all"
+                      className="h-9 w-9 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all"
                     >
-                      <LogOut className="h-3.5 w-3.5" />
+                      <LogOut className="h-4 w-4" />
                     </Button>
-                  </form>
-                </div>
-              </div>
+                  } />
+                </form>
+                <TooltipContent side="bottom">Sair do sistema</TooltipContent>
+              </Tooltip>
             </div>
             </div>
           </header>
@@ -206,27 +206,33 @@ function SidebarContent({ pathname, menuSections, isMobile }: {
               {section.items.map((item) => {
                 const isActive = pathname === item.href;
                 return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[13px] font-bold transition-all group relative",
-                      isActive
-                        ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-                        : "text-slate-400 hover:bg-white/5 hover:text-white"
-                    )}
-                  >
-                    <item.icon
-                      className={cn(
-                        "h-5 w-5 transition-transform group-hover:scale-110",
-                        isActive ? "text-white" : "text-slate-500 group-hover:text-blue-400"
-                      )}
-                    />
-                    {item.name}
-                    {isActive && (
-                      <div className="absolute right-4 w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                    )}
-                  </Link>
+                  <Tooltip key={item.name}>
+                    <TooltipTrigger render={
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[13px] font-bold transition-all group relative",
+                          isActive
+                            ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                            : "text-slate-400 hover:bg-white/5 hover:text-white"
+                        )}
+                      >
+                        <item.icon
+                          className={cn(
+                            "h-5 w-5 transition-transform group-hover:scale-110",
+                            isActive ? "text-white" : "text-slate-500 group-hover:text-blue-400"
+                          )}
+                        />
+                        {item.name}
+                        {isActive && (
+                          <div className="absolute right-4 w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                        )}
+                      </Link>
+                    } />
+                    <TooltipContent side="right" className="max-w-[220px]">
+                      {(item as any).tooltip}
+                    </TooltipContent>
+                  </Tooltip>
                 );
               })}
             </div>

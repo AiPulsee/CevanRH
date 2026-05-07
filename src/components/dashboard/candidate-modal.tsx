@@ -24,6 +24,15 @@ import {
   MoreHorizontal
 } from "lucide-react";
 
+const STATUS_LABEL: Record<string, string> = {
+  APPLIED: "Candidatado",
+  REVIEWING: "Em Análise",
+  SHORTLISTED: "Selecionado",
+  INTERVIEW: "Entrevista",
+  REJECTED: "Reprovado",
+  HIRED: "Contratado",
+};
+
 export function CandidateModal({ children, candidate }: { children: React.ReactElement, candidate: any }) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("resume");
@@ -53,7 +62,7 @@ export function CandidateModal({ children, candidate }: { children: React.ReactE
               <div className="flex items-center gap-3">
                 <DialogTitle className="text-2xl font-black text-slate-900">{candidate.name}</DialogTitle>
                 <Badge className="bg-blue-50 text-blue-600 hover:bg-blue-100 border-none rounded-lg px-3 uppercase text-[10px] tracking-widest font-bold">
-                  {candidate.status}
+                  {STATUS_LABEL[candidate.status] ?? candidate.status}
                 </Badge>
               </div>
               <p className="text-slate-500 font-medium mt-1">{candidate.role}</p>

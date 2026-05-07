@@ -1,4 +1,39 @@
 export const dynamic = "force-dynamic";
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; q?: string; location?: string; type?: string }>;
+}): Promise<Metadata> {
+  const { page, q, location, type } = await searchParams;
+  const pageNum = parseInt(page ?? "1");
+
+  const parts: string[] = [];
+  if (q) parts.push(`"${q}"`);
+  if (location) parts.push(`em ${location}`);
+  if (type === "MANAGED") parts.push("Curadoria");
+  else if (type === "SELF_SERVICE") parts.push("Self-Service");
+
+  const title = parts.length > 0
+    ? `Vagas ${parts.join(" ")}${pageNum > 1 ? ` — Página ${pageNum}` : ""}`
+    : pageNum > 1
+    ? `Vagas de Emprego — Página ${pageNum}`
+    : "Vagas de Emprego no Maranhão e Brasil";
+
+  const description = parts.length > 0
+    ? `Encontre vagas de ${parts.join(", ")} com curadoria especializada da Cevan Serviços Empresariais.`
+    : "Explore vagas de emprego no Maranhão e em todo o Brasil com curadoria da Cevan Serviços Empresariais. Processo seletivo personalizado e suporte completo ao candidato.";
+
+  return {
+    title,
+    description,
+    alternates: { canonical: "/jobs" },
+    openGraph: { title, description, url: "/jobs", type: "website" },
+    robots: pageNum > 1 ? { index: false, follow: true } : { index: true, follow: true },
+  };
+}
+
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -108,12 +143,8 @@ export default async function JobsPublicPage({
                 <>Mostrando <span className="font-bold text-slate-900">{from}–{to}</span> de <span className="font-bold text-slate-900">{totalJobs}</span> vagas</>
               )}
             </div>
-            <div className="flex items-center justify-end gap-2 sm:gap-3">
-              <div className="lg:hidden">
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 bg-white">
-                  <Filter className="h-4 w-4 text-slate-600" />
-                </Button>
-              </div>
+            <div className="flex items-center justify-end gap-2 sm:gap-3 lg:hidden">
+              <JobFilters only="sidebar" q={q} location={location} remote={remote} type={type} />
             </div>
           </div>
 

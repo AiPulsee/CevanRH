@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { format, startOfMonth, subMonths } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default async function AdminPage() {
   const now = new Date();
@@ -78,10 +79,10 @@ export default async function AdminPage() {
   );
 
   const stats = [
-    { name: "Empresas Cadastradas", value: companiesCount.toString(), icon: Building2, change: "Total na plataforma" },
-    { name: "Vagas em Curadoria", value: managedActiveCount.toString(), icon: Zap, change: "Ativas agora" },
-    { name: "Candidatos p/ Triar", value: applicantsToScreen.toString(), icon: Users2, change: "Aguardando revisão" },
-    { name: "Receita do Mês", value: `R$ ${revenueFormatted}`, icon: TrendingUp, change: "Comissões pagas" },
+    { name: "Empresas Cadastradas", value: companiesCount.toString(), icon: Building2, change: "Total na plataforma", tooltip: "Número total de empresas clientes cadastradas na plataforma" },
+    { name: "Vagas em Curadoria", value: managedActiveCount.toString(), icon: Zap, change: "Ativas agora", tooltip: "Vagas do tipo Curadoria com status Ativo — aguardando triagem de candidatos pela equipe Cevan" },
+    { name: "Candidatos p/ Triar", value: applicantsToScreen.toString(), icon: Users2, change: "Aguardando revisão", tooltip: "Candidatos com status Candidatado que ainda não foram revisados pela equipe" },
+    { name: "Receita do Mês", value: `R$ ${revenueFormatted}`, icon: TrendingUp, change: "Comissões pagas", tooltip: "Total de comissões com status Pago recebidas no mês corrente" },
   ];
 
   const conversionRate = (trialCount + effectiveCount) > 0
@@ -103,9 +104,14 @@ export default async function AdminPage() {
         {stats.map((stat) => (
           <Card key={stat.name} className="p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
-                <stat.icon className="h-5 w-5 text-slate-600" />
-              </div>
+              <Tooltip>
+                <TooltipTrigger render={
+                  <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center cursor-default">
+                    <stat.icon className="h-5 w-5 text-slate-600" />
+                  </div>
+                } />
+                <TooltipContent>{stat.tooltip}</TooltipContent>
+              </Tooltip>
               <Badge className="bg-slate-100 text-slate-600 border-none font-bold text-[10px]">{stat.change}</Badge>
             </div>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.name}</p>
@@ -151,7 +157,7 @@ export default async function AdminPage() {
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2">
             <div className="text-center p-2 rounded-lg bg-slate-50 border border-slate-100">
-              <p className="text-[9px] font-bold text-slate-400 uppercase">Em Trial</p>
+              <p className="text-[9px] font-bold text-slate-400 uppercase">Em Andamento</p>
               <p className="text-xs font-black text-slate-900">{trialCount}</p>
             </div>
             <div className="text-center p-2 rounded-lg bg-slate-50 border border-slate-100">

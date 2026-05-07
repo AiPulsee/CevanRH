@@ -24,7 +24,6 @@ export default function SettingsForm({ initialSettings }: Props) {
     startTransition(async () => {
       await saveSettings({
         "managed.fee_percentage": settings["managed.fee_percentage"] ?? "",
-        "managed.sla_hours": settings["managed.sla_hours"] ?? "",
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
@@ -55,29 +54,16 @@ export default function SettingsForm({ initialSettings }: Props) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="fee" className="text-[10px] font-bold uppercase text-slate-400">
-              Taxa Administrativa (%)
-            </Label>
-            <Input
-              id="fee"
-              value={settings["managed.fee_percentage"]}
-              onChange={(e) => update("managed.fee_percentage", e.target.value)}
-              className="h-10 bg-slate-50 border-slate-200 rounded-lg text-sm"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="sla" className="text-[10px] font-bold uppercase text-slate-400">
-              SLA de Triagem (Horas)
-            </Label>
-            <Input
-              id="sla"
-              value={settings["managed.sla_hours"]}
-              onChange={(e) => update("managed.sla_hours", e.target.value)}
-              className="h-10 bg-slate-50 border-slate-200 rounded-lg text-sm"
-            />
-          </div>
+        <div className="max-w-xs space-y-1.5">
+          <Label htmlFor="fee" className="text-[10px] font-bold uppercase text-slate-400">
+            Taxa Administrativa (%)
+          </Label>
+          <Input
+            id="fee"
+            value={settings["managed.fee_percentage"]}
+            onChange={(e) => update("managed.fee_percentage", e.target.value)}
+            className="h-10 bg-slate-50 border-slate-200 rounded-lg text-sm"
+          />
         </div>
 
         <div className="pt-4 border-t border-slate-100 flex justify-end">

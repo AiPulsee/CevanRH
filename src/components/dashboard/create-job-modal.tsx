@@ -60,18 +60,23 @@ export function CreateJobModal({ companies }: { companies?: { id: string; name: 
   async function handleGenerateAI() {
     if (!title) return;
     setIsGenerating(true);
-    const res = await generateJobContent(title, level, contractType);
-    setIsGenerating(false);
-    if (res.success) {
-      setDescription(res.data.description);
-      setRequirements(res.data.requirements);
-      setResponsibilities(res.data.responsibilities);
-      setBenefits(res.data.benefits);
-      setTips(res.data.tips);
-      setSkills(res.data.skills);
-      toast.success("Conteúdo gerado com IA!");
-    } else {
-      toast.error(res.error);
+    try {
+      const res = await generateJobContent(title, level, contractType);
+      if (res.success) {
+        setDescription(res.data.description);
+        setRequirements(res.data.requirements);
+        setResponsibilities(res.data.responsibilities);
+        setBenefits(res.data.benefits);
+        setTips(res.data.tips);
+        setSkills(res.data.skills);
+        toast.success("Conteúdo gerado com IA!");
+      } else {
+        toast.error(res.error);
+      }
+    } catch {
+      toast.error("Erro ao conectar com a IA. Verifique sua conexão e tente novamente.");
+    } finally {
+      setIsGenerating(false);
     }
   }
 
@@ -96,6 +101,8 @@ export function CreateJobModal({ companies }: { companies?: { id: string; name: 
       formData.append("responsibilities", responsibilities);
       formData.append("benefits", benefits);
       formData.append("tips", tips);
+      formData.append("contractType", contractType);
+      formData.append("experienceLevel", level);
       if (companyId) formData.append("companyId", companyId);
 
       const result = await createJob({}, formData);

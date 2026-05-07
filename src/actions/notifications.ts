@@ -26,6 +26,9 @@ export async function getNotifications() {
 }
 
 export async function markAsRead(id: string) {
+  const session = await auth();
+  if (!session) return;
+
   await prisma.notification.update({
     where: { id },
     data: { isRead: true }
@@ -76,8 +79,8 @@ export async function checkTrialExpirations() {
   });
 
   for (const trial of expiringTrials) {
-    const title = "Trial Vencendo";
-    const message = `O trial de ${trial.application.candidate.name} na ${trial.application.job.company.name} vence em ${trial.trialEndDate.toLocaleDateString()}.`;
+    const title = "Andamento Vencendo";
+    const message = `O período de andamento de ${trial.application.candidate.name} na ${trial.application.job.company.name} vence em ${trial.trialEndDate.toLocaleDateString()}.`;
 
     // Evitar spam: checar se já notificamos sobre este trial nas últimas 48h
     const recent = await prisma.notification.findFirst({

@@ -1,9 +1,13 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 export async function getSetting(key: string, defaultValue: string) {
+  const session = await auth();
+  if (!session) return defaultValue;
+
   try {
     const setting = await prisma.setting.findUnique({
       where: { key },
@@ -15,11 +19,14 @@ export async function getSetting(key: string, defaultValue: string) {
 }
 
 export async function getSettings(keys: string[]) {
+  const session = await auth();
+  if (!session) return {};
+
   try {
     const settings = await prisma.setting.findMany({
       where: { key: { in: keys } },
     });
-    
+
     const result: Record<string, string> = {};
     keys.forEach(k => {
       const s = settings.find(x => x.key === k);
@@ -32,6 +39,9 @@ export async function getSettings(keys: string[]) {
 }
 
 export async function updateSetting(key: string, value: string) {
+  const session = await auth();
+  if (!session || (session.user as any)?.role !== "ADMIN") return { error: "Não autorizado." };
+
   try {
     await prisma.setting.upsert({
       where: { key },
@@ -47,6 +57,9 @@ export async function updateSetting(key: string, value: string) {
 }
 
 export async function saveSettings(data: Record<string, string>) {
+  const session = await auth();
+  if (!session || (session.user as any)?.role !== "ADMIN") return { error: "Não autorizado." };
+
   try {
     const operations = Object.entries(data).map(([key, value]) =>
       prisma.setting.upsert({

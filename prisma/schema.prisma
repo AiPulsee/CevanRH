@@ -60,6 +60,8 @@ model Job {
   requirements     String?
   responsibilities String?
   tips             String?
+  contractType     String?  @map("contract_type")
+  experienceLevel  String?  @map("experience_level")
   applications     Application[]
   company          Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
 

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export function PublicFooter() {
   return (
@@ -22,17 +23,25 @@ export function PublicFooter() {
           
           {[
             { title: "Serviços", items: ["Terceirização de RH", "Recrutamento Pontual", "Gestão Financeira", "Estratégia Tributária"] },
-            { title: "Empresa", items: ["Quem Somos", "Diferenciais", "Tabela de Investimento", "Proposta Completa"] },
+            { title: "Empresa", items: ["Grupo Cevan", "Quem Somos", "Diferenciais", "Proposta Completa"] },
             { title: "A Cevan", items: ["Nossa História", "Termos de Uso", "Privacidade"] },
           ].map((col) => (
             <div key={col.title} className="space-y-6 sm:space-y-8 lg:ml-auto text-center lg:text-left">
               <h4 className="font-extrabold text-[16px] sm:text-[18px] text-white tracking-wide">{col.title}</h4>
               <ul className="space-y-3 sm:space-y-4 text-slate-400 text-sm sm:text-[15px] font-medium">
-                {col.items.map(item => (
-                  <li key={item}>
-                    <a href="#" className="hover:text-blue-400 hover:translate-x-1.5 inline-block transition-transform duration-300">{item}</a>
-                  </li>
-                ))}
+                {col.items.map(item => {
+                  let href = "#";
+                  if (item === "Grupo Cevan") href = "/grupo-cevan";
+                  if (item === "Quem Somos") href = "/about";
+                  if (item === "Nossa História") href = "/about";
+                  return (
+                    <li key={item}>
+                      <Link href={href} className="hover:text-blue-400 hover:translate-x-1.5 inline-block transition-transform duration-300">
+                        {item}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

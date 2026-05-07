@@ -53,7 +53,7 @@ const STATUS_CONFIG: Record<
   { label: string; color: string; icon: typeof Clock }
 > = {
   TRIAL: {
-    label: "Em Trial",
+    label: "Em Andamento",
     color: "bg-amber-50 text-amber-700 border-amber-200",
     icon: Clock,
   },
@@ -74,10 +74,10 @@ const STATUS_CONFIG: Record<
   },
 };
 
-const FILTERS = ["Todos", "Em Trial", "Efetivados", "Encerrados"] as const;
+const FILTERS = ["Todos", "Em Andamento", "Efetivados", "Encerrados"] as const;
 const FILTER_MAP: Record<(typeof FILTERS)[number], PlacementStatus | null> = {
   Todos: null,
-  "Em Trial": "TRIAL",
+  "Em Andamento": "TRIAL",
   Efetivados: "EFFECTIVE",
   Encerrados: "TERMINATED",
 };
@@ -95,7 +95,7 @@ function urgency(days: number) {
   return "text-slate-600 bg-slate-50";
 }
 
-export function PlacementsTable({ placements: initial }: { placements: Placement[] }) {
+export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { placements: Placement[]; feePercentage?: number }) {
   const [placements, setPlacements] = useState(initial);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<(typeof FILTERS)[number]>("Todos");
@@ -144,7 +144,7 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                   status: "EFFECTIVE" as PlacementStatus,
                   commission: {
                     id: crypto.randomUUID(),
-                    amount: Math.round(p.monthlySalary * 0.5),
+                    amount: Math.round(p.monthlySalary * feePercentage),
                     status: "PENDING" as CommissionStatus,
                     invoiceNumber: null,
                   },
@@ -168,9 +168,9 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
             p.id === id ? { ...p, status: "TERMINATED" as PlacementStatus } : p
           )
         );
-        toast.success("Trial encerrado.");
+        toast.success("Contratação encerrada.");
       } else {
-        toast.error((r as any).error || "Erro ao encerrar trial.");
+        toast.error((r as any).error || "Erro ao encerrar contratação.");
       }
     });
   }
@@ -265,7 +265,7 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                   "Empresa / Vaga",
                   "Salário",
                   "Status",
-                  "Trial",
+                  "Andamento",
                   "Comissão",
                   "Ações",
                 ].map((h, i) => (
@@ -400,7 +400,7 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                       ) : p.status === "TRIAL" ? (
                         <div>
                           <p className="font-bold text-[10px] text-slate-400">
-                            {fmt(Math.round(p.monthlySalary * 0.5))}
+                            {fmt(Math.round(p.monthlySalary * feePercentage))}
                           </p>
                           <p className="text-[8px] font-bold text-slate-300 uppercase">
                             Potencial
@@ -425,7 +425,7 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                               </Button>
                             </ConfirmAction>
                             <ConfirmAction
-                              title="Encerrar Trial?"
+                              title="Encerrar Contratação?"
                               description="O candidato será desligado e a alocação será encerrada."
                               variant="danger"
                               actionText="Encerrar"
@@ -487,7 +487,7 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                     </div>
                     <div>
                       <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">Comissão</p>
-                      <p className="text-xs font-black text-blue-600">{fmt(p.commission?.amount || Math.round(p.monthlySalary * 0.5))}</p>
+                      <p className="text-xs font-black text-blue-600">{fmt(p.commission?.amount || Math.round(p.monthlySalary * feePercentage))}</p>
                     </div>
                   </div>
 

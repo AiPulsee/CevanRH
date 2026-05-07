@@ -1,4 +1,18 @@
 export const dynamic = "force-dynamic";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Cevan Serviços Empresariais | Vagas de Emprego no Maranhão e Brasil",
+  description: "Encontre vagas de emprego com curadoria especializada no Maranhão e em todo o Brasil. A Cevan Serviços Empresariais conecta talentos e empresas com processo seletivo personalizado.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Cevan Serviços Empresariais | Vagas de Emprego no Maranhão e Brasil",
+    description: "Encontre vagas de emprego com curadoria especializada no Maranhão e em todo o Brasil.",
+    url: "/",
+    type: "website",
+  },
+};
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,56 +38,66 @@ export default async function HomePage() {
     <div className="flex flex-col w-full bg-[#fdfdfd] font-sans text-[#202124] selection:bg-blue-100 selection:text-blue-900">
 
       {/* ── HERO ── */}
-      <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-40 overflow-hidden flex items-center min-h-[750px]">
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-50/60 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+      {/* Mobile: gradient background, no image. Desktop: split with photo on right */}
+      <section className="relative overflow-hidden flex items-center
+        pt-28 pb-16 min-h-[580px]
+        lg:pt-48 lg:pb-40 lg:min-h-[750px]
+        bg-gradient-to-br from-[#f0f5ff] via-white to-[#e8f0fe]
+        lg:bg-transparent">
 
-        <div className="absolute top-0 right-0 w-full lg:w-[48%] h-full z-0 lg:rounded-bl-[350px] overflow-hidden shadow-[-20px_0_50px_rgba(0,0,0,0.05)]">
+        {/* Desktop-only: subtle blob */}
+        <div className="absolute top-0 left-0 w-0 lg:w-[500px] h-0 lg:h-[500px] bg-blue-50/60 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+
+        {/* Photo — 0 size on mobile, right half on desktop */}
+        <div className="absolute top-0 right-0 w-0 h-0 lg:w-[48%] lg:h-full z-0 lg:rounded-bl-[350px] overflow-hidden lg:shadow-[-20px_0_50px_rgba(0,0,0,0.05)]">
           <div className="absolute inset-0 bg-gradient-to-tr from-[#1967D2]/95 via-[#1967D2]/75 to-blue-400/40 mix-blend-multiply z-10" />
           <div className="absolute inset-0 bg-blue-900/10 backdrop-blur-[1px] z-10" />
           <Image src="/hero-man.png" alt="Cevan Serviços Empresariais" fill className="object-cover opacity-90 scale-105 hover:scale-110 transition-transform duration-[10000ms]" priority />
         </div>
 
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
-          <div className="w-full lg:w-[58%] pr-0 lg:pr-16 space-y-8 sm:space-y-10">
-            <div className="space-y-5 text-center lg:text-left">
+          <div className="w-full lg:w-[58%] pr-0 lg:pr-16 space-y-7 lg:space-y-10">
+
+            <div className="space-y-4 lg:space-y-5 text-center lg:text-left">
               <Badge className="bg-[#1967D2]/10 text-[#1967D2] border-none rounded-full px-4 py-1.5 font-black uppercase tracking-widest text-[10px]">
                 Cevan Serviços Empresariais
               </Badge>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[62px] font-black tracking-tight text-slate-900 leading-[1.1] lg:leading-[1.05]">
+              <h1 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-[62px] font-black tracking-tight text-slate-900 leading-[1.1] lg:leading-[1.05]">
                 Gestão empresarial<br />
                 <span className="text-[#1967D2]">com quem entende.</span>
               </h1>
-              <p className="text-slate-500 text-base sm:text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+              <p className="text-slate-500 text-[15px] sm:text-lg lg:text-xl max-w-md mx-auto lg:mx-0 leading-relaxed font-medium">
                 Terceirização de RH, Gestão Financeira e Estratégia Tributária — e as melhores vagas do mercado para quem busca crescer.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto lg:mx-0">
-              <Link href="/servicos">
-                <div className="group flex items-center gap-4 bg-[#1967D2] hover:bg-blue-700 text-white rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-xl shadow-blue-200/50">
-                  <div className="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                    <Building2 className="h-6 w-6 text-white" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-sm mx-auto sm:max-w-xl lg:mx-0">
+              <Link href="/servicos" className="block">
+                <div className="group flex items-center gap-4 bg-[#1967D2] hover:bg-blue-700 text-white rounded-2xl p-4 lg:p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-xl shadow-blue-300/40">
+                  <div className="h-10 w-10 lg:h-12 lg:w-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                    <Building2 className="h-5 w-5 lg:h-6 lg:w-6 text-white" />
                   </div>
                   <div>
-                    <p className="font-black text-[15px] leading-tight">Sou Empresário</p>
-                    <p className="text-blue-200 text-[12px] font-medium mt-0.5">Ver serviços empresariais</p>
+                    <p className="font-black text-[14px] lg:text-[15px] leading-tight">Sou Empresário</p>
+                    <p className="text-blue-200 text-[11px] lg:text-[12px] font-medium mt-0.5">Ver serviços empresariais</p>
                   </div>
-                  <ArrowRight className="h-5 w-5 ml-auto opacity-60 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="h-4 w-4 ml-auto opacity-60 group-hover:translate-x-1 transition-transform shrink-0" />
                 </div>
               </Link>
-              <Link href="/jobs">
-                <div className="group flex items-center gap-4 bg-white hover:bg-slate-50 text-slate-900 rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg border border-slate-100">
-                  <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
-                    <Briefcase className="h-6 w-6 text-slate-600" />
+              <Link href="/jobs" className="block">
+                <div className="group flex items-center gap-4 bg-white hover:bg-slate-50 text-slate-900 rounded-2xl p-4 lg:p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg border border-slate-200">
+                  <div className="h-10 w-10 lg:h-12 lg:w-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+                    <Briefcase className="h-5 w-5 lg:h-6 lg:w-6 text-slate-600" />
                   </div>
                   <div>
-                    <p className="font-black text-[15px] leading-tight">Busco Emprego</p>
-                    <p className="text-slate-400 text-[12px] font-medium mt-0.5">Ver vagas disponíveis</p>
+                    <p className="font-black text-[14px] lg:text-[15px] leading-tight">Busco Emprego</p>
+                    <p className="text-slate-400 text-[11px] lg:text-[12px] font-medium mt-0.5">Ver vagas disponíveis</p>
                   </div>
-                  <ArrowRight className="h-5 w-5 ml-auto opacity-30 group-hover:opacity-60 group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="h-4 w-4 ml-auto opacity-30 group-hover:opacity-60 group-hover:translate-x-1 transition-all shrink-0" />
                 </div>
               </Link>
             </div>
+
           </div>
         </div>
       </section>

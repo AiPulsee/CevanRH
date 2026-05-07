@@ -79,15 +79,15 @@ export function CompaniesGrid({ companies: initial }: { companies: Company[] }) 
           Nenhuma empresa encontrada para &quot;{search}&quot;.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {paginated.map((company) => (
             <Card
               key={company.id}
-              className="group overflow-hidden border-slate-200 bg-white rounded-3xl hover:border-blue-500/30 transition-all hover:shadow-xl hover:shadow-blue-500/5"
+              className="group overflow-hidden border-slate-200 bg-white rounded-2xl hover:border-blue-500/30 transition-all hover:shadow-lg hover:shadow-blue-500/5"
             >
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-6">
-                  <div className="h-14 w-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-slate-400 text-xl overflow-hidden">
+              <div className="p-4">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-slate-400 text-sm overflow-hidden shrink-0">
                     {company.logoUrl ? (
                       <img
                         src={company.logoUrl}
@@ -99,7 +99,7 @@ export function CompaniesGrid({ companies: initial }: { companies: Company[] }) 
                     )}
                   </div>
                   <div className="flex items-center gap-1">
-                    <Badge className="rounded-lg px-2 py-1 text-[10px] font-black uppercase border-none bg-blue-50 text-blue-600">
+                    <Badge className="rounded-lg px-2 py-0.5 text-[9px] font-black uppercase border-none bg-blue-50 text-blue-600">
                       Cliente
                     </Badge>
                     <EditCompanyModal company={company} />
@@ -113,45 +113,45 @@ export function CompaniesGrid({ companies: initial }: { companies: Company[] }) 
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600"
+                        className="h-7 w-7 rounded-lg hover:bg-rose-50 hover:text-rose-600"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </ConfirmAction>
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <h4 className="text-lg font-black text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+                <div className="space-y-1 mb-4">
+                  <h4 className="text-base font-black text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">
                     {company.name}
                   </h4>
-                  <div className="flex items-center gap-2 text-slate-400">
-                    <Globe className="h-3.5 w-3.5 shrink-0" />
-                    <span className="text-[11px] font-bold uppercase tracking-tight truncate">
+                  <div className="flex items-center gap-1.5 text-slate-400">
+                    <Globe className="h-3 w-3 shrink-0" />
+                    <span className="text-[9px] font-bold uppercase tracking-tight truncate">
                       {company.slug}.cevan.com.br
                     </span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-slate-50">
-                  <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100/50">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                      Vagas
-                    </p>
-                    <div className="flex items-center gap-1.5">
-                      <Zap className="h-3.5 w-3.5 text-blue-500" />
-                      <span className="text-sm font-black text-slate-900">
+                <div className="flex items-center gap-4 pt-3 border-t border-slate-50">
+                  <div className="flex items-center gap-1.5">
+                    <Zap className="h-3.5 w-3.5 text-blue-500" />
+                    <div className="flex flex-col">
+                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                        Vagas
+                      </span>
+                      <span className="text-xs font-black text-slate-900">
                         {company._count.jobs}
                       </span>
                     </div>
                   </div>
-                  <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100/50">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                      Usuários
-                    </p>
-                    <div className="flex items-center gap-1.5">
-                      <Users2 className="h-3.5 w-3.5 text-indigo-500" />
-                      <span className="text-sm font-black text-slate-900">
+                  <div className="flex items-center gap-1.5">
+                    <Users2 className="h-3.5 w-3.5 text-indigo-500" />
+                    <div className="flex flex-col">
+                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                        Usuários
+                      </span>
+                      <span className="text-xs font-black text-slate-900">
                         {company._count.users}
                       </span>
                     </div>

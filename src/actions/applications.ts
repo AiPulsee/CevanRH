@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { createNotification } from "./notifications";
@@ -12,6 +13,11 @@ export async function applyToJob(data: {
   resumeUrl: string;
   coverLetter?: string;
 }) {
+  const r2Domain = process.env.R2_PUBLIC_DOMAIN;
+  if (!r2Domain || !data.resumeUrl.startsWith(r2Domain)) {
+    return { error: "URL de currículo inválida." };
+  }
+
   try {
     // 1. Encontrar ou criar o usuário (candidato)
     let user = await prisma.user.findUnique({
@@ -64,6 +70,9 @@ export async function applyToJob(data: {
 }
 
 export async function getApplications(filters?: { jobId?: string; status?: ApplicationStatus }) {
+  const session = await auth();
+  if (!session || (session.user as any)?.role !== "ADMIN") return [];
+
   try {
     return await prisma.application.findMany({
       where: {
@@ -87,6 +96,9 @@ export async function getApplications(filters?: { jobId?: string; status?: Appli
 }
 
 export async function rejectApplication(applicationId: string) {
+  const session = await auth();
+  if (!session || (session.user as any)?.role !== "ADMIN") return { error: "Não autorizado." };
+
   try {
     await prisma.application.update({
       where: { id: applicationId },
@@ -102,6 +114,9 @@ export async function rejectApplication(applicationId: string) {
 }
 
 export async function shortlistApplication(applicationId: string, feedback?: string) {
+  const session = await auth();
+  if (!session || (session.user as any)?.role !== "ADMIN") return { error: "Não autorizado." };
+
   try {
     const application = await prisma.application.update({
       where: { id: applicationId },

@@ -9,12 +9,6 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const role = (auth?.user as any)?.role;
 
-      if (nextUrl.pathname.startsWith("/dashboard")) {
-        if (!isLoggedIn) return false;
-        // Permite acesso se for EMPLOYER ou ADMIN
-        return role === "EMPLOYER" || role === "ADMIN";
-      }
-
       if (nextUrl.pathname.startsWith("/admin")) {
         if (!isLoggedIn) return false;
         if (role !== "ADMIN") return false;

@@ -13,6 +13,7 @@ import {
   Calendar,
   Briefcase
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -85,17 +86,32 @@ export default async function ResumesPage({
       {/* Stats Quick View */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total de Currículos</p>
+          <Tooltip>
+            <TooltipTrigger render={
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 cursor-default w-fit">Total de Currículos</p>
+            } />
+            <TooltipContent>Total de candidaturas recebidas na plataforma — cada candidatura inclui um currículo anexado</TooltipContent>
+          </Tooltip>
           <h3 className="text-2xl font-black mt-1 text-slate-900">{allForStats.length}</h3>
         </Card>
         <Card className="p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Triados (Managed)</p>
+          <Tooltip>
+            <TooltipTrigger render={
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 cursor-default w-fit">Triados (Managed)</p>
+            } />
+            <TooltipContent>Currículos de vagas Curadoria — candidatos que passaram pela triagem especializada da equipe Cevan</TooltipContent>
+          </Tooltip>
           <h3 className="text-2xl font-black mt-1 text-blue-600">
             {allForStats.filter(a => a.job.type === "MANAGED").length}
           </h3>
         </Card>
         <Card className="p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Públicos (Self-Service)</p>
+          <Tooltip>
+            <TooltipTrigger render={
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 cursor-default w-fit">Públicos (Self-Service)</p>
+            } />
+            <TooltipContent>Currículos de vagas Self-Service — candidatos que se candidataram diretamente a vagas publicadas pelas empresas parceiras</TooltipContent>
+          </Tooltip>
           <h3 className="text-2xl font-black mt-1 text-emerald-600">
             {allForStats.filter(a => a.job.type === "SELF_SERVICE").length}
           </h3>
@@ -118,7 +134,7 @@ export default async function ResumesPage({
         </div>
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           <Button nativeButton={false} render={<Link href="/admin/resumes">Todos</Link>} variant={!typeFilter ? "secondary" : "ghost"} className="flex-1 sm:flex-none rounded-xl font-bold text-xs h-11 px-4 sm:px-6" />
-          <Button nativeButton={false} render={<Link href="/admin/resumes?type=MANAGED">Managed</Link>} variant={typeFilter === "MANAGED" ? "secondary" : "ghost"} className="flex-1 sm:flex-none rounded-xl font-bold text-xs h-11 px-4 sm:px-6" />
+          <Button nativeButton={false} render={<Link href="/admin/resumes?type=MANAGED">Curadoria</Link>} variant={typeFilter === "MANAGED" ? "secondary" : "ghost"} className="flex-1 sm:flex-none rounded-xl font-bold text-xs h-11 px-4 sm:px-6" />
           <Button nativeButton={false} render={<Link href="/admin/resumes?type=SELF_SERVICE">Públicos</Link>} variant={typeFilter === "SELF_SERVICE" ? "secondary" : "ghost"} className="flex-1 sm:flex-none rounded-xl font-bold text-xs h-11 px-4 sm:px-6" />
         </div>
       </Card>
@@ -165,7 +181,7 @@ export default async function ResumesPage({
                         "rounded-md px-1.5 py-0 text-[8px] font-black uppercase border-none",
                         app.job.type === "MANAGED" ? "bg-blue-50 text-blue-600" : "bg-emerald-50 text-emerald-600"
                       )}>
-                        {app.job.type === "MANAGED" ? "MANAGED" : "SELF-SERVICE"}
+                        {app.job.type === "MANAGED" ? "Curadoria" : "Público"}
                       </Badge>
                     </div>
                   </div>

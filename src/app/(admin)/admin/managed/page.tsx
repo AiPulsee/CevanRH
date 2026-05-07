@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { Zap } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ManagedJobsList } from "@/components/admin/managed-jobs-list";
 import { CreateJobModal } from "@/components/dashboard/create-job-modal";
 import { PaginationBar } from "@/components/ui/pagination-bar";
@@ -80,21 +81,36 @@ export default async function AdminManagedJobs({
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card className="p-4 sm:p-5 border-slate-200 bg-white rounded-2xl shadow-sm border-l-4 border-l-blue-500">
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-            Total sob Gestão
-          </p>
+          <Tooltip>
+            <TooltipTrigger render={
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 cursor-default w-fit">
+                Total sob Gestão
+              </p>
+            } />
+            <TooltipContent>Todas as vagas de Curadoria criadas na plataforma, independente do status (ativas, pausadas ou encerradas)</TooltipContent>
+          </Tooltip>
           <h3 className="text-xl sm:text-2xl font-black mt-1 text-slate-900">{totalManagedJobs}</h3>
         </Card>
         <Card className="p-4 sm:p-5 border-slate-200 bg-white rounded-2xl shadow-sm border-l-4 border-l-orange-500">
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-            Em Triagem Ativa
-          </p>
+          <Tooltip>
+            <TooltipTrigger render={
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 cursor-default w-fit">
+                Em Triagem Ativa
+              </p>
+            } />
+            <TooltipContent>Vagas de Curadoria com status Ativo — a equipe Cevan está ativamente triando candidatos para estas vagas</TooltipContent>
+          </Tooltip>
           <h3 className="text-xl sm:text-2xl font-black mt-1 text-slate-900">{totalActive}</h3>
         </Card>
         <Card className="p-4 sm:p-5 border-slate-200 bg-white rounded-2xl shadow-sm border-l-4 border-l-green-500 sm:col-span-2 lg:col-span-1">
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-            Selecionados
-          </p>
+          <Tooltip>
+            <TooltipTrigger render={
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 cursor-default w-fit">
+                Selecionados
+              </p>
+            } />
+            <TooltipContent>Candidatos marcados como Selecionado em vagas de Curadoria — prontos para avançar para entrevista ou alocação</TooltipContent>
+          </Tooltip>
           <h3 className="text-xl sm:text-2xl font-black mt-1 text-slate-900">{totalShortlisted}</h3>
         </Card>
       </div>

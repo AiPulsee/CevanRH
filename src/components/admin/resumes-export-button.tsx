@@ -14,11 +14,28 @@ type ExportRow = {
   resumeUrl: string;
 };
 
+const TYPE_LABEL: Record<string, string> = {
+  MANAGED: "Curadoria",
+  SELF_SERVICE: "Público",
+};
+
+const STATUS_LABEL: Record<string, string> = {
+  APPLIED: "Candidatado",
+  REVIEWING: "Em Análise",
+  SHORTLISTED: "Selecionado",
+  INTERVIEW: "Entrevista",
+  REJECTED: "Reprovado",
+  HIRED: "Contratado",
+};
+
 export function ResumesExportButton({ data }: { data: ExportRow[] }) {
   const handleExport = () => {
     const headers = ["Nome", "Email", "Vaga", "Empresa", "Tipo", "Status", "Data", "URL Currículo"];
     const rows = data.map((d) => [
-      d.name, d.email, d.jobTitle, d.company, d.type, d.status, d.date, d.resumeUrl,
+      d.name, d.email, d.jobTitle, d.company,
+      TYPE_LABEL[d.type] ?? d.type,
+      STATUS_LABEL[d.status] ?? d.status,
+      d.date, d.resumeUrl,
     ]);
     const csv = [headers, ...rows]
       .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))

@@ -1,6 +1,7 @@
 "use server";
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { auth } from "@/lib/auth";
+import Groq from "groq-sdk";
 
 export type GeneratedJob = {
   description: string;
@@ -16,16 +17,15 @@ export async function generateJobContent(
   level: string,
   contractType: string
 ): Promise<{ success: true; data: GeneratedJob } | { success: false; error: string }> {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    return { success: false, error: "GEMINI_API_KEY não configurada." };
+  const session = await auth();
+  if (!session || (session.user as any)?.role !== "ADMIN") {
+    return { success: false, error: "Não autorizado." };
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
-    generationConfig: { responseMimeType: "application/json" },
-  });
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    return { success: false, error: "GROQ_API_KEY não configurada." };
+  }
 
   const prompt = `Você é um especialista em RH criando uma descrição de vaga profissional em português brasileiro.
 
@@ -43,13 +43,24 @@ Gere o conteúdo completo para essa vaga. Responda SOMENTE com JSON válido nest
   "skills": [<array de 5-8 strings com as principais habilidades técnicas exigidas>]
 }`;
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
-
   try {
+    const groq = new Groq({ apiKey });
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" },
+      temperature: 0.5,
+    });
+
+    const text = completion.choices[0]?.message?.content ?? "";
     const parsed = JSON.parse(text) as GeneratedJob;
     return { success: true, data: parsed };
-  } catch {
-    return { success: false, error: "Não foi possível interpretar a resposta da IA." };
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[Generate Job Error]", msg);
+    if (msg.includes("429") || msg.includes("rate_limit") || msg.includes("quota")) {
+      return { success: false, error: "Limite da IA atingido. Aguarde e tente novamente." };
+    }
+    return { success: false, error: "Não foi possível gerar o conteúdo com IA." };
   }
 }

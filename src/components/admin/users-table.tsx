@@ -27,14 +27,14 @@ type User = {
 };
 
 const PERMISSIONS_MAP: Record<string, string> = {
-  MANAGED: "Managed",
-  RESUMES: "Resumos",
+  MANAGED: "Curadoria",
+  RESUMES: "Currículos",
   COMPANIES: "Empresas",
   PLACEMENTS: "Contratações",
-  ANALYTICS: "Analytics",
+  ANALYTICS: "Análises",
   FINANCE: "Finanças",
   USERS: "Usuários",
-  SETTINGS: "Configs",
+  SETTINGS: "Configurações",
 };
 
 export function UsersTable({ users: initial }: { users: User[] }) {

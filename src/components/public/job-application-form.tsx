@@ -9,6 +9,7 @@ import { JobType } from "@prisma/client";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { applyToJob } from "@/actions/applications";
 
 interface JobApplicationFormProps {
@@ -20,6 +21,7 @@ export function JobApplicationForm({ jobId, jobType }: JobApplicationFormProps) 
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [coverLetter, setCoverLetter] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +37,7 @@ export function JobApplicationForm({ jobId, jobType }: JobApplicationFormProps) 
       name,
       email,
       resumeUrl,
+      coverLetter: coverLetter.trim() || undefined,
     });
 
     if (result.success) {
@@ -88,13 +91,28 @@ export function JobApplicationForm({ jobId, jobType }: JobApplicationFormProps) 
           </div>
           <div className="space-y-1.5">
             <Label className="text-[10px] font-bold uppercase text-slate-400 ml-1">E-mail</Label>
-            <Input 
+            <Input
               type="email"
-              placeholder="seu@email.com" 
+              placeholder="seu@email.com"
               className="h-12 bg-white/10 border-white/10 rounded-xl text-white placeholder:text-slate-400/50 focus:bg-white/20 font-medium"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-[10px] font-bold uppercase text-slate-400 ml-1">
+              Mensagem de Apresentação <span className="normal-case text-slate-500">(opcional)</span>
+            </Label>
+            <Textarea
+              placeholder="Conte brevemente por que você é o candidato ideal para esta vaga..."
+              className="bg-white/10 border-white/10 rounded-xl text-white placeholder:text-slate-400/50 focus:bg-white/20 font-medium resize-none min-h-[90px] text-sm"
+              value={coverLetter}
+              onChange={(e) => setCoverLetter(e.target.value)}
+              maxLength={1000}
+            />
+            {coverLetter.length > 0 && (
+              <p className="text-[9px] text-slate-500 text-right font-medium">{coverLetter.length}/1000</p>
+            )}
           </div>
         </div>
 

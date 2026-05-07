@@ -338,7 +338,7 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
                     exit={{ opacity: 0 }}
                     className="flex-1 flex flex-col"
                   >
-                    {currentApp?.resumeUrl?.endsWith(".pdf") && isStorageUrl(currentApp.resumeUrl) ? (
+                    {isStorageUrl(currentApp?.resumeUrl ?? "") && currentApp?.resumeUrl?.toLowerCase().includes(".pdf") ? (
                       <iframe
                         src={`${currentApp.resumeUrl}#toolbar=0`}
                         className="w-full h-full border-none"
@@ -347,13 +347,18 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
                     ) : (
                       <div className="flex-1 flex flex-col items-center justify-center text-center p-8 sm:p-12">
                         <FileText className="h-12 w-12 sm:h-16 sm:w-16 text-slate-200 mb-4" />
-                        <p className="text-base sm:text-lg font-black text-slate-900">Visualização não disponível</p>
-                        <Button 
-                          variant="outline" 
+                        <p className="text-base sm:text-lg font-black text-slate-900">
+                          {currentApp?.resumeUrl?.toLowerCase().includes(".doc") ? "Arquivo Word — visualização não suportada" : "Visualização não disponível"}
+                        </p>
+                        <p className="text-xs text-slate-400 font-medium mt-2 max-w-xs">
+                          {currentApp?.resumeUrl?.toLowerCase().includes(".doc") ? "Baixe o arquivo para abrir no Word." : "Apenas arquivos PDF podem ser visualizados aqui."}
+                        </p>
+                        <Button
+                          variant="outline"
                           className="mt-6 rounded-xl h-11 px-6 sm:px-8 font-bold"
                           onClick={() => currentApp && window.open(currentApp.resumeUrl, '_blank')}
                         >
-                          Baixar Currículo
+                          Abrir Arquivo
                         </Button>
                       </div>
                     )}
@@ -458,7 +463,7 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
                       )}
                     >
                       <Sparkles className="h-5 w-5 mr-3" />
-                      {showAI && aiResult ? "Reanalisar" : "IA Inteligente"}
+                      {showAI && aiResult ? "Reanalisar" : "Analisar com IA"}
                     </Button>
                     <div className="flex flex-col gap-3">
                       {isShortlisted ? (
@@ -545,7 +550,7 @@ function AIAnalysisPanel({
         {/* Fit Score */}
         <div className={cn("p-6 rounded-[2.5rem] border-2 text-center flex flex-col items-center justify-center shadow-sm transition-all", SCORE_BG(result.score))}>
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3">
-            Career Fit Score
+            Índice de Compatibilidade
           </p>
           <div className="relative inline-block">
              <p className={cn("text-5xl font-black", SCORE_COLOR(result.score))}>

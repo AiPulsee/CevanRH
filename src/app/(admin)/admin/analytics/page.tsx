@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Users, Building2, Target, ArrowUpRight } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { prisma } from "@/lib/prisma";
 import { format, startOfMonth, subMonths } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -87,6 +88,7 @@ export default async function AdminAnalyticsPage() {
       icon: Building2,
       color: "text-blue-600",
       bg: "bg-blue-50",
+      tooltip: "Total de empresas clientes cadastradas na plataforma desde o início",
     },
     {
       name: "Total de Candidaturas",
@@ -94,6 +96,7 @@ export default async function AdminAnalyticsPage() {
       icon: Users,
       color: "text-indigo-600",
       bg: "bg-indigo-50",
+      tooltip: "Número acumulado de candidaturas recebidas em todas as vagas, de todos os períodos",
     },
     {
       name: "Vagas Publicadas",
@@ -101,6 +104,7 @@ export default async function AdminAnalyticsPage() {
       icon: Target,
       color: "text-emerald-600",
       bg: "bg-emerald-50",
+      tooltip: "Total de vagas criadas na plataforma — inclui Curadoria e Self-Service de todos os status",
     },
     {
       name: "Alocações Totais",
@@ -108,6 +112,7 @@ export default async function AdminAnalyticsPage() {
       icon: TrendingUp,
       color: "text-amber-600",
       bg: "bg-amber-50",
+      tooltip: "Total histórico de candidatos alocados (em andamento + efetivados + encerrados)",
     },
   ];
 
@@ -124,9 +129,14 @@ export default async function AdminAnalyticsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
           <Card key={stat.name} className="p-4 sm:p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
-            <div className={`h-10 w-10 rounded-xl ${stat.bg} flex items-center justify-center mb-4`}>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </div>
+            <Tooltip>
+              <TooltipTrigger render={
+                <div className={`h-10 w-10 rounded-xl ${stat.bg} flex items-center justify-center mb-4 cursor-default`}>
+                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                </div>
+              } />
+              <TooltipContent>{stat.tooltip}</TooltipContent>
+            </Tooltip>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
               {stat.name}
             </p>
@@ -277,22 +287,32 @@ export default async function AdminAnalyticsPage() {
           </div>
 
           <div className="mt-8 grid grid-cols-2 gap-3">
-            <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
-              <p className="text-[9px] font-black uppercase text-blue-400 mb-1">
-                Tx. Candidatura / Vaga
-              </p>
-              <p className="text-xl font-black text-blue-700">
-                {totalJobs > 0 ? (totalApplications / totalJobs).toFixed(1) : "0"}x
-              </p>
-            </div>
-            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100">
-              <p className="text-[9px] font-black uppercase text-emerald-400 mb-1">
-                Vagas por Empresa
-              </p>
-              <p className="text-xl font-black text-emerald-700">
-                {totalCompanies > 0 ? (totalJobs / totalCompanies).toFixed(1) : "0"}x
-              </p>
-            </div>
+            <Tooltip>
+              <TooltipTrigger render={
+                <div className="p-4 rounded-xl bg-blue-50 border border-blue-100 cursor-default">
+                  <p className="text-[9px] font-black uppercase text-blue-400 mb-1">
+                    Tx. Candidatura / Vaga
+                  </p>
+                  <p className="text-xl font-black text-blue-700">
+                    {totalJobs > 0 ? (totalApplications / totalJobs).toFixed(1) : "0"}x
+                  </p>
+                </div>
+              } />
+              <TooltipContent>Média de candidaturas recebidas por cada vaga publicada — indica o nível de interesse nas oportunidades</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger render={
+                <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100 cursor-default">
+                  <p className="text-[9px] font-black uppercase text-emerald-400 mb-1">
+                    Vagas por Empresa
+                  </p>
+                  <p className="text-xl font-black text-emerald-700">
+                    {totalCompanies > 0 ? (totalJobs / totalCompanies).toFixed(1) : "0"}x
+                  </p>
+                </div>
+              } />
+              <TooltipContent>Média de vagas publicadas por empresa cadastrada — reflete o engajamento das empresas clientes</TooltipContent>
+            </Tooltip>
           </div>
         </Card>
       </div>

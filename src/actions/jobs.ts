@@ -17,6 +17,8 @@ const createJobSchema = z.object({
   responsibilities: z.string().optional(),
   benefits: z.string().optional(),
   tips: z.string().optional(),
+  contractType: z.string().optional(),
+  experienceLevel: z.string().optional(),
 });
 
 export type CreateJobState = {
@@ -47,13 +49,15 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
     responsibilities: formData.get("responsibilities"),
     benefits: formData.get("benefits"),
     tips: formData.get("tips"),
+    contractType: formData.get("contractType"),
+    experienceLevel: formData.get("experienceLevel"),
   });
 
   if (!validatedFields.success) {
     return { error: "Dados inválidos. Verifique os campos." };
   }
 
-  const { title, description, location, isRemote, salaryRange, type, requirements, responsibilities, benefits, tips } = validatedFields.data;
+  const { title, description, location, isRemote, salaryRange, type, requirements, responsibilities, benefits, tips, contractType, experienceLevel } = validatedFields.data;
 
   const targetCompanyId = session.user.role === "ADMIN" 
     ? (formData.get("companyId") as string || session.user.companyId)
@@ -61,6 +65,11 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
 
   if (!targetCompanyId) {
     return { error: "ID da empresa não fornecido ou não autorizado." };
+  }
+
+  const companyExists = await prisma.company.findUnique({ where: { id: targetCompanyId }, select: { id: true } });
+  if (!companyExists) {
+    return { error: "Empresa não encontrada." };
   }
 
   try {
@@ -79,8 +88,10 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
         responsibilities,
         benefits,
         tips,
+        contractType,
+        experienceLevel,
         status: JobStatus.ACTIVE,
-        companyId: targetCompanyId, 
+        companyId: targetCompanyId,
       },
     });
 
