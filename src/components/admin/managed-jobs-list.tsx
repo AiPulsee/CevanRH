@@ -28,6 +28,7 @@ type App = {
   resumeUrl: string;
   coverLetter: string | null;
   candidate: { name: string | null; email: string | null };
+  placement: { status: string } | null;
 };
 
 type ManagedJob = {
@@ -138,6 +139,10 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
             const shortlistedCount = job.applications.filter(
               (a) => a.status === "SHORTLISTED"
             ).length;
+            const hasEffectivePlacement = job.applications.some(
+              (a) => a.placement?.status === "EFFECTIVE"
+            );
+            const showTriagem = job.status === "ACTIVE" || !hasEffectivePlacement;
             return (
               <Card
                 key={job.id}
@@ -221,7 +226,7 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
                   </div>
 
                   <div className="flex items-center gap-2 w-full xl:w-auto">
-                    {job.status === "ACTIVE" && (
+                    {showTriagem && (
                       <ScreeningModal
                         jobTitle={job.title}
                         companyName={job.company.name}

@@ -43,6 +43,7 @@ export default async function AdminManagedJobs({
             resumeUrl: true,
             coverLetter: true,
             candidate: { select: { name: true, email: true } },
+            placement: { select: { status: true } },
           },
           orderBy: { createdAt: "desc" },
         },
