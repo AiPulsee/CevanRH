@@ -49,15 +49,34 @@ async function extractPdfText(resumeUrl: string): Promise<{ text: string; error?
       chunks.push(chunk);
     }
     const buffer = Buffer.concat(chunks);
-    const data = await pdfParse(buffer);
-    return { text: data.text.trim().slice(0, 6000) };
+
+    // First attempt: standard parse
+    try {
+      const data = await pdfParse(buffer);
+      const text = data.text.trim();
+      if (text.length > 20) return { text: text.slice(0, 6000) };
+      // Parsed OK but no readable text → likely a scanned/image PDF
+      return { text: "", error: "O currículo é uma imagem escaneada e não possui texto selecionável. A IA não consegue ler imagens." };
+    } catch (parseErr: unknown) {
+      // Second attempt: skip broken xref/page data
+      try {
+        const data = await pdfParse(buffer, { max: 0 } as any);
+        const text = data.text.trim();
+        if (text.length > 20) return { text: text.slice(0, 6000) };
+      } catch {
+        // ignore second attempt error
+      }
+      const msg = parseErr instanceof Error ? parseErr.message : String(parseErr);
+      console.error("[extractPdfText] parse failed:", msg);
+      return { text: "", error: "PDF corrompido ou com proteção de cópia. Peça ao candidato reenviar em outro formato." };
+    }
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg.includes("NoSuchKey") || msg.includes("The specified key does not exist")) {
       return { text: "", error: "Arquivo não encontrado no servidor. O candidato precisa reenviar o currículo." };
     }
-    console.error("[extractPdfText]", msg);
-    return { text: "", error: "Não foi possível ler o PDF (protegido ou corrompido)." };
+    console.error("[extractPdfText] S3 error:", msg);
+    return { text: "", error: "Erro ao buscar o arquivo no servidor." };
   }
 }
 
