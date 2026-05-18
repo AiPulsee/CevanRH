@@ -31,6 +31,7 @@ type Job = {
   responsibilities: string | null;
   benefits: string | null;
   tips: string | null;
+  openings: number;
 };
 
 export function EditJobModal({ job }: { job: Job }) {
@@ -44,6 +45,7 @@ export function EditJobModal({ job }: { job: Job }) {
   const [isRemote, setIsRemote] = useState(job.isRemote);
   const [salaryRange, setSalaryRange] = useState(job.salaryRange ?? "");
   const [status, setStatus] = useState(job.status);
+  const [openings, setOpenings] = useState(job.openings);
   const [requirements, setRequirements] = useState(job.requirements ?? "");
   const [responsibilities, setResponsibilities] = useState(job.responsibilities ?? "");
   const [benefits, setBenefits] = useState(job.benefits ?? "");
@@ -58,6 +60,7 @@ export function EditJobModal({ job }: { job: Job }) {
         isRemote,
         salaryRange: salaryRange || undefined,
         status: status as "ACTIVE" | "CLOSED" | "DRAFT",
+        openings,
         requirements: requirements || undefined,
         responsibilities: responsibilities || undefined,
         benefits: benefits || undefined,
@@ -141,6 +144,17 @@ export function EditJobModal({ job }: { job: Job }) {
                 <option value="DRAFT">Rascunho</option>
                 <option value="CLOSED">Encerrada</option>
               </select>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="font-bold text-slate-700">Nº de Vagas</Label>
+              <Input
+                type="number"
+                min={1}
+                className="h-12 bg-slate-50 border-slate-200 rounded-xl font-bold"
+                value={openings}
+                onChange={(e) => setOpenings(Math.max(1, parseInt(e.target.value) || 1))}
+              />
             </div>
 
             <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">

@@ -47,6 +47,7 @@ export function CreateJobModal({ companies }: { companies?: { id: string; name: 
   const [location, setLocation] = useState("");
   const [salaryRange, setSalaryRange] = useState("");
   const [isRemote, setIsRemote] = useState(false);
+  const [openings, setOpenings] = useState(1);
 
   // Step 2
   const [description, setDescription] = useState("");
@@ -103,6 +104,7 @@ export function CreateJobModal({ companies }: { companies?: { id: string; name: 
       formData.append("tips", tips);
       formData.append("contractType", contractType);
       formData.append("experienceLevel", level);
+      formData.append("openings", openings.toString());
       if (companyId) formData.append("companyId", companyId);
 
       const result = await createJob({}, formData);
@@ -265,6 +267,17 @@ export function CreateJobModal({ companies }: { companies?: { id: string; name: 
                     onChange={(e) => setSalaryRange(e.target.value)}
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="font-bold text-slate-700">Nº de Vagas</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  className="h-14 bg-slate-50 border-slate-200 rounded-xl font-bold"
+                  value={openings}
+                  onChange={(e) => setOpenings(Math.max(1, parseInt(e.target.value) || 1))}
+                />
               </div>
 
               <div className="flex items-center gap-3 md:col-span-2 p-4 bg-slate-50 rounded-xl border border-slate-100">

@@ -20,6 +20,7 @@ const createJobSchema = z.object({
   tips: z.string().optional(),
   contractType: z.string().optional(),
   experienceLevel: z.string().optional(),
+  openings: z.coerce.number().int().min(1).default(1),
 });
 
 export type CreateJobState = {
@@ -57,6 +58,7 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
     tips: formData.get("tips"),
     contractType: formData.get("contractType"),
     experienceLevel: formData.get("experienceLevel"),
+    openings: formData.get("openings") || 1,
   });
 
   if (!validatedFields.success) {
@@ -65,7 +67,7 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
 
   const {
     title, description, location, isRemote, salaryRange, type,
-    requirements, responsibilities, benefits, tips, contractType, experienceLevel,
+    requirements, responsibilities, benefits, tips, contractType, experienceLevel, openings,
   } = validatedFields.data;
 
   const targetCompanyId =
@@ -92,6 +94,7 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
       data: {
         title, slug, description, location, isRemote, salaryRange, type,
         requirements, responsibilities, benefits, tips, contractType, experienceLevel,
+        openings,
         status: JobStatus.ACTIVE,
         companyId: targetCompanyId,
       },
@@ -122,6 +125,7 @@ export async function updateJob(
     benefits?: string;
     tips?: string;
     status: JobStatus;
+    openings?: number;
   }
 ) {
   const session = await auth();

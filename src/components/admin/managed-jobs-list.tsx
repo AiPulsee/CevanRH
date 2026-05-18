@@ -42,6 +42,7 @@ type ManagedJob = {
   responsibilities: string | null;
   benefits: string | null;
   tips: string | null;
+  openings: number;
   company: { name: string; logoUrl: string | null };
   _count: { applications: number };
   applications: App[];
@@ -205,7 +206,7 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
                       <div className="flex items-center gap-1.5">
                         <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
                         <span className="font-black text-xs sm:text-sm text-slate-900">
-                          {shortlistedCount} / 5
+                          {shortlistedCount} / {job.openings}
                         </span>
                       </div>
                     </div>

@@ -33,6 +33,7 @@ export default async function AdminManagedJobs({
         responsibilities: true,
         benefits: true,
         tips: true,
+        openings: true,
         company: { select: { name: true, logoUrl: true } },
         _count: { select: { applications: true } },
         applications: {
