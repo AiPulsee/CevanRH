@@ -49,6 +49,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { PaginationBar } from "@/components/ui/pagination-bar";
@@ -168,9 +169,15 @@ export default async function JobsPublicPage({
 
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
                     <div className="flex items-start sm:items-center gap-4 sm:gap-5 flex-1">
-                      <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl flex-shrink-0 flex items-center justify-center font-bold text-white text-base sm:text-xl shadow-sm ${job.type === 'MANAGED' ? 'bg-blue-600' : 'bg-slate-600'}`}>
+                      <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl flex-shrink-0 flex items-center justify-center font-bold text-white text-base sm:text-xl shadow-sm overflow-hidden ${job.company.logoUrl ? 'bg-white border border-slate-100' : job.type === 'MANAGED' ? 'bg-blue-600' : 'bg-slate-600'}`}>
                         {job.company.logoUrl ? (
-                          <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-cover rounded-xl" />
+                          <Image
+                            src={job.company.logoUrl}
+                            alt={job.company.name}
+                            width={56}
+                            height={56}
+                            className="h-full w-full object-contain p-1.5"
+                          />
                         ) : (
                           job.company.name.charAt(0)
                         )}

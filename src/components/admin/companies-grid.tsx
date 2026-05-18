@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ConfirmAction } from "@/components/ui/confirm-action";
 import { Building2, Globe, Search, Users2, Zap, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { PaginationBar } from "@/components/ui/pagination-bar";
 import { EditCompanyModal } from "@/components/admin/edit-company-modal";
 import { deleteCompany } from "@/actions/companies";
@@ -79,7 +80,7 @@ export function CompaniesGrid({ companies: initial }: { companies: Company[] }) 
           Nenhuma empresa encontrada para &quot;{search}&quot;.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {paginated.map((company) => (
             <Card
               key={company.id}
@@ -87,12 +88,14 @@ export function CompaniesGrid({ companies: initial }: { companies: Company[] }) 
             >
               <div className="p-4">
                 <div className="flex justify-between items-start mb-4">
-                  <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-slate-400 text-sm overflow-hidden shrink-0">
+                  <div className="h-14 w-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-slate-400 text-lg overflow-hidden shrink-0">
                     {company.logoUrl ? (
-                      <img
+                      <Image
                         src={company.logoUrl}
                         alt={company.name}
-                        className="h-full w-full object-cover"
+                        width={56}
+                        height={56}
+                        className="h-full w-full object-contain p-1.5"
                       />
                     ) : (
                       company.name.charAt(0)

@@ -35,10 +35,11 @@ export async function generateMetadata({
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { 
-  MapPin, DollarSign, Zap, Building2, ChevronLeft, 
+import {
+  MapPin, DollarSign, Zap, Building2, ChevronLeft,
   ShieldCheck, Share2, Info, Star, CheckCircle2, Lightbulb
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { JobApplicationForm } from "@/components/public/job-application-form";
 import { formatDistanceToNow } from "date-fns";
@@ -118,8 +119,18 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 pt-2">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-blue-600 shadow-sm border border-slate-100 shrink-0">
-                    <Building2 className="h-5 w-5" />
+                  <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center shadow-sm border border-slate-100 shrink-0 overflow-hidden">
+                    {job.company.logoUrl ? (
+                      <Image
+                        src={job.company.logoUrl}
+                        alt={job.company.name}
+                        width={40}
+                        height={40}
+                        className="object-contain p-1 w-full h-full"
+                      />
+                    ) : (
+                      <Building2 className="h-5 w-5 text-blue-600" />
+                    )}
                   </div>
                   <div>
                     <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Empresa</p>
@@ -238,7 +249,7 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
                 <div className="flex items-center gap-4 sm:gap-6">
                   <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-blue-600 text-xl sm:text-2xl overflow-hidden shadow-sm shrink-0">
                     {job.company.logoUrl ? (
-                      <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-cover" />
+                      <Image src={job.company.logoUrl} alt={job.company.name} width={80} height={80} className="h-full w-full object-contain p-2" />
                     ) : (
                       job.company.name.charAt(0)
                     )}

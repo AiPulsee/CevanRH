@@ -17,6 +17,7 @@ import { Building2, Pencil, Loader2, Save } from "lucide-react";
 import { updateCompany } from "@/actions/companies";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { LogoUpload } from "@/components/admin/logo-upload";
 
 type Company = {
   id: string;
@@ -25,6 +26,7 @@ type Company = {
   description: string | null;
   industry: string | null;
   location: string | null;
+  logoUrl: string | null;
 };
 
 export function EditCompanyModal({ company }: { company: Company }) {
@@ -37,6 +39,7 @@ export function EditCompanyModal({ company }: { company: Company }) {
   const [description, setDescription] = useState(company.description ?? "");
   const [industry, setIndustry] = useState(company.industry ?? "");
   const [location, setLocation] = useState(company.location ?? "");
+  const [logoUrl, setLogoUrl] = useState<string | null>(company.logoUrl);
 
   function handleSave() {
     startTransition(async () => {
@@ -46,6 +49,7 @@ export function EditCompanyModal({ company }: { company: Company }) {
         description: description || undefined,
         industry: industry || undefined,
         location: location || undefined,
+        logoUrl: logoUrl || null,
       });
 
       if (result.success) {
@@ -87,6 +91,11 @@ export function EditCompanyModal({ company }: { company: Company }) {
         </div>
 
         <div className="p-6 sm:p-8 space-y-5">
+          <div className="space-y-2">
+            <Label className="font-bold text-slate-700">Logotipo</Label>
+            <LogoUpload value={logoUrl} onChange={setLogoUrl} />
+          </div>
+
           <div className="space-y-2">
             <Label className="font-bold text-slate-700">Nome da Empresa</Label>
             <Input

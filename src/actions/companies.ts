@@ -12,6 +12,7 @@ const createCompanySchema = z.object({
   description: z.string().optional(),
   industry: z.string().optional(),
   location: z.string().optional(),
+  logoUrl: z.string().url().optional().or(z.literal("")),
 });
 
 export async function createCompany(prevState: unknown, formData: FormData) {
@@ -25,13 +26,14 @@ export async function createCompany(prevState: unknown, formData: FormData) {
     description: formData.get("description"),
     industry: formData.get("industry"),
     location: formData.get("location"),
+    logoUrl: formData.get("logoUrl"),
   });
 
   if (!validatedFields.success) {
     return fail("Dados inválidos.");
   }
 
-  const { name, email, description, industry, location } = validatedFields.data;
+  const { name, email, description, industry, location, logoUrl } = validatedFields.data;
   const slug =
     name.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "") +
     "-" +
@@ -39,7 +41,7 @@ export async function createCompany(prevState: unknown, formData: FormData) {
 
   try {
     await prisma.company.create({
-      data: { name, slug, email: email || null, description, industry, location },
+      data: { name, slug, email: email || null, description, industry, location, logoUrl: logoUrl || null },
     });
 
     revalidatePath("/admin/companies");
@@ -58,6 +60,7 @@ export async function updateCompany(
     description?: string;
     industry?: string;
     location?: string;
+    logoUrl?: string | null;
   }
 ) {
   const session = await auth();

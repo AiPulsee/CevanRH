@@ -30,8 +30,8 @@ const securityHeaders = [
       "font-src 'self' https://fonts.gstatic.com",
       // Imagens: permite o próprio domínio + o bucket R2 público
       `img-src 'self' data: blob: ${process.env.R2_PUBLIC_DOMAIN ?? ""}`,
-      // Conexões: permite API calls para o próprio domínio + Groq AI
-      "connect-src 'self' https://api.groq.com",
+      // Conexões: permite API calls para o próprio domínio + Groq AI + R2 (upload direto)
+      `connect-src 'self' https://api.groq.com ${process.env.R2_ENDPOINT ?? ""} https://*.r2.cloudflarestorage.com`,
       // Upload direto para o R2 via pre-signed URL
       `form-action 'self'`,
       // Frames: nunca
@@ -42,7 +42,16 @@ const securityHeaders = [
   },
 ];
 
+const r2Hostname = process.env.R2_PUBLIC_DOMAIN
+  ? new URL(process.env.R2_PUBLIC_DOMAIN).hostname
+  : "";
+
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: r2Hostname
+      ? [{ protocol: "https", hostname: r2Hostname }]
+      : [],
+  },
   async headers() {
     return [
       {

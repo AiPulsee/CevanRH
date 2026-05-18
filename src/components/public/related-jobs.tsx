@@ -40,9 +40,9 @@ export async function RelatedJobs({ currentJobId }: RelatedJobsProps) {
             <Card className="p-6 border-slate-100 bg-white hover:border-blue-100 hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300 rounded-2xl group h-full flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center font-black text-blue-600 text-sm overflow-hidden">
+                  <div className="h-10 w-10 rounded-lg flex items-center justify-center font-black text-sm overflow-hidden bg-blue-50 text-blue-600">
                     {job.company.logoUrl ? (
-                      <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-cover" />
+                      <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-contain p-1" />
                     ) : (
                       job.company.name.charAt(0)
                     )}

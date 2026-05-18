@@ -126,9 +126,9 @@ export default async function HomePage() {
                 <Link key={job.id} href={`/jobs/${job.slug}`} className="group">
                   <div className="flex items-center gap-5 py-5 hover:bg-slate-50/70 -mx-4 px-4 rounded-2xl transition-all duration-200">
                     {/* Logo */}
-                    <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-2xl ${job.type === "MANAGED" ? "bg-[#1967D2]" : "bg-slate-700"} flex items-center justify-center text-white font-black text-lg shrink-0 group-hover:scale-105 transition-transform duration-300`}>
+                    <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-2xl flex items-center justify-center text-white font-black text-lg shrink-0 group-hover:scale-105 transition-transform duration-300 overflow-hidden ${job.company.logoUrl ? "bg-white border border-slate-100" : job.type === "MANAGED" ? "bg-[#1967D2]" : "bg-slate-700"}`}>
                       {job.company.logoUrl
-                        ? <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-cover rounded-2xl" />
+                        ? <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-contain p-1.5" />
                         : job.company.name.charAt(0)}
                     </div>
 

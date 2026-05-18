@@ -13,7 +13,10 @@ const ALLOWED_TYPES = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 
+const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml"];
+
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+const MAX_LOGO_SIZE_BYTES = 2 * 1024 * 1024; // 2 MB
 
 export async function getPresignedUrl(fileName: string, fileType: string, fileSize: number) {
   const headersList = await headers();
@@ -46,6 +49,33 @@ export async function getPresignedUrl(fileName: string, fileType: string, fileSi
   });
 
   const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 60 });
+
+  return {
+    uploadUrl: signedUrl,
+    fileUrl: `${process.env.R2_PUBLIC_DOMAIN}/${fileKey}`,
+  };
+}
+
+export async function getLogoPresignedUrl(fileName: string, fileType: string, fileSize: number) {
+  if (!ALLOWED_IMAGE_TYPES.includes(fileType)) {
+    throw new Error("Tipo de arquivo não permitido. Use PNG, JPG, WEBP ou SVG.");
+  }
+
+  if (fileSize > MAX_LOGO_SIZE_BYTES) {
+    throw new Error("Imagem muito grande. Tamanho máximo: 2 MB.");
+  }
+
+  const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 100);
+  const fileKey = `logos/${uuidv4()}-${safeName}`;
+
+  const command = new PutObjectCommand({
+    Bucket: process.env.R2_BUCKET_NAME,
+    Key: fileKey,
+    ContentType: fileType,
+    ContentLength: fileSize,
+  });
+
+  const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 120 });
 
   return {
     uploadUrl: signedUrl,

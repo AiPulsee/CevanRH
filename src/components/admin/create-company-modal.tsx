@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Building2, Plus, Loader2 } from "lucide-react";
 import { createCompany } from "@/actions/companies";
 import { useTransition } from "react";
+import { LogoUpload } from "@/components/admin/logo-upload";
 import { useRouter } from "next/navigation";
 
 export function CreateCompanyModal() {
@@ -27,6 +28,7 @@ export function CreateCompanyModal() {
   const [description, setDescription] = useState("");
   const [industry, setIndustry] = useState("");
   const [location, setLocation] = useState("");
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   const handleSubmit = () => {
     startTransition(async () => {
@@ -36,6 +38,7 @@ export function CreateCompanyModal() {
       formData.append("description", description);
       formData.append("industry", industry);
       formData.append("location", location);
+      if (logoUrl) formData.append("logoUrl", logoUrl);
 
       const result = await createCompany({}, formData);
       if (result.success) {
@@ -76,6 +79,11 @@ export function CreateCompanyModal() {
 
         <div className="p-6 sm:p-8 space-y-6">
           <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="font-bold text-slate-700">Logotipo</Label>
+              <LogoUpload value={logoUrl} onChange={setLogoUrl} />
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="name" className="font-bold text-slate-700">Nome da Empresa</Label>
               <Input 

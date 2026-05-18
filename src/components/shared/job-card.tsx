@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { MapPin, DollarSign, Clock, Zap, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -15,9 +16,15 @@ export function JobCard({ job }: JobCardProps) {
     <Link href={`/jobs/${job.slug}`}>
       <Card className="p-6 bg-white/[0.02] border-white/5 hover:border-primary/50 transition-all cursor-pointer group shadow-sm hover:shadow-2xl hover:shadow-primary/5 rounded-[2rem]">
         <div className="flex flex-col md:flex-row md:items-center gap-6">
-          <div className="h-16 w-16 rounded-2xl bg-black/40 flex items-center justify-center overflow-hidden border border-white/10 group-hover:border-primary/30 transition-all">
+          <div className="h-16 w-16 rounded-2xl flex items-center justify-center overflow-hidden border transition-all group-hover:border-primary/30 bg-black/40 border-white/10">
             {job.company.logoUrl ? (
-              <img src={job.company.logoUrl} alt={job.company.name} className="object-cover h-full w-full" />
+              <Image
+                src={job.company.logoUrl}
+                alt={job.company.name}
+                width={64}
+                height={64}
+                className="h-full w-full object-contain p-1.5"
+              />
             ) : (
               <span className="text-2xl font-black text-primary">
                 {job.company.name.charAt(0)}
