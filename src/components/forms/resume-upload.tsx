@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { getPresignedUrl } from "@/actions/upload";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { FileCheck, UploadCloud, X, Loader2, AlertCircle } from "lucide-react";
@@ -27,35 +26,20 @@ export function ResumeUpload({ onUploadComplete, variant = "light" }: ResumeUplo
 
     try {
       setUploading(true);
-      setProgress(0);
+      setProgress(10);
 
-      const { uploadUrl, fileUrl } = await getPresignedUrl(file.name, file.type, file.size);
+      const form = new FormData();
+      form.append("file", file);
 
-      await new Promise<void>((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open("PUT", uploadUrl, true);
-        xhr.setRequestHeader("Content-Type", file.type);
+      const res = await fetch("/api/upload/resume", { method: "POST", body: form });
+      setProgress(90);
 
-        xhr.upload.onprogress = (e) => {
-          if (e.lengthComputable) {
-            setProgress(Math.round((e.loaded / e.total) * 100));
-          }
-        };
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || `Upload falhou: status ${res.status}`);
 
-        xhr.onload = () => {
-          if (xhr.status === 200 || xhr.status === 204) {
-            resolve();
-          } else {
-            reject(new Error(`Upload falhou: status ${xhr.status}`));
-          }
-        };
-
-        xhr.onerror = () => reject(new Error("Erro de rede ao enviar arquivo."));
-        xhr.send(file);
-      });
-
-      setUploadedUrl(fileUrl);
-      onUploadComplete(fileUrl);
+      setProgress(100);
+      setUploadedUrl(json.fileUrl);
+      onUploadComplete(json.fileUrl);
     } catch (err: any) {
       setError(err.message || "Erro ao enviar o arquivo. Tente novamente.");
       setFileName(null);
