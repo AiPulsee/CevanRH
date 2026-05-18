@@ -9,7 +9,6 @@ import {
   Zap,
   Settings,
   LogOut,
-  Search,
   LineChart,
   LayoutDashboard,
   UserCheck,
@@ -21,9 +20,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { logout } from "@/actions/auth";
 import { NotificationsPopover } from "@/components/admin/notifications-popover";
+import { GlobalSearch } from "@/components/admin/global-search";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
@@ -164,13 +163,7 @@ export function AdminLayoutClient({ children, userName, permissions }: Props) {
 
             {/* Center: search (desktop) */}
             <div className="hidden lg:block flex-1 max-w-sm mx-8">
-              <div className="relative group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-                <Input
-                  placeholder="Busca rápida..."
-                  className="pl-11 h-10 border-none bg-slate-100 rounded-xl focus-visible:ring-2 focus-visible:ring-blue-500/20 font-medium text-sm text-slate-900 transition-all"
-                />
-              </div>
+              <GlobalSearch />
             </div>
 
             {/* Right: actions */}
