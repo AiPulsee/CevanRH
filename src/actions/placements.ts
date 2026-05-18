@@ -151,8 +151,14 @@ export async function terminatePlacement(placementId: string, reason?: string) {
       },
     });
 
+    await prisma.job.update({
+      where: { id: placement.application.job.id },
+      data: { status: "ACTIVE" },
+    });
+
     await logAction("TERMINATE_PLACEMENT", `Encerrou alocação ${placementId}`);
     revalidatePath("/admin/placements");
+    revalidatePath("/admin/managed");
     revalidatePath("/admin");
     revalidatePath("/dashboard/placements");
 
@@ -205,6 +211,11 @@ export async function hireAndPlace(data: {
       await tx.application.update({
         where: { id: data.applicationId },
         data: { status: "HIRED" },
+      });
+
+      await tx.job.update({
+        where: { id: application.jobId },
+        data: { status: "CLOSED" },
       });
 
       const placement = await tx.placement.create({
