@@ -9,6 +9,11 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const role = (auth?.user as any)?.role;
 
+      // Redirect already-logged-in admins away from the login page
+      if (nextUrl.pathname === "/login" && isLoggedIn && role === "ADMIN") {
+        return Response.redirect(new URL("/admin", nextUrl));
+      }
+
       if (nextUrl.pathname.startsWith("/admin")) {
         if (!isLoggedIn) return false;
         if (role !== "ADMIN") return false;
