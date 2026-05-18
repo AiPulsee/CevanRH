@@ -30,6 +30,7 @@ function isIOS() {
 export function InstallPWAPrompt() {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [installing, setInstalling] = useState(false);
   const [standalone, setStandalone] = useState(false);
@@ -39,6 +40,7 @@ export function InstallPWAPrompt() {
     setMounted(true);
     setStandalone(isStandalone());
     setIos(isIOS());
+    setHidden(localStorage.getItem("pwa-btn-hidden") === "1");
 
     if (_deferredPrompt) setDeferredPrompt(_deferredPrompt);
 
@@ -51,6 +53,12 @@ export function InstallPWAPrompt() {
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
   }, []);
 
+  function hideForever() {
+    localStorage.setItem("pwa-btn-hidden", "1");
+    setHidden(true);
+    setOpen(false);
+  }
+
   async function handleInstall() {
     if (!deferredPrompt) return;
     setInstalling(true);
@@ -62,8 +70,8 @@ export function InstallPWAPrompt() {
     if (outcome === "accepted") setOpen(false);
   }
 
-  // Don't render while SSR or if already installed
-  if (!mounted || standalone) return null;
+  // Don't render while SSR, if already installed, or user hid it
+  if (!mounted || standalone || hidden) return null;
 
   return (
     <>
@@ -169,6 +177,9 @@ export function InstallPWAPrompt() {
                     >
                       Entendi
                     </button>
+                    <button onClick={hideForever} className="w-full pt-2 text-xs text-slate-400 hover:text-slate-600 font-medium transition-colors">
+                      Não mostrar mais
+                    </button>
                   </>
                 )}
 
@@ -194,6 +205,9 @@ export function InstallPWAPrompt() {
                         Agora não
                       </button>
                     </div>
+                    <button onClick={hideForever} className="w-full pt-2 text-xs text-slate-400 hover:text-slate-600 font-medium transition-colors">
+                      Não mostrar mais
+                    </button>
                   </>
                 )}
 
@@ -208,6 +222,9 @@ export function InstallPWAPrompt() {
                       className="w-full py-3 rounded-2xl bg-slate-50 text-slate-500 font-bold text-sm hover:bg-slate-100 transition-colors"
                     >
                       Entendi
+                    </button>
+                    <button onClick={hideForever} className="w-full pt-2 text-xs text-slate-400 hover:text-slate-600 font-medium transition-colors">
+                      Não mostrar mais
                     </button>
                   </>
                 )}
