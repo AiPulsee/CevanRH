@@ -5,8 +5,7 @@ import Groq from "groq-sdk";
 import { prisma } from "@/lib/prisma";
 import { s3Client } from "@/lib/s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const pdfParse = require("pdf-parse/lib/pdf-parse");
+import { PDFParse } from "pdf-parse";
 
 export type AIAnalysisResult = {
   score: number;
@@ -50,22 +49,14 @@ async function extractPdfText(resumeUrl: string): Promise<{ text: string; error?
     }
     const buffer = Buffer.concat(chunks);
 
-    // First attempt: standard parse
     try {
-      const data = await pdfParse(buffer);
-      const text = data.text.trim();
+      const parser = new PDFParse({ data: new Uint8Array(buffer) });
+      const result = await parser.getText();
+      await parser.destroy();
+      const text = result.text.trim();
       if (text.length > 20) return { text: text.slice(0, 6000) };
-      // Parsed OK but no readable text → likely a scanned/image PDF
       return { text: "", error: "O currículo é uma imagem escaneada e não possui texto selecionável. A IA não consegue ler imagens." };
     } catch (parseErr: unknown) {
-      // Second attempt: skip broken xref/page data
-      try {
-        const data = await pdfParse(buffer, { max: 0 } as any);
-        const text = data.text.trim();
-        if (text.length > 20) return { text: text.slice(0, 6000) };
-      } catch {
-        // ignore second attempt error
-      }
       const msg = parseErr instanceof Error ? parseErr.message : String(parseErr);
       console.error("[extractPdfText] parse failed:", msg);
       return { text: "", error: "PDF corrompido ou com proteção de cópia. Peça ao candidato reenviar em outro formato." };
