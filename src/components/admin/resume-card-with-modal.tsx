@@ -302,7 +302,6 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
                   </div>
                   <div>
                     <p className="text-sm font-black text-slate-900">Análise Inteligente</p>
-                    <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Motor Neural v4.0</p>
                   </div>
                 </div>
                 {aiResult && (

@@ -542,7 +542,6 @@ function AIAnalysisPanel({
           </div>
           <div>
             <span className="text-lg font-black text-slate-900 tracking-tight">Análise Inteligente</span>
-            <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Motor Neural v4.0</p>
           </div>
         </div>
         <button
