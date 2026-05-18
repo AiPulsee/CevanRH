@@ -31,18 +31,18 @@ function extractKeyFromUrl(url: string): string | null {
   }
 }
 
-async function extractPdfText(resumeUrl: string): Promise<string> {
-  try {
-    const key = extractKeyFromUrl(resumeUrl);
-    if (!key) return "";
+async function extractPdfText(resumeUrl: string): Promise<{ text: string; error?: string }> {
+  const key = extractKeyFromUrl(resumeUrl);
+  if (!key) return { text: "", error: "URL do currículo inválida." };
 
+  try {
     const command = new GetObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
       Key: key,
     });
 
     const response = await s3Client.send(command);
-    if (!response.Body) return "";
+    if (!response.Body) return { text: "", error: "Arquivo vazio no servidor." };
 
     const chunks: Uint8Array[] = [];
     for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
@@ -50,9 +50,14 @@ async function extractPdfText(resumeUrl: string): Promise<string> {
     }
     const buffer = Buffer.concat(chunks);
     const data = await pdfParse(buffer);
-    return data.text.trim().slice(0, 6000);
-  } catch {
-    return "";
+    return { text: data.text.trim().slice(0, 6000) };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.includes("NoSuchKey") || msg.includes("The specified key does not exist")) {
+      return { text: "", error: "Arquivo não encontrado no servidor. O candidato precisa reenviar o currículo." };
+    }
+    console.error("[extractPdfText]", msg);
+    return { text: "", error: "Não foi possível ler o PDF (protegido ou corrompido)." };
   }
 }
 
@@ -89,17 +94,21 @@ export async function analyzeCandidate(
   }
 
   let resumeText = "";
+  let resumeError: string | undefined;
+
   if (application.resumeUrl?.toLowerCase().includes(".pdf")) {
-    resumeText = await extractPdfText(application.resumeUrl);
+    const result = await extractPdfText(application.resumeUrl);
+    resumeText = result.text;
+    resumeError = result.error;
   }
 
   const hasCoverLetter = !!application.coverLetter?.trim();
 
   if (!resumeText && !hasCoverLetter) {
+    const reason = resumeError ?? "Formato Word ou PDF protegido.";
     return {
       success: false,
-      error:
-        "Sem dados suficientes para análise. O candidato não enviou carta de apresentação e o currículo não pôde ser lido (formato Word ou PDF protegido).",
+      error: `Não foi possível analisar o currículo: ${reason}`,
     };
   }
 
