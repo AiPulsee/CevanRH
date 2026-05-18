@@ -1,26 +1,17 @@
 import { prisma } from "@/lib/prisma";
 import { JobType } from "@prisma/client";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Search,
-  Download,
-  Users2,
-  Building2,
-  Calendar,
-  Briefcase
-} from "lucide-react";
+import { Search, Users2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 import Link from "next/link";
 import { ResumesExportButton } from "@/components/admin/resumes-export-button";
 import { PaginationBar } from "@/components/ui/pagination-bar";
-import { AllocateFromResumeModal } from "@/components/admin/allocate-from-resume-modal";
+import { ResumeCardWithModal } from "@/components/admin/resume-card-with-modal";
 
 const PAGE_SIZE = 15;
 
@@ -157,69 +148,12 @@ export default async function ResumesPage({
           </Card>
         ) : (
           applications.map((app) => (
-
-            <Card key={app.id} className="p-5 border-slate-200 bg-white rounded-2xl shadow-sm hover:border-blue-200 transition-all group">
-              <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-                {/* Candidate Info */}
-                <div className="flex items-center gap-4 flex-1">
-                  <div className="h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-blue-600 text-lg uppercase">
-                    {app.candidate.name?.charAt(0)}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-base text-slate-900 group-hover:text-blue-600 transition-colors">{app.candidate.name}</h4>
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter">{app.candidate.email}</p>
-                  </div>
-                </div>
-
-                {/* Job Info */}
-                <div className="flex-[1.5] grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Vaga Original</p>
-                    <div className="flex items-center gap-2">
-                      <Briefcase className="h-3.5 w-3.5 text-slate-400" />
-                      <span className="text-sm font-bold text-slate-700">{app.job.title}</span>
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Empresa / Tipo</p>
-                    <div className="flex items-center gap-3">
-                      <span className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
-                        <Building2 className="h-3.5 w-3.5" /> {app.job.company.name}
-                      </span>
-                      <Badge className={cn(
-                        "rounded-md px-1.5 py-0 text-[8px] font-black uppercase border-none",
-                        app.job.type === "MANAGED" ? "bg-blue-50 text-blue-600" : "bg-emerald-50 text-emerald-600"
-                      )}>
-                        {app.job.type === "MANAGED" ? "Curadoria" : "Público"}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Date & Actions */}
-                <div className="flex flex-row sm:flex-row items-center justify-between lg:justify-end gap-4 sm:gap-6 border-t lg:border-none pt-4 lg:pt-0">
-                  <div className="text-left lg:text-right">
-                    <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Recebido em</p>
-                    <div className="flex items-center gap-1.5 justify-start lg:justify-end mt-1">
-                      <Calendar className="h-3.5 w-3.5 text-slate-400" />
-                      <span className="text-xs font-bold text-slate-700">
-                        {format(new Date(app.createdAt), "dd/MM/yyyy", { locale: ptBR })}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button nativeButton={false} render={<a href={app.resumeUrl} target="_blank" rel="noopener noreferrer" />} size="icon" variant="outline" className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl border-slate-200 bg-white" title="Baixar currículo">
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <AllocateFromResumeModal
-                      candidateId={app.candidate.id}
-                      candidateName={app.candidate.name ?? "Candidato"}
-                      jobs={activeJobs}
-                    />
-                  </div>
-                </div>
-              </div>
-            </Card>
+            <ResumeCardWithModal
+              key={app.id}
+              app={app}
+              formattedDate={format(new Date(app.createdAt), "dd/MM/yyyy", { locale: ptBR })}
+              activeJobs={activeJobs}
+            />
           ))
         )}
       </div>
