@@ -5,7 +5,7 @@ import Groq from "groq-sdk";
 import { prisma } from "@/lib/prisma";
 import { s3Client } from "@/lib/s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { PDFParse } from "pdf-parse";
+import { getDocumentProxy, extractText } from "unpdf";
 
 export type AIAnalysisResult = {
   score: number;
@@ -50,11 +50,10 @@ async function extractPdfText(resumeUrl: string): Promise<{ text: string; error?
     const buffer = Buffer.concat(chunks);
 
     try {
-      const parser = new PDFParse({ data: new Uint8Array(buffer) });
-      const result = await parser.getText();
-      await parser.destroy();
-      const text = result.text.trim();
-      if (text.length > 20) return { text: text.slice(0, 6000) };
+      const pdf = await getDocumentProxy(new Uint8Array(buffer));
+      const { text } = await extractText(pdf, { mergePages: true });
+      const trimmed = (text as string).trim();
+      if (trimmed.length > 20) return { text: trimmed.slice(0, 6000) };
       return { text: "", error: "O currículo é uma imagem escaneada e não possui texto selecionável. A IA não consegue ler imagens." };
     } catch (parseErr: unknown) {
       const msg = parseErr instanceof Error ? parseErr.message : String(parseErr);
