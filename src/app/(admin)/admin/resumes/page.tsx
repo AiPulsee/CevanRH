@@ -11,6 +11,7 @@ import Link from "next/link";
 import { ResumesExportButton } from "@/components/admin/resumes-export-button";
 import { PaginationBar } from "@/components/ui/pagination-bar";
 import { ResumeCardWithModal } from "@/components/admin/resume-card-with-modal";
+import { CompanyFilterSelect } from "@/components/admin/company-filter-select";
 import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 15;
@@ -259,21 +260,12 @@ export default async function ResumesPage({
 
           {/* Company */}
           <div className="flex-1 min-w-[180px]">
-            <select
-              className={selectCls}
+            <CompanyFilterSelect
+              companies={companies}
               value={companyFilter ?? ""}
-              onChange={(e) => {
-                const val = e.target.value;
-                window.location.href = buildHref({ company: val || undefined });
-              }}
-            >
-              <option value="">Todas as empresas</option>
-              {companies.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+              baseUrl={buildHref({ company: undefined })}
+              className={selectCls}
+            />
           </div>
         </div>
 
