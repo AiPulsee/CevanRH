@@ -129,9 +129,19 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
               {app.candidate.name?.charAt(0)}
             </div>
             <div>
-              <h4 className="font-bold text-base text-slate-900 group-hover:text-blue-600 transition-colors">
-                {app.candidate.name}
-              </h4>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h4 className="font-bold text-base text-slate-900 group-hover:text-blue-600 transition-colors">
+                  {app.candidate.name}
+                </h4>
+                <Badge
+                  className={cn(
+                    "rounded-md px-2 py-0.5 text-[9px] font-black uppercase border-none shrink-0",
+                    STATUS_CLS[app.status] ?? "bg-slate-100 text-slate-600"
+                  )}
+                >
+                  {STATUS_LABEL[app.status] ?? app.status}
+                </Badge>
+              </div>
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter">
                 {app.candidate.email}
               </p>
