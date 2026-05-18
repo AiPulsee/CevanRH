@@ -229,12 +229,17 @@ export async function hireAndPlace(data: {
       });
 
       // Commission is charged when the trial starts.
-      // If this job already has a commission (replacement candidate), skip.
+      // If replacing a candidate, relink the existing commission to the new placement.
       const existingCommission = await tx.commission.findFirst({
         where: { placement: { application: { jobId: application.jobId } } },
       });
 
-      if (!existingCommission) {
+      if (existingCommission) {
+        await tx.commission.update({
+          where: { id: existingCommission.id },
+          data: { placementId: placement.id },
+        });
+      } else {
         const dueDate = new Date();
         dueDate.setDate(dueDate.getDate() + 30);
 
