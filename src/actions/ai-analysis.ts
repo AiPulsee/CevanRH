@@ -5,8 +5,8 @@ import Groq from "groq-sdk";
 import { prisma } from "@/lib/prisma";
 import { s3Client } from "@/lib/s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import * as pdfParseModule from "pdf-parse";
-const pdfParse = (pdfParseModule as any).default ?? pdfParseModule;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pdfParse = require("pdf-parse/lib/pdf-parse");
 
 export type AIAnalysisResult = {
   score: number;

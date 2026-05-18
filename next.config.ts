@@ -47,6 +47,7 @@ const r2Hostname = process.env.R2_PUBLIC_DOMAIN
   : "";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["pdf-parse"],
   images: {
     remotePatterns: r2Hostname
       ? [{ protocol: "https", hostname: r2Hostname }]
