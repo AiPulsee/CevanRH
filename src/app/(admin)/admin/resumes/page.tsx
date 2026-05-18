@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import {
   Search,
   Download,
-  ExternalLink,
   Users2,
   Building2,
   Calendar,
@@ -21,6 +20,7 @@ import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 import { ResumesExportButton } from "@/components/admin/resumes-export-button";
 import { PaginationBar } from "@/components/ui/pagination-bar";
+import { AllocateFromResumeModal } from "@/components/admin/allocate-from-resume-modal";
 
 const PAGE_SIZE = 15;
 
@@ -43,7 +43,7 @@ export default async function ResumesPage({
     }),
   };
 
-  const [applications, totalApps, managedCount, selfServiceCount] = await Promise.all([
+  const [applications, totalApps, managedCount, selfServiceCount, activeJobs] = await Promise.all([
     prisma.application.findMany({
       where,
       include: {
@@ -57,6 +57,16 @@ export default async function ResumesPage({
     prisma.application.count({ where }),
     prisma.application.count({ where: { job: { type: "MANAGED" } } }),
     prisma.application.count({ where: { job: { type: "SELF_SERVICE" } } }),
+    prisma.job.findMany({
+      where: { type: "MANAGED", status: "ACTIVE" },
+      select: {
+        id: true,
+        title: true,
+        openings: true,
+        company: { select: { name: true, logoUrl: true } },
+      },
+      orderBy: { title: "asc" },
+    }),
   ]);
 
   const totalPages = Math.ceil(totalApps / PAGE_SIZE);
@@ -198,12 +208,14 @@ export default async function ResumesPage({
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button nativeButton={false} render={<a href={app.resumeUrl} target="_blank" rel="noopener noreferrer" />} size="icon" variant="outline" className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl border-slate-200 bg-white">
+                    <Button nativeButton={false} render={<a href={app.resumeUrl} target="_blank" rel="noopener noreferrer" />} size="icon" variant="outline" className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl border-slate-200 bg-white" title="Baixar currículo">
                       <Download className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" variant="secondary" className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200">
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
+                    <AllocateFromResumeModal
+                      candidateId={app.candidate.id}
+                      candidateName={app.candidate.name ?? "Candidato"}
+                      jobs={activeJobs}
+                    />
                   </div>
                 </div>
               </div>

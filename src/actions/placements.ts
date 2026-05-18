@@ -270,6 +270,133 @@ export async function hireAndPlace(data: {
   }
 }
 
+export async function adminAllocateCandidate(data: {
+  candidateId: string;
+  jobId: string;
+  monthlySalary: number;
+  startDate: string;
+}) {
+  const session = await auth();
+  const permError = requireAdminPermission(session, "PLACEMENTS");
+  if (permError) return permError;
+
+  const start = new Date(data.startDate);
+  const trialEnd = new Date(start);
+  trialEnd.setDate(trialEnd.getDate() + 90);
+
+  try {
+    const feeSettings = await getSettings([
+      "managed.fee_type",
+      "managed.fee_percentage",
+      "managed.fee_fixed",
+    ]);
+    const isFixed = (feeSettings["managed.fee_type"] || "percentage") === "fixed";
+    const feePercentage = isFixed ? 0 : parseFloat(feeSettings["managed.fee_percentage"] ?? "50");
+    const commissionAmount = isFixed
+      ? Math.round(parseFloat(feeSettings["managed.fee_fixed"] ?? "0") * 100)
+      : Math.round((data.monthlySalary * feePercentage) / 100);
+
+    await prisma.$transaction(async (tx) => {
+      const job = await tx.job.findUnique({
+        where: { id: data.jobId },
+        select: { id: true, type: true, companyId: true },
+      });
+      if (!job || job.type !== "MANAGED") throw new Error("Vaga inválida.");
+
+      const candidate = await tx.user.findUnique({
+        where: { id: data.candidateId },
+        select: {
+          id: true,
+          applications: {
+            select: { resumeUrl: true },
+            orderBy: { createdAt: "desc" },
+            take: 1,
+          },
+        },
+      });
+      if (!candidate) throw new Error("Candidato não encontrado.");
+      const resumeUrl = candidate.applications[0]?.resumeUrl ?? "";
+      if (!resumeUrl) throw new Error("Candidato não possui currículo cadastrado.");
+
+      let application = await tx.application.findUnique({
+        where: { jobId_candidateId: { jobId: data.jobId, candidateId: data.candidateId } },
+      });
+
+      if (application) {
+        const existingPlacement = await tx.placement.findUnique({
+          where: { applicationId: application.id },
+        });
+        if (existingPlacement) throw new Error("Candidato já foi alocado para esta vaga.");
+        await tx.application.update({
+          where: { id: application.id },
+          data: { status: "HIRED" },
+        });
+      } else {
+        application = await tx.application.create({
+          data: {
+            jobId: data.jobId,
+            candidateId: data.candidateId,
+            resumeUrl,
+            status: "HIRED",
+          },
+        });
+      }
+
+      await tx.job.update({
+        where: { id: data.jobId },
+        data: { status: "CLOSED" },
+      });
+
+      const placement = await tx.placement.create({
+        data: {
+          applicationId: application.id,
+          monthlySalary: data.monthlySalary,
+          startDate: start,
+          trialEndDate: trialEnd,
+          status: PlacementStatus.TRIAL,
+        },
+      });
+
+      const existingCommission = await tx.commission.findFirst({
+        where: { placement: { application: { jobId: data.jobId } } },
+      });
+
+      if (existingCommission) {
+        await tx.commission.update({
+          where: { id: existingCommission.id },
+          data: { placementId: placement.id },
+        });
+      } else {
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + 30);
+        await tx.commission.create({
+          data: {
+            placementId: placement.id,
+            baseSalary: data.monthlySalary,
+            percentage: feePercentage,
+            amount: commissionAmount,
+            status: "PENDING",
+            dueDate,
+            companyId: job.companyId,
+          },
+        });
+      }
+    });
+
+    await logAction("ADMIN_ALLOCATE", `Admin alocou candidato ${data.candidateId} para vaga ${data.jobId}`);
+    revalidatePath("/admin/placements");
+    revalidatePath("/admin/managed");
+    revalidatePath("/admin/resumes");
+    revalidatePath("/admin/finance");
+    revalidatePath("/admin");
+    return ok();
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    console.error(err);
+    return fail(errorMessage || "Erro ao alocar candidato.");
+  }
+}
+
 export async function getPlacements(filters?: { status?: PlacementStatus }) {
   const session = await auth();
   if (!session) return [];
