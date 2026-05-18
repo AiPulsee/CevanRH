@@ -27,7 +27,6 @@ export function CreateCompanyModal() {
   const [description, setDescription] = useState("");
   const [industry, setIndustry] = useState("");
   const [location, setLocation] = useState("");
-  const [isCurated, setIsCurated] = useState(true);
 
   const handleSubmit = () => {
     startTransition(async () => {
@@ -132,21 +131,6 @@ export function CreateCompanyModal() {
                 value={description}
                 onChange={e => setDescription(e.target.value)}
               />
-            </div>
-
-            <div className="flex items-center justify-between p-5 rounded-3xl bg-indigo-50 border border-indigo-100 mt-2">
-              <div className="space-y-0.5">
-                <Label className="text-sm font-bold text-indigo-900 leading-none">Curadoria Ativa</Label>
-                <p className="text-[10px] text-indigo-600/70 font-medium">Equipe Cevan gerencia os candidatos desta empresa.</p>
-              </div>
-              <select
-                value={isCurated ? "true" : "false"}
-                onChange={e => setIsCurated(e.target.value === "true")}
-                className="h-10 px-4 rounded-xl border border-indigo-200 bg-white text-[10px] font-black uppercase outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
-              >
-                <option value="false">Não</option>
-                <option value="true">Sim</option>
-              </select>
             </div>
           </div>
         </div>
