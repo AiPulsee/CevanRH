@@ -4,6 +4,8 @@ import { s3Client } from "@/lib/s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";
+import { headers } from "next/headers";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const ALLOWED_TYPES = [
   "application/pdf",
@@ -14,6 +16,17 @@ const ALLOWED_TYPES = [
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 export async function getPresignedUrl(fileName: string, fileType: string, fileSize: number) {
+  const headersList = await headers();
+  const ip =
+    headersList.get("x-forwarded-for")?.split(",")[0].trim() ??
+    headersList.get("x-real-ip") ??
+    "unknown";
+
+  // 20 uploads por IP por hora
+  if (!checkRateLimit(`upload:${ip}`, 20, 60 * 60 * 1000)) {
+    throw new Error("Limite de uploads atingido. Tente novamente em 1 hora.");
+  }
+
   if (!ALLOWED_TYPES.includes(fileType)) {
     throw new Error("Tipo de arquivo não permitido. Use PDF ou DOC.");
   }
@@ -22,7 +35,6 @@ export async function getPresignedUrl(fileName: string, fileType: string, fileSi
     throw new Error("Arquivo muito grande. Tamanho máximo: 10 MB.");
   }
 
-  // Sanitize filename: keep only safe characters
   const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 100);
   const fileKey = `resumes/${uuidv4()}-${safeName}`;
 

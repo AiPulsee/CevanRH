@@ -102,19 +102,6 @@ model Shortlist {
   @@map("shortlists")
 }
 
-model Transaction {
-  id         String   @id @default(uuid())
-  amount     Int
-  currency   String   @default("BRL")
-  status     String
-  provider   String
-  providerId String   @unique @map("provider_transaction_id")
-  companyId  String   @map("company_id")
-  createdAt  DateTime @default(now()) @map("created_at")
-
-  @@map("transactions")
-}
-
 model Placement {
   id                String          @id @default(uuid())
   applicationId     String          @unique @map("application_id")

@@ -51,9 +51,9 @@ export function CandidateModal({ children, candidate }: { children: React.ReactE
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger render={children} />
-      <DialogContent className="sm:max-w-5xl w-[95vw] bg-slate-50 rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden h-[85vh] flex flex-col">
+      <DialogContent className="sm:max-w-5xl w-[calc(100%-1rem)] sm:w-[95vw] bg-slate-50 rounded-3xl sm:rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden h-[95vh] sm:h-[85vh] flex flex-col">
         {/* Header Profile */}
-        <div className="bg-white p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-start justify-between gap-6 relative z-10 shadow-sm">
+        <div className="bg-white p-5 sm:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-start justify-between gap-4 sm:gap-6 relative z-10 shadow-sm">
           <div className="flex items-start gap-5">
             <div className="h-20 w-20 rounded-[1.5rem] bg-blue-600 flex items-center justify-center font-black text-3xl text-white shadow-xl shadow-blue-200">
               {candidate.avatar}
@@ -89,18 +89,18 @@ export function CandidateModal({ children, candidate }: { children: React.ReactE
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
           {/* Sidebar / Tabs */}
-          <div className="w-64 bg-white border-r border-slate-100 p-6 flex flex-col gap-2 z-0">
+          <div className="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-slate-100 p-4 sm:p-6 flex flex-row md:flex-col gap-2 z-0 overflow-x-auto shrink-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <button 
               onClick={() => setActiveTab("resume")}
-              className={`flex items-center gap-3 w-full p-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'resume' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50'}`}
+              className={`flex items-center justify-center md:justify-start gap-2 md:gap-3 w-full md:w-auto min-w-[160px] md:min-w-0 p-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'resume' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50'}`}
             >
               <FileText className="h-4 w-4" /> Currículo e Perfil
             </button>
             <button 
               onClick={() => setActiveTab("notes")}
-              className={`flex items-center gap-3 w-full p-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'notes' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50'}`}
+              className={`flex items-center justify-center md:justify-start gap-2 md:gap-3 w-full md:w-auto min-w-[160px] md:min-w-0 p-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'notes' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50'}`}
             >
               <MessageSquare className="h-4 w-4" /> Colaboração 
               <span className="ml-auto bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full">{notes.length}</span>
@@ -108,7 +108,7 @@ export function CandidateModal({ children, candidate }: { children: React.ReactE
           </div>
 
           {/* Main Area */}
-          <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto p-5 sm:p-8 custom-scrollbar">
             {activeTab === "resume" && (
               <div className="space-y-8 animate-in fade-in duration-500">
                 <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">

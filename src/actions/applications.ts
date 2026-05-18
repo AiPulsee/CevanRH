@@ -5,6 +5,16 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { createNotification } from "./notifications";
 import { ApplicationStatus } from "@prisma/client";
+import { requireAdminPermission, ok, fail } from "@/lib/permissions";
+import { z } from "zod";
+
+const applySchema = z.object({
+  jobId: z.string().min(1, "ID da vaga inválido"),
+  name: z.string().min(2, "Nome muito curto").max(100, "Nome muito longo"),
+  email: z.string().email("E-mail inválido"),
+  resumeUrl: z.string().url("URL de currículo inválida"),
+  coverLetter: z.string().max(1000, "Carta muito longa").optional(),
+});
 
 export async function applyToJob(data: {
   jobId: string;
@@ -13,65 +23,64 @@ export async function applyToJob(data: {
   resumeUrl: string;
   coverLetter?: string;
 }) {
+  const validated = applySchema.safeParse(data);
+  if (!validated.success) {
+    return fail(validated.error.issues[0].message);
+  }
+
+  const { jobId, name, email, resumeUrl, coverLetter } = validated.data;
+
   const r2Domain = process.env.R2_PUBLIC_DOMAIN;
-  if (!r2Domain || !data.resumeUrl.startsWith(r2Domain)) {
-    return { error: "URL de currículo inválida." };
+  if (!r2Domain || !resumeUrl.startsWith(r2Domain)) {
+    return fail("URL de currículo inválida.");
   }
 
   try {
-    // 1. Encontrar ou criar o usuário (candidato)
-    let user = await prisma.user.findUnique({
-      where: { email: data.email },
+    const job = await prisma.job.findUnique({
+      where: { id: jobId },
+      select: { id: true, status: true, title: true },
     });
+
+    if (!job) return fail("Vaga não encontrada.");
+    if (job.status !== "ACTIVE") return fail("Esta vaga não está mais aceitando candidaturas.");
+
+    let user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
       user = await prisma.user.create({
-        data: {
-          name: data.name,
-          email: data.email,
-          role: "CANDIDATE",
-        },
+        data: { name, email, role: "CANDIDATE" },
       });
     }
 
-    // 2. Criar a candidatura
     const application = await prisma.application.create({
-      data: {
-        jobId: data.jobId,
-        candidateId: user.id,
-        resumeUrl: data.resumeUrl,
-        coverLetter: data.coverLetter,
-        status: "APPLIED",
-      },
-      include: {
-        job: { select: { title: true } }
-      }
+      data: { jobId, candidateId: user.id, resumeUrl, coverLetter, status: "APPLIED" },
+      include: { job: { select: { title: true } } },
     });
 
-    // 3. Notificar os admins
     await createNotification({
       title: "Nova Candidatura!",
-      message: `${data.name} se candidatou para a vaga de ${application.job.title}.`,
-      type: "SUCCESS"
+      message: `${name} se candidatou para a vaga de ${application.job.title}.`,
+      type: "SUCCESS",
     });
 
-    revalidatePath(`/jobs/${data.jobId}`);
+    revalidatePath(`/jobs/${jobId}`);
     revalidatePath("/admin");
     revalidatePath("/admin/managed");
 
-    return { success: true, applicationId: application.id };
+    return { success: true as const, applicationId: application.id };
   } catch (error: any) {
     console.error("Erro ao processar candidatura:", error);
-    if (error.code === 'P2002') {
-      return { error: "Você já se candidatou a esta vaga." };
+    if (error.code === "P2002") {
+      return fail("Você já se candidatou a esta vaga.");
     }
-    return { error: "Ocorreu um erro ao enviar sua candidatura." };
+    return fail("Ocorreu um erro ao enviar sua candidatura.");
   }
 }
 
 export async function getApplications(filters?: { jobId?: string; status?: ApplicationStatus }) {
   const session = await auth();
-  if (!session || (session.user as any)?.role !== "ADMIN") return [];
+  const permError = requireAdminPermission(session, "MANAGED");
+  if (permError) return [];
 
   try {
     return await prisma.application.findMany({
@@ -81,11 +90,7 @@ export async function getApplications(filters?: { jobId?: string; status?: Appli
       },
       include: {
         candidate: { select: { id: true, name: true, email: true } },
-        job: { 
-          include: { 
-            company: { select: { name: true } } 
-          } 
-        },
+        job: { include: { company: { select: { name: true } } } },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -97,7 +102,8 @@ export async function getApplications(filters?: { jobId?: string; status?: Appli
 
 export async function rejectApplication(applicationId: string) {
   const session = await auth();
-  if (!session || (session.user as any)?.role !== "ADMIN") return { error: "Não autorizado." };
+  const permError = requireAdminPermission(session, "MANAGED");
+  if (permError) return permError;
 
   try {
     await prisma.application.update({
@@ -106,19 +112,20 @@ export async function rejectApplication(applicationId: string) {
     });
     revalidatePath("/admin/managed");
     revalidatePath("/admin");
-    return { success: true };
+    return ok();
   } catch (error) {
     console.error("Erro ao reprovar candidatura:", error);
-    return { error: "Erro ao reprovar candidatura." };
+    return fail("Erro ao reprovar candidatura.");
   }
 }
 
 export async function shortlistApplication(applicationId: string, feedback?: string) {
   const session = await auth();
-  if (!session || (session.user as any)?.role !== "ADMIN") return { error: "Não autorizado." };
+  const permError = requireAdminPermission(session, "MANAGED");
+  if (permError) return permError;
 
   try {
-    const application = await prisma.application.update({
+    await prisma.application.update({
       where: { id: applicationId },
       data: {
         status: "SHORTLISTED",
@@ -133,10 +140,9 @@ export async function shortlistApplication(applicationId: string, feedback?: str
 
     revalidatePath("/admin/managed");
     revalidatePath("/admin");
-    return { success: true };
+    return ok();
   } catch (error) {
     console.error("Erro ao favoritar candidatura:", error);
-    return { error: "Erro ao atualizar status." };
+    return fail("Erro ao atualizar status.");
   }
 }
-

@@ -9,7 +9,7 @@ export function PublicFooter() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 sm:gap-16 mb-12 sm:mb-16">
           <div className="lg:col-span-2 space-y-6 sm:space-y-8 pr-0 lg:pr-10 text-center lg:text-left flex flex-col items-center lg:items-start">
              <div className="flex items-center gap-3">
-               <Image src="/logoprincipal.png" alt="Cevan Serviços Empresariais" width={320} height={96} className="h-12 sm:h-16 w-auto object-contain brightness-0 invert opacity-90" />
+               <Image src="/cevanempresarial/logocevanempresarial.png" alt="Cevan Serviços Empresariais" width={320} height={96} className="h-12 sm:h-16 w-auto object-contain brightness-0 invert opacity-90" />
              </div>
              <div className="space-y-1">
                <p className="text-slate-400 text-[11px] sm:text-[13px] font-black tracking-widest uppercase">Fale com um Especialista</p>

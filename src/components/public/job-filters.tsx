@@ -1,28 +1,29 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { Search, MapPin, X, Wifi, Building, Zap, LayoutGrid, Filter, SlidersHorizontal } from "lucide-react";
+import { Search, MapPin, X, Wifi, Building, Zap, LayoutGrid, Filter, SlidersHorizontal, Briefcase, GraduationCap } from "lucide-react";
 import { useState } from "react";
 
 interface JobFiltersProps {
   q?: string;
   location?: string;
   remote?: string;
-  type?: string;
+  experience?: string;
+  contract?: string;
   only?: "search" | "sidebar";
 }
 
-export function JobFilters({ q, location, remote, type, only }: JobFiltersProps) {
+export function JobFilters({ q, location, remote, experience, contract, only }: JobFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const hasActiveFilters = !!(q || location || remote || type);
-  const activeFilterCount = [remote, type].filter(Boolean).length;
+  const hasActiveFilters = !!(q || location || remote || experience || contract);
+  const activeFilterCount = [remote, experience, contract].filter(Boolean).length;
 
   function buildHref(overrides: Record<string, string | undefined>) {
     const params = new URLSearchParams();
-    const values = { q, location, remote, type, ...overrides };
+    const values = { q, location, remote, experience, contract, ...overrides };
     Object.entries(values).forEach(([k, v]) => {
       if (v) params.set(k, v);
     });
@@ -48,10 +49,22 @@ export function JobFilters({ q, location, remote, type, only }: JobFiltersProps)
     { label: "Presencial", value: "false", icon: Building },
   ];
 
-  const typeOptions = [
+  const experienceOptions = [
     { label: "Todos", value: undefined },
-    { label: "Curadoria Ativa", value: "MANAGED" },
-    { label: "Self-Service", value: "SELF_SERVICE" },
+    { label: "Estágio", value: "ESTAGIO" },
+    { label: "Júnior", value: "JUNIOR" },
+    { label: "Pleno", value: "PLENO" },
+    { label: "Sênior", value: "SENIOR" },
+    { label: "Especialista", value: "ESPECIALISTA" },
+  ];
+
+  const contractOptions = [
+    { label: "Todos", value: undefined },
+    { label: "CLT", value: "CLT" },
+    { label: "PJ", value: "PJ" },
+    { label: "Temporário", value: "TEMPORARIO" },
+    { label: "Freelance", value: "FREELANCE" },
+    { label: "Estágio", value: "ESTAGIO_CONTRATO" },
   ];
 
   const showSearch = !only || only === "search";
@@ -132,10 +145,12 @@ export function JobFilters({ q, location, remote, type, only }: JobFiltersProps)
                 </div>
                 <SidebarFilters
                   remote={remote}
-                  type={type}
+                  experience={experience}
+                  contract={contract}
                   hasActiveFilters={hasActiveFilters}
                   remoteOptions={remoteOptions}
-                  typeOptions={typeOptions}
+                  experienceOptions={experienceOptions}
+                  contractOptions={contractOptions}
                   buildHref={buildHref}
                   clearAll={() => { clearAll(); setMobileOpen(false); }}
                   onSelect={() => setMobileOpen(false)}
@@ -148,10 +163,12 @@ export function JobFilters({ q, location, remote, type, only }: JobFiltersProps)
           <div className="hidden lg:contents">
             <SidebarFilters
               remote={remote}
-              type={type}
+              experience={experience}
+              contract={contract}
               hasActiveFilters={hasActiveFilters}
               remoteOptions={remoteOptions}
-              typeOptions={typeOptions}
+              experienceOptions={experienceOptions}
+              contractOptions={contractOptions}
               buildHref={buildHref}
               clearAll={clearAll}
             />
@@ -163,31 +180,36 @@ export function JobFilters({ q, location, remote, type, only }: JobFiltersProps)
 }
 
 function SidebarFilters({
-  remote, type, hasActiveFilters, remoteOptions, typeOptions, buildHref, clearAll, onSelect,
+  remote, experience, contract, hasActiveFilters, remoteOptions, experienceOptions, contractOptions, buildHref, clearAll, onSelect,
 }: {
   remote?: string;
-  type?: string;
+  experience?: string;
+  contract?: string;
   hasActiveFilters: boolean;
   remoteOptions: { label: string; value: string | undefined; icon: React.ElementType }[];
-  typeOptions: { label: string; value: string | undefined }[];
+  experienceOptions: { label: string; value: string | undefined }[];
+  contractOptions: { label: string; value: string | undefined }[];
   buildHref: (o: Record<string, string | undefined>) => string;
   clearAll: () => void;
   onSelect?: () => void;
 }) {
   return (
-    <>
-      <div className="space-y-3">
-        <h4 className="font-bold text-slate-900 text-[14px]">Modalidade</h4>
-        <div className="space-y-2">
+    <div className="flex flex-col gap-10">
+      <div className="space-y-4">
+        <h4 className="font-black text-slate-900 text-[13px] uppercase tracking-widest flex items-center gap-2">
+          <Building className="h-4 w-4 text-blue-600" />
+          Modalidade
+        </h4>
+        <div className="space-y-1">
           {remoteOptions.map(({ label, value, icon: Icon }) => {
             const isActive = remote === value || (!remote && !value);
             return (
               <a
                 key={label}
                 href={buildHref({ remote: value })}
-                onClick={onSelect}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${
-                  isActive ? "bg-blue-50 text-[#1967D2] font-bold" : "text-slate-600 hover:bg-slate-50 font-medium"
+                onClick={(e) => { e.preventDefault(); window.history.pushState(null, '', buildHref({ remote: value })); window.location.reload(); }}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+                  isActive ? "bg-blue-50 text-[#1967D2] font-black" : "text-slate-500 hover:bg-slate-50 font-bold"
                 }`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -199,23 +221,48 @@ function SidebarFilters({
         </div>
       </div>
 
-      <div className="space-y-3 pt-4 border-t border-slate-100">
-        <h4 className="font-bold text-slate-900 text-[14px]">Tipo de Vaga</h4>
-        <div className="space-y-2">
-          {typeOptions.map(({ label, value }) => {
-            const isActive = type === value || (!type && !value);
+      <div className="space-y-4 pt-8 border-t border-slate-100">
+        <h4 className="font-black text-slate-900 text-[13px] uppercase tracking-widest flex items-center gap-2">
+          <GraduationCap className="h-4 w-4 text-blue-600" />
+          Nível de Experiência
+        </h4>
+        <div className="space-y-1">
+          {experienceOptions.map(({ label, value }) => {
+            const isActive = experience === value || (!experience && !value);
             return (
               <a
                 key={label}
-                href={buildHref({ type: value })}
-                onClick={onSelect}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${
-                  isActive ? "bg-blue-50 text-[#1967D2] font-bold" : "text-slate-600 hover:bg-slate-50 font-medium"
+                href={buildHref({ experience: value })}
+                onClick={(e) => { e.preventDefault(); window.history.pushState(null, '', buildHref({ experience: value })); window.location.reload(); }}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+                  isActive ? "bg-blue-50 text-[#1967D2] font-black" : "text-slate-500 hover:bg-slate-50 font-bold"
                 }`}
               >
-                {value === "MANAGED" && <Zap className="h-4 w-4 shrink-0 fill-current" />}
-                {value === "SELF_SERVICE" && <LayoutGrid className="h-4 w-4 shrink-0" />}
-                {!value && <Search className="h-4 w-4 shrink-0" />}
+                <span className="text-[14px]">{label}</span>
+                {isActive && <div className="ml-auto h-2 w-2 rounded-full bg-[#1967D2]" />}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="space-y-4 pt-8 border-t border-slate-100">
+        <h4 className="font-black text-slate-900 text-[13px] uppercase tracking-widest flex items-center gap-2">
+          <Briefcase className="h-4 w-4 text-blue-600" />
+          Tipo de Contrato
+        </h4>
+        <div className="space-y-1">
+          {contractOptions.map(({ label, value }) => {
+            const isActive = contract === value || (!contract && !value);
+            return (
+              <a
+                key={label}
+                href={buildHref({ contract: value })}
+                onClick={(e) => { e.preventDefault(); window.history.pushState(null, '', buildHref({ contract: value })); window.location.reload(); }}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+                  isActive ? "bg-blue-50 text-[#1967D2] font-black" : "text-slate-500 hover:bg-slate-50 font-bold"
+                }`}
+              >
                 <span className="text-[14px]">{label}</span>
                 {isActive && <div className="ml-auto h-2 w-2 rounded-full bg-[#1967D2]" />}
               </a>
@@ -227,11 +274,11 @@ function SidebarFilters({
       {hasActiveFilters && (
         <button
           onClick={clearAll}
-          className="w-full flex items-center justify-center gap-2 font-bold text-rose-500 border border-rose-100 bg-rose-50/50 hover:bg-rose-100 transition-colors py-2 rounded-xl text-[13px] mt-2"
+          className="w-full flex items-center justify-center gap-2 font-black text-rose-500 border border-rose-100 bg-rose-50/50 hover:bg-rose-100 transition-colors py-3.5 rounded-xl text-[12px] uppercase tracking-widest mt-4"
         >
-          <X className="h-3.5 w-3.5" /> Limpar Filtros
+          <X className="h-4 w-4" /> Limpar Filtros
         </button>
       )}
-    </>
+    </div>
   );
 }

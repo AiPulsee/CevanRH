@@ -39,7 +39,7 @@ export default function LoginPage() {
           {/* Logo */}
           <div className="flex justify-center mb-8">
             <Link href="/" className="inline-block">
-              <Image src="/logoprincipal.png" alt="Cevan Serviços Empresariais" width={500} height={150} className="h-24 w-auto object-contain" />
+              <Image src="/cevanempresarial/logocevanempresarial.png" alt="Cevan Serviços Empresariais" width={500} height={150} className="h-24 w-auto object-contain" />
             </Link>
           </div>
 

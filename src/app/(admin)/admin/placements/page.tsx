@@ -32,12 +32,13 @@ export default async function AdminPlacementsPage() {
       startDate: p.startDate,
       trialEndDate: p.trialEndDate,
       daysRemaining: Math.max(0, daysRemaining),
-      candidate: { 
-        name: p.application.candidate.name || "Sem Nome", 
-        email: p.application.candidate.email || "" 
+      candidate: {
+        name: p.application.candidate.name || "Sem Nome",
+        email: p.application.candidate.email || ""
       },
       company: { name: p.application.job.company.name },
       jobTitle: p.application.job.title,
+      jobId: p.application.jobId,
       commission: p.commission ? {
         id: p.commission.id,
         amount: p.commission.amount,

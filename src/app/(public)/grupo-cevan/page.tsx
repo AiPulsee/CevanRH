@@ -1,391 +1,423 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight, Phone, ShieldCheck, TrendingUp, Users, Award, Wallet, Building2, ShoppingCart, ChevronRight, Mail, MapPin } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import {
+  ArrowRight, Phone, ShieldCheck, Award,
+  Mail, MapPin, CheckCircle2, Zap, Globe,
+} from "lucide-react";
 
-const VIEW = { once: true };
-const fadeUpBase = { opacity: 0, y: 32 };
-function fadeUpTo(delay = 0) {
-  return { opacity: 1, y: 0, transition: { duration: 0.7, delay, ease: "easeOut" as const } };
+function FadeUp({ children, delay = 0, className = "" }: {
+  children: React.ReactNode; delay?: number; className?: string;
+}) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 24 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay, ease: "easeOut" }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
 }
+
+const VERTICALS = [
+  {
+    title: "Cevan Financeira",
+    tagline: "Crédito & Recebíveis",
+    desc: "Antecipação de recebíveis e crédito estruturado PJ para empresas que querem crescer.",
+    href: "/grupo-cevan/financeira",
+    image: "/cevan-finance.png",
+    logo: "/cevanfinanceira/logo Cevan Financeira 2.png",
+    overlayColor: "from-blue-900/80",
+    textAccent: "text-blue-400",
+    borderAccent: "border-blue-900/30 hover:border-blue-500/50",
+  },
+  {
+    title: "Cevan Serviços",
+    tagline: "Talentos & RH",
+    desc: "Gestão de talentos, terceirização administrativa e soluções completas de RH.",
+    href: "/jobs",
+    image: "/feature-woman.png",
+    logo: null,
+    overlayColor: "from-emerald-900/80",
+    textAccent: "text-emerald-400",
+    borderAccent: "border-emerald-900/30 hover:border-emerald-500/50",
+  },
+  {
+    title: "Cevan Supermercados",
+    tagline: "Varejo Alimentar",
+    desc: "Rede de supermercados com foco em qualidade, frescor e atendimento humano.",
+    href: "/grupo-cevan/supermercado",
+    image: "/cevan-supermarket.png",
+    logo: "/cevansupermercado/Logo - Cevan Supermercado.png",
+    overlayColor: "from-orange-900/80",
+    textAccent: "text-orange-400",
+    borderAccent: "border-orange-900/30 hover:border-orange-500/50",
+  },
+  {
+    title: "CevanPay",
+    tagline: "Fintech & Pagamentos",
+    desc: "Soluções de pagamento, maquininhas e gestão financeira digital para seu negócio.",
+    href: "/grupo-cevan/cevanpay",
+    image: "/cevanpay/maquinninha mockup.png",
+    logo: "/cevanpay/Logo - Cevanpay.png",
+    overlayColor: "from-[#0B1222]/90",
+    textAccent: "text-blue-400",
+    borderAccent: "border-slate-700/30 hover:border-blue-500/50",
+    imageFit: "object-contain bg-[#0B1222]",
+  },
+];
+
+const PILLARS = [
+  { icon: ShieldCheck, title: "Governança Sólida", desc: "Transparência e ética em todas as decisões." },
+  { icon: Zap, title: "Inovação Constante", desc: "Tecnologia de ponta em todas as verticais." },
+  { icon: Globe, title: "Visão Estratégica", desc: "Execução precisa para resultados sustentáveis." },
+  { icon: CheckCircle2, title: "Foco em Pessoas", desc: "Nosso maior ativo são as pessoas do Grupo Cevan." },
+];
 
 export default function GrupoCevanPage() {
   return (
-    <div className="flex flex-col w-full font-sans bg-white text-slate-900 overflow-hidden">
+    <div className="flex flex-col w-full font-sans bg-white text-slate-900">
 
-      {/* ── 01. HERO — SPLIT LAYOUT ── */}
-      <section className="relative flex flex-col lg:flex-row min-h-screen mt-20 lg:mt-24">
+      {/* ── 01. HERO ── */}
+      <section className="relative pt-24 pb-10 lg:pt-44 lg:pb-32 overflow-hidden bg-[#F8F9FC]">
+        <div
+          className="absolute inset-0 z-0 opacity-[0.035]"
+          style={{ backgroundImage: "linear-gradient(to right, #000 1px, transparent 1px)", backgroundSize: "80px 100%" }}
+        />
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-400/10 rounded-full blur-[100px] pointer-events-none" />
 
-        {/* Left: Navy panel */}
-        <div className="relative flex flex-col justify-center px-8 sm:px-14 lg:px-20 py-20 lg:py-0 w-full lg:w-[52%] bg-[#0B1222] z-10 overflow-hidden">
-          <div className="absolute inset-0 opacity-[0.06] pointer-events-none"
-            style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 0)', backgroundSize: '28px 28px' }} />
-          <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-blue-700/20 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute -bottom-20 right-0 w-[300px] h-[300px] bg-blue-600/10 rounded-full blur-[80px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
 
-          <div className="relative z-10 max-w-xl">
-            <motion.div initial={fadeUpBase} animate={fadeUpTo(0)}>
-              <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 mb-8">
-                <span className="h-px w-8 bg-blue-400" />
-                Somos o Grupo Cevan
-              </span>
-            </motion.div>
-
-            <motion.h1
-              initial={fadeUpBase}
-              animate={fadeUpTo(0.15)}
-              className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-white leading-[1.05] tracking-tighter mb-8"
-            >
-              Soluções Corporativas{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-200">
-                Personalizadas
-              </span>{" "}
-              para o Brasil
-            </motion.h1>
-
-            <motion.p
-              initial={fadeUpBase}
-              animate={fadeUpTo(0.3)}
-              className="text-slate-400 text-lg font-medium leading-relaxed mb-12"
-            >
-              Um ecossistema de empresas que une inteligência financeira, gestão de talentos e excelência no varejo — tudo sob um único padrão de qualidade.
-            </motion.p>
-
+            {/* Copy */}
             <motion.div
-              initial={fadeUpBase}
-              animate={fadeUpTo(0.45)}
-              className="flex flex-col sm:flex-row gap-4 mb-14"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="space-y-5 lg:space-y-8"
             >
-              <Link
-                href="/#contato"
-                className="inline-flex items-center justify-center gap-2 h-14 px-9 rounded-2xl bg-[#1967D2] hover:bg-blue-500 text-white font-black uppercase tracking-widest text-[11px] transition-all hover:-translate-y-0.5 shadow-xl shadow-blue-900/40"
-              >
-                Fale com a Gente <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="#sobre"
-                className="inline-flex items-center justify-center gap-2 h-14 px-9 rounded-2xl border border-white/10 text-white/70 hover:text-white hover:border-white/30 font-bold uppercase tracking-widest text-[11px] transition-all"
-              >
-                Conheça o Grupo
-              </Link>
-            </motion.div>
+              <h1 className="text-[2.8rem] sm:text-5xl lg:text-[82px] font-extrabold tracking-tight leading-[1.05] text-[#0B1222]">
+                GRUPO <br />
+                <span className="text-blue-600">CEVAN.</span>
+              </h1>
 
-            <motion.div
-              initial={fadeUpBase}
-              animate={fadeUpTo(0.6)}
-              className="flex items-center gap-4 border-t border-white/5 pt-10"
-            >
-              <div className="h-12 w-12 rounded-xl bg-blue-600/20 flex items-center justify-center shrink-0">
-                <Phone className="h-5 w-5 text-blue-400" />
+              <p className="text-slate-500 text-base sm:text-lg lg:text-xl font-medium max-w-xl leading-relaxed">
+                Um ecossistema integrado de negócios que conecta finanças, pessoas, varejo e tecnologia para gerar resultados reais.
+              </p>
+
+              {/* Stat pills — compact on mobile */}
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3">
+                {[
+                  { value: "4+", label: "Verticais" },
+                  { value: "10+", label: "Anos" },
+                  { value: "500+", label: "Empresas" },
+                  { value: "MA", label: "Maranhão" },
+                ].map(s => (
+                  <div key={s.label} className="flex items-center gap-2 px-3 py-2 rounded-full bg-white border border-slate-200 shadow-sm">
+                    <span className="text-sm font-black text-[#0B1222]">{s.value}</span>
+                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">{s.label}</span>
+                  </div>
+                ))}
               </div>
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Central de Atendimento</p>
-                <p className="text-white font-black text-lg tracking-tight">atendimento@cevan.com.br</p>
+
+              {/* Buttons — full-width on mobile */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-1">
+                <Link
+                  href="#verticais"
+                  className="h-13 sm:h-14 px-6 sm:px-8 rounded-xl bg-blue-600 hover:bg-[#0B1222] text-white font-bold uppercase tracking-widest text-[11px] flex items-center justify-center gap-3 transition-all shadow-lg shadow-blue-600/20"
+                >
+                  Nossas Verticais <ArrowRight className="h-4 w-4 shrink-0" />
+                </Link>
+                <Link
+                  href="/#contato"
+                  className="h-13 sm:h-14 px-6 sm:px-8 rounded-xl border-2 border-[#0B1222] text-[#0B1222] hover:bg-[#0B1222] hover:text-white font-bold uppercase tracking-widest text-[11px] flex items-center justify-center gap-3 transition-all"
+                >
+                  Solicitar Proposta
+                </Link>
               </div>
             </motion.div>
+
+            {/* Hero image — hidden on small phones, shown from sm up */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.15 }}
+              className="hidden sm:block relative"
+            >
+              <div className="relative aspect-[4/3] rounded-[2rem] lg:rounded-[2.5rem] overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.12)]">
+                <Image src="/holding-hero.png" alt="Grupo Cevan" fill className="object-cover" priority />
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#0B1222]/20 to-transparent" />
+              </div>
+            </motion.div>
+
           </div>
-        </div>
-
-        {/* Right: Photo */}
-        <div className="relative w-full lg:w-[48%] min-h-[60vw] lg:min-h-0">
-          <Image src="/hero-man.png" alt="Grupo Cevan" fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1222]/60 via-transparent to-transparent lg:from-[#0B1222]/30" />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1, duration: 0.6 }}
-            className="absolute bottom-8 left-8 lg:bottom-12 lg:left-12 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 flex items-center gap-4"
-          >
-            <div className="h-12 w-12 rounded-xl bg-[#1967D2] flex items-center justify-center shrink-0">
-              <Award className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <p className="text-white font-black text-lg leading-none">15+ Anos</p>
-              <p className="text-white/60 text-xs font-medium mt-1">de Excelência no Mercado</p>
-            </div>
-          </motion.div>
         </div>
       </section>
 
-      {/* ── 02. STATS BAR ── */}
-      <section className="bg-[#f0f5ff] py-20 relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-          <span className="text-[18vw] font-black text-[#1967D2]/[0.04] uppercase tracking-tighter whitespace-nowrap">CEVAN</span>
+      {/* ── 02. SOBRE A HOLDING ── */}
+      <section className="py-14 sm:py-24 lg:py-36 bg-white">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-24 items-center">
+
+            {/* Image — compact on mobile */}
+            <FadeUp>
+              <div className="relative">
+                <div className="relative aspect-[4/3] sm:aspect-square lg:aspect-[4/5] rounded-2xl sm:rounded-[2.5rem] overflow-hidden shadow-xl sm:shadow-2xl">
+                  <Image src="/cevan-finance.png" alt="Sobre o Grupo Cevan" fill className="object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B1222]/40 to-transparent" />
+                </div>
+                {/* Decorative circles — desktop only */}
+                <div className="hidden sm:block absolute -right-8 -top-8 h-32 w-32 rounded-full border-2 border-blue-600/20 pointer-events-none" />
+                <div className="hidden sm:block absolute -right-4 -top-4 h-16 w-16 rounded-full bg-blue-600/10 pointer-events-none" />
+                {/* Stats card */}
+                <div className="absolute right-3 sm:right-0 md:-right-6 bottom-4 sm:bottom-12 bg-[#0B1222] text-white rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-xl sm:shadow-2xl">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-blue-400 mb-0.5">Presença</p>
+                  <p className="text-lg sm:text-3xl font-black leading-tight">Maranhão</p>
+                  <p className="text-slate-400 text-xs sm:text-sm font-medium mt-0.5">Brasil</p>
+                </div>
+              </div>
+            </FadeUp>
+
+            {/* Text */}
+            <div className="space-y-6 sm:space-y-10">
+              <FadeUp delay={0.1}>
+                <span className="text-blue-600 font-black text-xs sm:text-sm tracking-widest uppercase">Sobre a Holding</span>
+                <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black text-[#0B1222] tracking-tight leading-tight">
+                  Um grupo construído para <span className="text-blue-600">criar valor real.</span>
+                </h2>
+              </FadeUp>
+
+              <FadeUp delay={0.15}>
+                <p className="text-slate-500 text-base sm:text-lg font-medium leading-relaxed">
+                  O Grupo Cevan nasceu da necessidade de criar conexões reais entre capital, tecnologia e pessoas. Hoje operamos como uma força estratégica que impulsiona múltiplas verticais de negócio no Maranhão.
+                </p>
+              </FadeUp>
+
+              <FadeUp delay={0.2}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+                  {PILLARS.map((p) => (
+                    <div key={p.title} className="flex gap-3 items-start p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-100 hover:bg-blue-50/30 transition-all">
+                      <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-blue-600/10 flex items-center justify-center text-blue-600 shrink-0">
+                        <p.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm sm:text-base font-black text-[#0B1222]">{p.title}</h4>
+                        <p className="text-slate-400 text-xs sm:text-sm font-medium mt-1 leading-relaxed">{p.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </FadeUp>
+
+              <FadeUp delay={0.3}>
+                <Link
+                  href="/grupo-cevan/sobre"
+                  className="inline-flex items-center gap-3 h-12 sm:h-14 px-6 sm:px-8 rounded-xl bg-[#0B1222] text-white font-bold uppercase tracking-widest text-[11px] hover:bg-blue-600 transition-all"
+                >
+                  Nossa História <ArrowRight className="h-4 w-4" />
+                </Link>
+              </FadeUp>
+            </div>
+          </div>
         </div>
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4">
-            {[
-              { number: "15+", label: "Anos de Mercado", icon: Award },
-              { number: "10K+", label: "Vagas Preenchidas", icon: Users },
-              { number: "3", label: "Verticais de Negócio", icon: Building2 },
-              { number: "100%", label: "Foco em Resultados", icon: TrendingUp },
-            ].map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={fadeUpBase}
-                whileInView={fadeUpTo(i * 0.1)}
-                viewport={VIEW}
-                className="flex flex-col items-center text-center p-6"
-              >
-                <stat.icon className="h-7 w-7 text-[#1967D2] mb-4 opacity-60" />
-                <span className="text-5xl lg:text-6xl font-black text-[#0B1222] tracking-tighter leading-none mb-2">{stat.number}</span>
-                <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">{stat.label}</span>
-              </motion.div>
+      </section>
+
+      {/* ── 03. VERTICAIS ── */}
+      <section id="verticais" className="py-14 sm:py-24 lg:py-36 bg-[#0B1222] relative overflow-hidden">
+        <div
+          className="absolute inset-0 z-0 opacity-[0.06]"
+          style={{ backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px)", backgroundSize: "80px 100%" }}
+        />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 relative z-10">
+          <FadeUp className="text-center max-w-2xl mx-auto space-y-3 sm:space-y-5 mb-10 sm:mb-16">
+            <span className="text-blue-400 font-black text-xs sm:text-sm tracking-widest uppercase">Nossas Verticais</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+              Soluções especializadas para <span className="text-blue-400">cada desafio.</span>
+            </h2>
+            <p className="text-slate-400 text-base sm:text-lg font-medium">
+              Quatro áreas integradas, cada uma líder em seu segmento.
+            </p>
+          </FadeUp>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+            {VERTICALS.map((card, i) => (
+              <FadeUp key={card.title} delay={i * 0.08}>
+                <Link
+                  href={card.href}
+                  className={`group flex flex-col h-full rounded-2xl sm:rounded-3xl overflow-hidden border ${card.borderAccent} bg-[#0f1623] active:scale-[0.98] hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/30 transition-all duration-300`}
+                >
+                  {/* Image */}
+                  <div className="relative aspect-[16/9] overflow-hidden">
+                    <Image
+                      src={card.image}
+                      alt={card.title}
+                      fill
+                      className={`transition-transform duration-500 group-hover:scale-105 ${card.imageFit ?? "object-cover"}`}
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-t ${card.overlayColor} to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300`} />
+                  </div>
+
+                  {/* Text */}
+                  <div className="flex flex-col flex-1 p-5 sm:p-7 gap-3">
+                    {card.logo ? (
+                      <div className="h-7 sm:h-8">
+                        <Image src={card.logo} alt={card.title} width={140} height={28} className="h-7 sm:h-8 w-auto object-contain object-left" />
+                      </div>
+                    ) : (
+                      <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">{card.title}</h3>
+                    )}
+                    <p className="text-slate-400 font-medium leading-relaxed text-sm flex-1">{card.desc}</p>
+                    <div className={`flex items-center gap-2 ${card.textAccent} font-black uppercase tracking-widest text-[10px] group-hover:gap-3 transition-all`}>
+                      Ver Detalhes <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    </div>
+                  </div>
+                </Link>
+              </FadeUp>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── 03. ABOUT — IMAGE LEFT / TEXT RIGHT ── */}
-      <section id="sobre" className="py-24 lg:py-32 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+      {/* ── 04. NÚMEROS ── */}
+      <section className="py-12 sm:py-20 bg-white border-y border-slate-100">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-0 lg:divide-x divide-slate-100">
+            {[
+              { value: "4", suffix: "+", label: "Verticais", sub: "integradas" },
+              { value: "10", suffix: "+", label: "Anos", sub: "no Maranhão" },
+              { value: "500", suffix: "+", label: "Empresas", sub: "atendidas" },
+              { value: "100", suffix: "M+", label: "Volume", sub: "processado" },
+            ].map((stat, i) => (
+              <FadeUp key={stat.label} delay={i * 0.08} className="text-center lg:px-12 py-4 sm:py-6">
+                <p className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0B1222] tracking-tight leading-none">
+                  {stat.value}<span className="text-blue-600">{stat.suffix}</span>
+                </p>
+                <p className="text-sm sm:text-base font-black text-[#0B1222] mt-2 sm:mt-3">{stat.label}</p>
+                <p className="text-xs sm:text-sm text-slate-400 font-medium mt-0.5">{stat.sub}</p>
+              </FadeUp>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <motion.div initial={fadeUpBase} whileInView={fadeUpTo(0)} viewport={VIEW} className="relative">
-            <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/5]">
-              <Image src="/feature-woman.png" alt="Sobre o Grupo Cevan" fill className="object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1222]/60 via-transparent to-transparent" />
-            </div>
-            <div className="absolute -right-6 -top-6 text-[140px] lg:text-[180px] font-black leading-none text-[#1967D2]/[0.06] select-none pointer-events-none tracking-tighter">
-              01
-            </div>
-            <div className="absolute bottom-8 -right-4 lg:-right-8 bg-[#0B1222] text-white rounded-2xl p-6 shadow-2xl">
-              <p className="text-3xl font-black mb-1">Maranhão</p>
-              <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">& Todo o Brasil</p>
-            </div>
-          </motion.div>
+      {/* ── 05. CTA ── */}
+      <section className="relative py-14 sm:py-24 lg:py-32 bg-[#0B1222] overflow-hidden">
+        <div
+          className="absolute inset-0 z-0 opacity-[0.06]"
+          style={{ backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px)", backgroundSize: "100px 100%" }}
+        />
+        <div className="absolute -top-24 right-0 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
 
-          <motion.div initial={fadeUpBase} whileInView={fadeUpTo(0.15)} viewport={VIEW} className="space-y-8">
-            <div>
-              <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#1967D2] mb-5">
-                <span className="h-px w-6 bg-[#1967D2]" />
-                Sobre Nós
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-8 lg:gap-12">
+
+            <FadeUp className="space-y-4 sm:space-y-6 max-w-2xl text-center lg:text-left">
+              <span className="inline-block text-[10px] font-black uppercase tracking-widest text-blue-400 px-3 py-1.5 rounded-full bg-blue-400/10 border border-blue-400/20">
+                Fale com um Especialista
               </span>
-              <h2 className="text-4xl lg:text-5xl font-black text-[#0B1222] leading-tight tracking-tighter">
-                Quem É o{" "}
-                <span className="text-[#1967D2]">Grupo Cevan?</span>
+              <h2 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white tracking-tight leading-tight">
+                Pronto para elevar o seu <span className="text-blue-400">negócio ao próximo nível?</span>
               </h2>
-            </div>
-            <p className="text-slate-500 text-lg font-medium leading-relaxed">
-              Somos um grupo empresarial multissetorial com sede no Maranhão, atuando em finanças, serviços empresariais e varejo. Nossa missão é transformar desafios corporativos em resultados concretos.
-            </p>
-            <div className="space-y-4">
-              {[
-                { icon: ShieldCheck, text: "Governança corporativa com padrão internacional" },
-                { icon: TrendingUp, text: "Crescimento consistente e sustentável" },
-                { icon: Users, text: "Time especializado e multidisciplinar" },
-              ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                    <Icon className="h-5 w-5 text-[#1967D2]" />
-                  </div>
-                  <p className="text-slate-700 font-semibold">{text}</p>
-                </div>
-              ))}
-            </div>
-            <Link
-              href="/#contato"
-              className="inline-flex items-center gap-2 h-14 px-9 rounded-2xl bg-[#0B1222] hover:bg-[#1967D2] text-white font-black uppercase tracking-widest text-[11px] transition-all hover:-translate-y-0.5 shadow-xl shadow-slate-900/20"
-            >
-              Fale Conosco <ArrowRight className="h-4 w-4" />
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── 04. EMPRESAS DO GRUPO ── */}
-      <section id="financeira" className="py-24 lg:py-32 bg-[#f8faff] overflow-hidden relative">
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none select-none hidden lg:block">
-          <span className="text-[12vw] font-black text-[#1967D2]/[0.04] uppercase tracking-tighter">EMPRESAS</span>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 space-y-28 lg:space-y-40 relative z-10">
-
-          {/* — Cevan Financeira — */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            <motion.div initial={fadeUpBase} whileInView={fadeUpTo(0)} viewport={VIEW} className="order-2 lg:order-1 space-y-7">
-              <div>
-                <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#1967D2] mb-5">
-                  <span className="h-px w-6 bg-[#1967D2]" />
-                  Vertical Financeira
-                </span>
-                <h2 className="text-4xl lg:text-5xl font-black text-[#0B1222] leading-tight tracking-tighter">
-                  Cevan <span className="text-[#1967D2]">Financeira</span>
-                </h2>
-              </div>
-              <p className="text-slate-500 text-lg font-medium leading-relaxed">
-                Especialistas em antecipação de recebíveis, estruturação de crédito e capital de giro. Soluções financeiras ágeis para negócios em expansão.
+              <p className="text-slate-400 text-base sm:text-lg font-medium">
+                Nossos consultores estão prontos para desenhar a melhor estratégia para você.
               </p>
-              <ul className="space-y-3 text-slate-600 font-semibold">
-                {["Antecipação de Recebíveis", "Crédito Empresarial", "Consultoria Financeira", "Capital de Giro"].map(item => (
-                  <li key={item} className="flex items-center gap-3">
-                    <ChevronRight className="h-4 w-4 text-[#1967D2] shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/#contato" className="inline-flex items-center gap-2 text-[#1967D2] font-black uppercase tracking-widest text-[11px] hover:gap-4 transition-all">
-                Saiba Mais <ArrowRight className="h-4 w-4" />
-              </Link>
-            </motion.div>
+            </FadeUp>
 
-            <motion.div initial={fadeUpBase} whileInView={fadeUpTo(0.2)} viewport={VIEW} className="order-1 lg:order-2 relative">
-              <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/3]">
-                <Image src="/cevan-finance.png" alt="Cevan Financeira" fill className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-transparent" />
-              </div>
-              <div className="absolute -left-6 -bottom-6 text-[100px] lg:text-[130px] font-black leading-none text-[#1967D2]/[0.06] select-none pointer-events-none tracking-tighter">02</div>
-              <div className="absolute top-6 right-6 h-16 w-16 rounded-2xl bg-[#1967D2] flex items-center justify-center shadow-xl shadow-blue-900/30">
-                <Wallet className="h-8 w-8 text-white" />
-              </div>
-            </motion.div>
-          </div>
-
-          {/* — Cevan Serviços — */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            <motion.div initial={fadeUpBase} whileInView={fadeUpTo(0)} viewport={VIEW} className="relative">
-              <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/3]">
-                <Image src="/feature-woman.png" alt="Cevan Serviços" fill className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-transparent" />
-              </div>
-              <div className="absolute -right-6 -bottom-6 text-[100px] lg:text-[130px] font-black leading-none text-[#1967D2]/[0.06] select-none pointer-events-none tracking-tighter">03</div>
-              <div className="absolute top-6 left-6 h-16 w-16 rounded-2xl bg-[#0B1222] flex items-center justify-center shadow-xl">
-                <Building2 className="h-8 w-8 text-white" />
-              </div>
-            </motion.div>
-
-            <motion.div initial={fadeUpBase} whileInView={fadeUpTo(0.2)} viewport={VIEW} className="space-y-7">
-              <div>
-                <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#1967D2] mb-5">
-                  <span className="h-px w-6 bg-[#1967D2]" />
-                  Vertical de Serviços Empresariais
-                </span>
-                <h2 className="text-4xl lg:text-5xl font-black text-[#0B1222] leading-tight tracking-tighter">
-                  Cevan <span className="text-[#1967D2]">Serviços Empresariais</span>
-                </h2>
-              </div>
-              <p className="text-slate-500 text-lg font-medium leading-relaxed">
-                Recrutamento especializado, BPO e terceirização de processos corporativos com suporte de inteligência artificial. Conectamos os melhores talentos às melhores empresas do Brasil.
-              </p>
-              <ul className="space-y-3 text-slate-600 font-semibold">
-                {["Recrutamento & Seleção", "BPO Empresarial", "Terceirização de RH", "Análise com IA"].map(item => (
-                  <li key={item} className="flex items-center gap-3">
-                    <ChevronRight className="h-4 w-4 text-[#1967D2] shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/jobs" className="inline-flex items-center gap-2 text-[#1967D2] font-black uppercase tracking-widest text-[11px] hover:gap-4 transition-all">
-                Ver Vagas Abertas <ArrowRight className="h-4 w-4" />
-              </Link>
-            </motion.div>
-          </div>
-
-          {/* — Cevan Supermercado — */}
-          <div id="supermercado" className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            <motion.div initial={fadeUpBase} whileInView={fadeUpTo(0)} viewport={VIEW} className="order-2 lg:order-1 space-y-7">
-              <div>
-                <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#1967D2] mb-5">
-                  <span className="h-px w-6 bg-[#1967D2]" />
-                  Vertical de Varejo
-                </span>
-                <h2 className="text-4xl lg:text-5xl font-black text-[#0B1222] leading-tight tracking-tighter">
-                  Cevan <span className="text-[#1967D2]">Supermercado</span>
-                </h2>
-              </div>
-              <p className="text-slate-500 text-lg font-medium leading-relaxed">
-                Tradição e frescor no setor varejista de alimentos. Operamos com logística de ponta e compromisso com a qualidade, atendendo comunidades em toda a região do Maranhão.
-              </p>
-              <ul className="space-y-3 text-slate-600 font-semibold">
-                {["Varejo Alimentar", "Logística Própria", "Produtos Frescos", "Expansão Regional"].map(item => (
-                  <li key={item} className="flex items-center gap-3">
-                    <ChevronRight className="h-4 w-4 text-[#1967D2] shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/#contato" className="inline-flex items-center gap-2 text-[#1967D2] font-black uppercase tracking-widest text-[11px] hover:gap-4 transition-all">
-                Saiba Mais <ArrowRight className="h-4 w-4" />
-              </Link>
-            </motion.div>
-
-            <motion.div initial={fadeUpBase} whileInView={fadeUpTo(0.2)} viewport={VIEW} className="order-1 lg:order-2 relative">
-              <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/3]">
-                <Image src="/cevan-supermarket.png" alt="Cevan Supermercado" fill className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 to-transparent" />
-              </div>
-              <div className="absolute -left-6 -bottom-6 text-[100px] lg:text-[130px] font-black leading-none text-[#1967D2]/[0.06] select-none pointer-events-none tracking-tighter">04</div>
-              <div className="absolute top-6 right-6 h-16 w-16 rounded-2xl bg-emerald-600 flex items-center justify-center shadow-xl shadow-emerald-900/30">
-                <ShoppingCart className="h-8 w-8 text-white" />
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 05. CTA BANNER ── */}
-      <section className="relative overflow-hidden bg-[#0B1222]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[500px]">
-          <div className="relative min-h-[320px] lg:min-h-0">
-            <Image src="/feature-woman.png" alt="Fale com a Cevan" fill className="object-cover object-top" />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0B1222]/80 lg:to-[#0B1222]" />
-          </div>
-
-          <motion.div
-            initial={fadeUpBase}
-            whileInView={fadeUpTo(0)}
-            viewport={VIEW}
-            className="flex flex-col justify-center px-10 sm:px-16 lg:px-20 py-16 lg:py-0 relative z-10"
-          >
-            <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 mb-7">
-              <span className="h-px w-6 bg-blue-400" />
-              Vamos Começar
-            </span>
-            <h2 className="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter mb-6">
-              Transforme os Rumos da{" "}
-              <span className="text-[#1967D2]">Sua Empresa</span>
-            </h2>
-            <p className="text-slate-400 text-lg font-medium leading-relaxed mb-10 max-w-md">
-              Agende uma reunião estratégica com nossa equipe e descubra como o Grupo Cevan pode impulsionar o seu negócio.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <FadeUp delay={0.15} className="flex flex-col sm:flex-row gap-3 sm:gap-5 w-full lg:w-auto shrink-0">
               <Link
                 href="/#contato"
-                className="inline-flex items-center justify-center gap-2 h-14 px-9 rounded-2xl bg-[#1967D2] hover:bg-blue-500 text-white font-black uppercase tracking-widest text-[11px] transition-all hover:-translate-y-0.5 shadow-xl shadow-blue-900/40"
+                className="h-14 px-8 rounded-xl bg-blue-600 text-white font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-3 shadow-xl hover:bg-blue-500 transition-all"
               >
-                Solicitar Consultoria <ArrowRight className="h-4 w-4" />
+                Agendar Reunião <ArrowRight className="h-4 w-4 shrink-0" />
               </Link>
               <a
-                href="mailto:atendimento@cevan.com.br"
-                className="inline-flex items-center justify-center gap-2 h-14 px-9 rounded-2xl border border-white/10 text-white/70 hover:text-white hover:border-white/30 font-bold text-[13px] transition-all"
+                href="https://wa.me/5598982128321"
+                target="_blank"
+                rel="noreferrer"
+                className="h-14 px-6 sm:px-8 rounded-xl border border-white/15 text-white font-bold flex items-center justify-center gap-3 hover:bg-white/5 transition-all"
               >
-                <Mail className="h-4 w-4" />
-                Enviar E-mail
+                <Phone className="h-5 w-5 text-slate-400 shrink-0" />
+                <div className="text-left">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">WhatsApp</p>
+                  <p className="text-sm sm:text-base font-black">(98) 98212-8321</p>
+                </div>
               </a>
-            </div>
-          </motion.div>
+            </FadeUp>
+
+          </div>
         </div>
       </section>
 
-      {/* ── 06. CONTACT ROW ── */}
-      <section className="bg-[#f0f5ff] py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-            {[
-              { icon: Phone, label: "Telefone", value: "+55 (98) 0000-0000" },
-              { icon: Mail, label: "E-mail", value: "atendimento@cevan.com.br" },
-              { icon: MapPin, label: "Localização", value: "São Luís, Maranhão — Brasil" },
-            ].map(({ icon: Icon, label, value }) => (
-              <div key={label} className="flex flex-col items-center gap-4">
-                <div className="h-14 w-14 rounded-2xl bg-[#1967D2] flex items-center justify-center shadow-lg shadow-blue-200">
-                  <Icon className="h-6 w-6 text-white" />
+      {/* ── 06. QUOTE ── */}
+      <section className="py-14 sm:py-24 lg:py-36 bg-white">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6">
+          <FadeUp>
+            <div className="bg-gradient-to-br from-[#F8F9FC] to-blue-50/50 rounded-2xl sm:rounded-[2.5rem] p-7 sm:p-12 lg:p-20 border border-blue-100/60 relative overflow-hidden">
+              <div className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-blue-600/5 pointer-events-none" />
+              <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-blue-600/5 pointer-events-none" />
+
+              <div className="relative z-10 text-center space-y-6 sm:space-y-8 max-w-4xl mx-auto">
+                <div className="h-12 w-12 sm:h-16 sm:w-16 mx-auto bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-600/30">
+                  <Award className="h-6 w-6 sm:h-8 sm:w-8" />
                 </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{label}</p>
-                  <p className="font-bold text-[#0B1222]">{value}</p>
+                <blockquote className="text-lg sm:text-2xl lg:text-4xl font-extrabold text-[#0B1222] tracking-tight leading-snug">
+                  "No Grupo Cevan, acreditamos que a{" "}
+                  <span className="text-blue-600">transparência</span> e a{" "}
+                  <span className="text-blue-600">inovação</span>{" "}
+                  são os únicos caminhos para a longevidade corporativa."
+                </blockquote>
+                <div className="flex items-center justify-center gap-3 sm:gap-4 pt-2">
+                  <Image src="/brasao-grupocevan.png" alt="Brasão" width={36} height={36} className="h-8 w-8 sm:h-10 sm:w-10 object-contain" />
+                  <div className="text-left">
+                    <p className="text-sm sm:text-base font-black text-[#0B1222]">Conselho Diretor</p>
+                    <p className="text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Holding Grupo Cevan</p>
+                  </div>
                 </div>
               </div>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
+
+      {/* ── 07. CONTATO ── */}
+      <section className="bg-[#F8F9FC] py-14 sm:py-20 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6">
+          <FadeUp className="text-center mb-8 sm:mb-12">
+            <h3 className="text-xl sm:text-2xl font-black text-[#0B1222] tracking-tight">Entre em Contato</h3>
+            <p className="text-slate-400 font-medium mt-1 sm:mt-2 text-sm sm:text-base">Estamos disponíveis para atender você.</p>
+          </FadeUp>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6">
+            {[
+              { icon: Mail, label: "E-mail", value: "contato@grupocevan.com", href: "mailto:contato@grupocevan.com" },
+              { icon: MapPin, label: "Localização", value: "São Luís, Maranhão", href: "#" },
+              { icon: Phone, label: "WhatsApp", value: "(98) 98212-8321", href: "https://wa.me/5598982128321" },
+            ].map((item, i) => (
+              <FadeUp key={item.label} delay={i * 0.08}>
+                <a
+                  href={item.href}
+                  target={item.href.startsWith("http") ? "_blank" : undefined}
+                  rel="noreferrer"
+                  className="flex gap-4 items-center p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white border border-slate-100 hover:border-blue-200 hover:shadow-lg active:scale-[0.98] transition-all group"
+                >
+                  <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-xl bg-blue-50 group-hover:bg-blue-600 flex items-center justify-center text-blue-600 group-hover:text-white transition-all shrink-0">
+                    <item.icon className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{item.label}</p>
+                    <p className="text-sm sm:text-base font-black text-[#0B1222] mt-0.5 truncate">{item.value}</p>
+                  </div>
+                </a>
+              </FadeUp>
             ))}
           </div>
         </div>

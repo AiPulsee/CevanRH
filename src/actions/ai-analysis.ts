@@ -12,6 +12,7 @@ export type AIAnalysisResult = {
   strengths: string[];
   concerns: string[];
   summary: string;
+  source: "pdf" | "cover_letter" | "both";
 };
 
 async function extractPdfText(url: string): Promise<string> {
@@ -62,7 +63,6 @@ export async function analyzeCandidate(
     return { success: false, error: "Candidatura não encontrada." };
   }
 
-  // Extrair texto do PDF se disponível
   let resumeText = "";
   if (application.resumeUrl?.toLowerCase().includes(".pdf")) {
     resumeText = await extractPdfText(application.resumeUrl);
@@ -70,11 +70,11 @@ export async function analyzeCandidate(
 
   const hasCoverLetter = !!application.coverLetter?.trim();
 
-  // Sem currículo legível e sem carta — não há dados para analisar
   if (!resumeText && !hasCoverLetter) {
     return {
       success: false,
-      error: "Sem dados suficientes para análise. O candidato não enviou carta de apresentação e o currículo não pôde ser lido (formato Word ou PDF protegido).",
+      error:
+        "Sem dados suficientes para análise. O candidato não enviou carta de apresentação e o currículo não pôde ser lido (formato Word ou PDF protegido).",
     };
   }
 
@@ -82,22 +82,26 @@ export async function analyzeCandidate(
     `Vaga: ${application.job.title}`,
     application.job.description ? `Descrição: ${application.job.description}` : "",
     application.job.requirements ? `Requisitos: ${application.job.requirements}` : "",
-    application.job.responsibilities ? `Responsabilidades: ${application.job.responsibilities}` : "",
+    application.job.responsibilities
+      ? `Responsabilidades: ${application.job.responsibilities}`
+      : "",
   ]
     .filter(Boolean)
     .join("\n\n");
 
   const candidateContext = [
     `Candidato: ${application.candidate.name ?? "Sem nome"}`,
-    resumeText
-      ? `Currículo (texto extraído do PDF):\n${resumeText}`
-      : "",
-    hasCoverLetter
-      ? `Carta de apresentação:\n${application.coverLetter}`
-      : "",
+    resumeText ? `Currículo (texto extraído do PDF):\n${resumeText}` : "",
+    hasCoverLetter ? `Carta de apresentação:\n${application.coverLetter}` : "",
   ]
     .filter(Boolean)
     .join("\n\n");
+
+  const sourceKey: AIAnalysisResult["source"] = resumeText
+    ? hasCoverLetter
+      ? "both"
+      : "pdf"
+    : "cover_letter";
 
   const dataSource = resumeText
     ? hasCoverLetter
@@ -141,18 +145,29 @@ Responda SOMENTE com JSON válido, sem markdown. Formato obrigatório:
     });
 
     const text = completion.choices[0]?.message?.content ?? "";
-    const parsed = JSON.parse(text) as AIAnalysisResult;
-    return { success: true, data: parsed };
+    const parsed = JSON.parse(text) as Omit<AIAnalysisResult, "source">;
+    return { success: true, data: { ...parsed, source: sourceKey } };
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("[AI Analysis Error]", errorMessage);
 
-    if (errorMessage.includes("429") || errorMessage.includes("rate_limit") || errorMessage.includes("quota")) {
-      return { success: false, error: "Limite de uso da IA atingido. Aguarde alguns segundos e tente novamente." };
+    if (
+      errorMessage.includes("429") ||
+      errorMessage.includes("rate_limit") ||
+      errorMessage.includes("quota")
+    ) {
+      return {
+        success: false,
+        error: "Limite de uso da IA atingido. Aguarde alguns segundos e tente novamente.",
+      };
     }
-    if (errorMessage.includes("401") || errorMessage.includes("API key") || errorMessage.includes("403")) {
-      return { success: false, error: "Chave da API Groq inválida. Verifique o GROQ_API_KEY no servidor." };
+    if (
+      errorMessage.includes("401") ||
+      errorMessage.includes("API key") ||
+      errorMessage.includes("403")
+    ) {
+      return { success: false, error: "Configuração da IA inválida. Contate o administrador." };
     }
-    return { success: false, error: `Erro da IA: ${errorMessage.slice(0, 120)}` };
+    return { success: false, error: "Erro ao processar análise. Tente novamente." };
   }
 }

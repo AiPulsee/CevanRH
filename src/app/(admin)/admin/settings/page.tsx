@@ -3,11 +3,8 @@ import SettingsForm from "@/components/admin/settings-form";
 
 const SETTING_KEYS = [
   "managed.fee_percentage",
-  "security.2fa_required",
-  "security.block_registrations",
-  "smtp.server",
-  "smtp.port",
-  "smtp.encryption",
+  "managed.fee_type",
+  "managed.fee_fixed",
 ];
 
 export default async function AdminSettingsPage() {

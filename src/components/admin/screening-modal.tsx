@@ -186,7 +186,7 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
       />
       <DialogContent
         showCloseButton={false}
-        className="flex flex-col w-[95vw] max-w-6xl h-[90vh] bg-[#F1F5F9] rounded-[2.5rem] border-none p-0 overflow-hidden shadow-[0_32px_64px_-15px_rgba(0,0,0,0.25)]"
+        className="flex flex-col w-[calc(100%-1rem)] sm:w-[95vw] max-w-6xl h-[95vh] sm:h-[90vh] bg-[#F1F5F9] rounded-3xl sm:rounded-[2.5rem] border-none p-0 overflow-hidden shadow-[0_32px_64px_-15px_rgba(0,0,0,0.25)]"
       >
         {/* Header */}
         <div className="bg-slate-950 p-4 sm:p-8 text-white shrink-0 relative overflow-hidden">
@@ -526,6 +526,14 @@ function AIAnalysisPanel({
 
   return (
     <div className="h-full flex flex-col p-8 overflow-y-auto custom-scrollbar bg-white">
+      {result.source === "cover_letter" && (
+        <div className="flex items-start gap-3 mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200">
+          <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+          <p className="text-xs font-bold text-amber-700 leading-relaxed">
+            O PDF não pôde ser lido — análise feita com base apenas na carta de apresentação. Os resultados podem ser menos precisos.
+          </p>
+        </div>
+      )}
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">

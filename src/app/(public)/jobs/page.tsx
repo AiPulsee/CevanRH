@@ -59,9 +59,9 @@ const PAGE_SIZE = 12;
 export default async function JobsPublicPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; q?: string; location?: string; remote?: string; type?: string }>;
+  searchParams: Promise<{ page?: string; q?: string; location?: string; remote?: string; experience?: string; contract?: string }>;
 }) {
-  const { page: pageParam, q, location, remote, type } = await searchParams;
+  const { page: pageParam, q, location, remote, experience, contract } = await searchParams;
   const page = Math.max(1, parseInt(pageParam ?? "1"));
 
   const where = {
@@ -74,7 +74,8 @@ export default async function JobsPublicPage({
     }),
     ...(location && { location: { contains: location, mode: "insensitive" as const } }),
     ...(remote !== undefined && remote !== "" && { isRemote: remote === "true" }),
-    ...(type && { type: type as "MANAGED" | "SELF_SERVICE" }),
+    ...(experience && { experienceLevel: experience }),
+    ...(contract && { contractType: contract }),
   };
 
   const [jobs, totalJobs] = await Promise.all([
@@ -96,7 +97,8 @@ export default async function JobsPublicPage({
   if (q) paginationParams.q = q;
   if (location) paginationParams.location = location;
   if (remote) paginationParams.remote = remote;
-  if (type) paginationParams.type = type;
+  if (experience) paginationParams.experience = experience;
+  if (contract) paginationParams.contract = contract;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FAFBFC] font-sans selection:bg-blue-100 selection:text-blue-900 mt-24">
@@ -116,7 +118,7 @@ export default async function JobsPublicPage({
             Navegue pelas vagas mais cobiçadas do mercado e alcance seu potencial máximo com a curadoria especializada da Cevan.
           </p>
 
-          <JobFilters only="search" q={q} location={location} remote={remote} type={type} />
+          <JobFilters only="search" q={q} location={location} remote={remote} experience={experience} contract={contract} />
         </div>
       </div>
 
@@ -128,7 +130,7 @@ export default async function JobsPublicPage({
             <Filter className="h-5 w-5 text-[#1967D2]" />
             <h3 className="font-bold text-slate-900 text-[16px]">Filtros</h3>
           </div>
-          <JobFilters only="sidebar" q={q} location={location} remote={remote} type={type} />
+          <JobFilters only="sidebar" q={q} location={location} remote={remote} experience={experience} contract={contract} />
         </aside>
 
         {/* Jobs List Section */}
@@ -144,7 +146,7 @@ export default async function JobsPublicPage({
               )}
             </div>
             <div className="flex items-center justify-end gap-2 sm:gap-3 lg:hidden">
-              <JobFilters only="sidebar" q={q} location={location} remote={remote} type={type} />
+              <JobFilters only="sidebar" q={q} location={location} remote={remote} experience={experience} contract={contract} />
             </div>
           </div>
 
@@ -162,9 +164,7 @@ export default async function JobsPublicPage({
 
                   <Link href={`/jobs/${job.slug}`} className="absolute inset-0 z-[1] rounded-[1.2rem] sm:rounded-[1.5rem]" aria-label={`Ver vaga: ${job.title}`} />
 
-                  <button className="absolute top-4 right-4 sm:top-6 sm:right-6 text-slate-300 hover:text-[#1967D2] bg-slate-50 hover:bg-blue-50 transition-colors h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-full z-[2]">
-                    <Bookmark className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  </button>
+
 
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
                     <div className="flex items-start sm:items-center gap-4 sm:gap-5 flex-1">
@@ -176,6 +176,14 @@ export default async function JobsPublicPage({
                         )}
                       </div>
                       <div className="pr-8 sm:pr-12 md:pr-0">
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <Badge className="bg-blue-50/80 hover:bg-blue-100 text-[#1967D2] border-none rounded-full px-3 py-1 text-[10px] sm:text-[11px] font-bold transition-colors">{job.isRemote ? "Remoto" : "Presencial"}</Badge>
+                          {job.type === 'MANAGED' && (
+                            <Badge className="bg-orange-50/80 hover:bg-orange-100 text-orange-600 border-none rounded-full px-3 py-1 text-[10px] sm:text-[11px] font-bold transition-colors flex items-center gap-1">
+                              <Zap className="h-3 w-3 fill-current" /> Patrocinada
+                            </Badge>
+                          )}
+                        </div>
                         <h4 className="font-bold text-base sm:text-[18px] text-slate-900 group-hover:text-[#1967D2] transition-colors leading-tight mb-1.5 sm:mb-2 line-clamp-1">{job.title}</h4>
                         <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1.5 text-[11px] sm:text-[13px] text-slate-500 font-medium">
                           <span className="flex items-center gap-1.5"><Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#1967D2]" /> {job.company.name}</span>
@@ -186,19 +194,11 @@ export default async function JobsPublicPage({
                       </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-end gap-3 w-full md:w-auto mt-2 md:mt-0 pt-4 md:pt-0 border-t border-slate-50 md:border-none relative z-[2]">
-                      <div className="flex flex-wrap gap-2">
-                        <Badge className="bg-blue-50/80 hover:bg-blue-100 text-[#1967D2] border-none rounded-full px-3 py-1 text-[10px] sm:text-[11px] font-bold transition-colors">{job.isRemote ? "Remoto" : "Presencial"}</Badge>
-                        {job.type === 'MANAGED' && (
-                          <Badge className="bg-orange-50/80 hover:bg-orange-100 text-orange-600 border-none rounded-full px-3 py-1 text-[10px] sm:text-[11px] font-bold transition-colors flex items-center gap-1">
-                            <Zap className="h-3 w-3 fill-current" /> Patrocinada
-                          </Badge>
-                        )}
-                      </div>
+                    <div className="flex flex-col items-end gap-3 w-full md:w-auto mt-2 md:mt-0 pt-4 md:pt-0 border-t border-slate-50 md:border-none relative z-[2]">
                       <div className="hidden md:block">
                         <Link href={`/jobs/${job.slug}`} className="relative z-[2]">
-                          <Button className="rounded-lg h-9 w-9 p-0 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm border border-slate-200 bg-white text-slate-400">
-                            <ChevronRight className="h-4 w-4" />
+                          <Button className="rounded-lg h-10 w-10 p-0 group-hover:bg-[#1967D2] group-hover:text-white transition-all shadow-sm border border-slate-200 bg-white text-slate-400">
+                            <ChevronRight className="h-5 w-5" />
                           </Button>
                         </Link>
                       </div>

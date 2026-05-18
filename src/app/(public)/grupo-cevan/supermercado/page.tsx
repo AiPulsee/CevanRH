@@ -10,7 +10,6 @@ import {
   ChevronRight, Package, BadgeCheck, Users,
 } from "lucide-react";
 
-/* ─────────── animation helpers ─────────── */
 const VIEW = { once: true, margin: "-80px" };
 const fu = { opacity: 0, y: 24 };
 function ft(d = 0) {
@@ -20,7 +19,6 @@ function ft(d = 0) {
   };
 }
 
-/* ─────────── data ─────────── */
 const units = [
   {
     num: "01",
@@ -49,85 +47,31 @@ const units = [
 ];
 
 const depts = [
-  {
-    num: "01",
-    icon: Leaf,
-    title: "Hortifrúti",
-    desc: "Frutas, legumes e verduras frescos, selecionados e renovados diariamente direto dos produtores locais.",
-    tag: "Renovado diariamente",
-  },
-  {
-    num: "02",
-    icon: Flame,
-    title: "Açougue",
-    desc: "Carnes nobres selecionadas e cortadas na hora por profissionais especializados. Do corte ao tempero.",
-    tag: "Corte sob encomenda",
-  },
-  {
-    num: "03",
-    icon: Wheat,
-    title: "Padaria",
-    desc: "Pão fresquinho a partir das 7h30 todos os dias. Bolos, salgados e confeitaria artesanal.",
-    tag: "A partir das 7h30",
-  },
-  {
-    num: "04",
-    icon: Fish,
-    title: "Pescados",
-    desc: "Peixaria completa com frutos do mar frescos e congelados. Procedência garantida, qualidade certificada.",
-    tag: "Frescos e congelados",
-  },
-  {
-    num: "05",
-    icon: Coffee,
-    title: "Mercearia",
-    desc: "Linha completa de alimentos, higiene pessoal e produtos de limpeza das melhores marcas do mercado.",
-    tag: "Linha completa",
-  },
-  {
-    num: "06",
-    icon: ShoppingBag,
-    title: "Delivery",
-    desc: "Faça seu pedido pelo WhatsApp e receba no conforto da sua casa. Atendemos toda a região.",
-    tag: "Entrega rápida",
-  },
+  { num: "01", icon: Leaf, title: "Hortifrúti", desc: "Frutas, legumes e verduras frescos, selecionados e renovados diariamente direto dos produtores locais.", tag: "Renovado diariamente" },
+  { num: "02", icon: Flame, title: "Açougue", desc: "Carnes nobres selecionadas e cortadas na hora por profissionais especializados. Do corte ao tempero.", tag: "Corte sob encomenda" },
+  { num: "03", icon: Wheat, title: "Padaria", desc: "Pão fresquinho a partir das 7h30 todos os dias. Bolos, salgados e confeitaria artesanal.", tag: "A partir das 7h30" },
+  { num: "04", icon: Fish, title: "Pescados", desc: "Peixaria completa com frutos do mar frescos e congelados. Procedência garantida, qualidade certificada.", tag: "Frescos e congelados" },
+  { num: "05", icon: Coffee, title: "Mercearia", desc: "Linha completa de alimentos, higiene pessoal e produtos de limpeza das melhores marcas do mercado.", tag: "Linha completa" },
+  { num: "06", icon: ShoppingBag, title: "Delivery", desc: "Faça seu pedido pelo WhatsApp e receba no conforto da sua casa. Atendemos toda a região.", tag: "Entrega rápida" },
 ];
 
 const diferenciais = [
-  {
-    icon: Star,
-    title: "Qualidade Garantida",
-    desc: "Selecionamos apenas produtos de primeira qualidade, com controle rigoroso de validade e procedência em todos os departamentos.",
-    stat: "100%",
-    statLabel: "Qualidade verificada",
-  },
-  {
-    icon: Truck,
-    title: "Delivery nas Duas Cidades",
-    desc: "Entregamos na sua porta em Buriticupu e Santa Luzia. Rápido, seguro e no horário combinado.",
-    stat: "2",
-    statLabel: "Cidades atendidas",
-  },
-  {
-    icon: Heart,
-    title: "Atendimento com Carinho",
-    desc: "Nossa equipe é treinada para atender você com atenção e respeito. Cada cliente é único para a gente.",
-    stat: "15+",
-    statLabel: "Anos de tradição",
-  },
+  { icon: Star, title: "Qualidade Garantida", desc: "Selecionamos apenas produtos de primeira qualidade, com controle rigoroso de validade e procedência em todos os departamentos.", stat: "100%", statLabel: "Qualidade verificada" },
+  { icon: Truck, title: "Delivery nas Duas Cidades", desc: "Entregamos na sua porta em Buriticupu e Santa Luzia. Rápido, seguro e no horário combinado.", stat: "2", statLabel: "Cidades atendidas" },
+  { icon: Heart, title: "Atendimento com Carinho", desc: "Nossa equipe é treinada para atender você com atenção e respeito. Cada cliente é único para a gente.", stat: "15+", statLabel: "Anos de tradição" },
 ];
+
+const ONLINE_SHOP_URL = "https://www.compresemfila.com.br/delivery/loja/11186/loja?visitante=true&_branch_match_id=1581284821630949448&_branch_referrer=H4sIAAAAAAAAA8soKSkottLXT87PLShKLU7NTcvMSdRLLCjQy8nMy9Y3NDS0MLOvK0pNSy0qysxLj08qyi8vTi2y9S9ILUoEAAt%2BnWs9AAAA";
 
 export default function SupermercadoPage() {
   return (
-    <div className="flex flex-col w-full bg-white text-[#0B1222] overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div className="flex flex-col w-full bg-white text-[#202F36] overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
 
-      {/* ══════════════════════════════════════════
-          01. HERO — editorial split
-      ══════════════════════════════════════════ */}
-      <section className="relative min-h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
+      {/* ── 01. HERO ── */}
+      <section className="relative min-h-[100svh] lg:min-h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden bg-white">
 
-        {/* Left: image panel */}
-        <div className="relative min-h-[55vh] lg:min-h-0 order-2 lg:order-1">
+        {/* Left: image panel — shows below content on mobile */}
+        <div className="relative min-h-[45vw] lg:min-h-0 order-2 lg:order-1">
           <Image
             src="/cevan-supermarket.png"
             alt="Cevan Supermercado"
@@ -135,51 +79,47 @@ export default function SupermercadoPage() {
             className="object-cover"
             priority
           />
-          {/* Gradient overlays */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B1222]/70 via-[#0B1222]/10 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/90 lg:to-transparent hidden lg:block" />
+          <div className="absolute inset-0 bg-[#202F36]/40 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#202F36] via-transparent to-transparent opacity-80" />
 
-          {/* Bottom stats overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10">
+          <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.6 }}
-              className="flex items-end gap-3"
+              className="flex flex-wrap items-end gap-3"
             >
-              <div className="bg-emerald-600 rounded-2xl px-6 py-4 shadow-2xl shadow-emerald-900/40">
-                <p className="text-3xl font-black text-white leading-none">2</p>
-                <p className="text-emerald-200 text-[10px] font-black uppercase tracking-widest mt-1">Unidades</p>
+              <div className="bg-[#FD0100] rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 shadow-2xl shadow-red-900/40">
+                <p className="text-2xl sm:text-3xl font-black text-white leading-none">2</p>
+                <p className="text-red-100 text-[10px] font-black uppercase tracking-widest mt-1">Unidades</p>
               </div>
-              <div className="bg-white/95 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl">
-                <p className="text-3xl font-black text-[#0B1222] leading-none">7:30</p>
-                <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mt-1">Abre todo dia</p>
+              <div className="bg-white rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 shadow-2xl">
+                <p className="text-2xl sm:text-3xl font-black text-[#202F36] leading-none">7:30</p>
+                <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1">Abre todo dia</p>
               </div>
-              <div className="bg-white/95 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl">
-                <p className="text-3xl font-black text-emerald-600 leading-none">15+</p>
-                <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mt-1">Anos</p>
+              <div className="bg-[#1995E8] rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 shadow-2xl">
+                <p className="text-2xl sm:text-3xl font-black text-white leading-none">15+</p>
+                <p className="text-blue-100 text-[10px] font-black uppercase tracking-widest mt-1">Anos</p>
               </div>
             </motion.div>
           </div>
         </div>
 
-        {/* Right: content */}
-        <div className="relative flex flex-col justify-center px-8 sm:px-14 lg:px-16 xl:px-20 pt-32 pb-16 lg:pt-0 bg-white order-1 lg:order-2">
-          {/* Vertical divider */}
-          <div className="absolute left-0 top-[15%] bottom-[15%] w-px bg-gradient-to-b from-transparent via-emerald-100 to-transparent hidden lg:block" />
+        {/* Right: content — shows first on mobile */}
+        <div className="relative flex flex-col justify-center px-5 sm:px-12 lg:px-20 pt-24 sm:pt-28 pb-10 lg:pt-0 bg-white order-1 lg:order-2">
+          <div className="absolute left-0 top-[20%] bottom-[20%] w-px bg-gradient-to-b from-transparent via-[#1995E8]/20 to-transparent hidden lg:block" />
 
-          {/* Breadcrumb */}
-          <motion.div initial={fu} animate={ft(0)} className="flex items-center gap-2 mb-10">
-            <Link href="/grupo-cevan" className="text-[11px] font-medium text-slate-400 uppercase tracking-widest hover:text-emerald-600 transition-colors">
+          <motion.div initial={fu} animate={ft(0)} className="flex items-center gap-2 mb-8">
+            <Link href="/grupo-cevan" className="text-[11px] font-bold text-slate-400 uppercase tracking-widest hover:text-[#1995E8] transition-colors">
               Grupo Cevan
             </Link>
             <ChevronRight className="h-3 w-3 text-slate-300" />
-            <span className="text-[11px] font-medium text-emerald-600 uppercase tracking-widest">Supermercado</span>
+            <span className="text-[11px] font-bold text-[#1995E8] uppercase tracking-widest">Supermercados</span>
           </motion.div>
 
           <motion.div initial={fu} animate={ft(0.08)}>
-            <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-emerald-600 mb-6">
-              <span className="h-px w-8 bg-emerald-600" />
+            <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-[#FD0100] mb-5">
+              <span className="h-px w-8 bg-[#FD0100]" />
               Varejo Alimentar — Maranhão
             </span>
           </motion.div>
@@ -187,49 +127,61 @@ export default function SupermercadoPage() {
           <motion.h1
             initial={fu}
             animate={ft(0.14)}
-            className="text-5xl sm:text-6xl xl:text-[5rem] font-black text-[#0B1222] leading-[0.95] tracking-[-0.03em] mb-6"
+            className="text-[2.4rem] sm:text-5xl xl:text-[5.5rem] font-black text-[#202F36] leading-[0.95] tracking-tight mb-6"
           >
             Qualidade,<br />
             carinho e preço<br />
-            <span className="text-emerald-600">que cabem</span><br />
+            <span className="text-[#FD0100]">que cabem</span><br />
             no bolso.
           </motion.h1>
 
           <motion.p
             initial={fu}
             animate={ft(0.2)}
-            className="text-slate-500 text-lg font-normal leading-[1.75] mb-8 max-w-md"
+            className="text-slate-500 text-base sm:text-lg font-medium leading-relaxed mb-8 max-w-md"
           >
-            No Cevan Supermercados, você é sempre bem-vindo. Presentes no seu dia a dia com produtos frescos, atendimento feito com carinho e delivery rápido.
+            No Cevan Supermercados, você é sempre bem-vindo. Presentes no seu dia a dia com produtos frescos, atendimento humano e delivery rápido.
           </motion.p>
 
-          <motion.div initial={fu} animate={ft(0.26)} className="flex flex-col sm:flex-row gap-3 mb-8">
+          <motion.div initial={fu} animate={ft(0.26)} className="flex flex-col gap-3 mb-8">
             <a
-              href={units[0].whatsapp}
+              href={ONLINE_SHOP_URL}
               target="_blank"
               rel="noreferrer"
-              className="group inline-flex items-center justify-center gap-2.5 h-13 px-7 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[12px] uppercase tracking-widest transition-all hover:-translate-y-0.5 shadow-xl shadow-emerald-200"
+              className="group inline-flex items-center justify-center gap-3 h-14 sm:h-16 w-full px-8 rounded-2xl bg-[#1995E8] hover:bg-[#1581c9] active:scale-[0.98] text-white font-black text-[12px] sm:text-[13px] uppercase tracking-widest transition-all shadow-2xl shadow-blue-200"
             >
-              <Phone className="h-4 w-4" />
-              WhatsApp Buriticupu
-              <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+              <ShoppingCart className="h-5 w-5" />
+              COMPRE ONLINE AGORA
+              <ArrowUpRight className="h-5 w-5 opacity-50 group-hover:opacity-100 transition-all" />
             </a>
-            <a
-              href={units[1].whatsapp}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 h-13 px-7 rounded-2xl border-2 border-emerald-200 text-emerald-700 hover:bg-emerald-50 font-black text-[12px] uppercase tracking-widest transition-all"
-            >
-              <Phone className="h-4 w-4" />
-              WhatsApp Santa Luzia
-            </a>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <a
+                href={units[0].whatsapp}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center gap-3 h-13 px-6 rounded-2xl border-2 border-slate-200 text-[#202F36] hover:border-[#FD0100] hover:text-[#FD0100] active:scale-[0.98] font-black text-[11px] uppercase tracking-widest transition-all py-4"
+              >
+                <Phone className="h-4 w-4" />
+                Buriticupu
+              </a>
+              <a
+                href={units[1].whatsapp}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center gap-3 h-13 px-6 rounded-2xl border-2 border-slate-200 text-[#202F36] hover:border-[#FD0100] hover:text-[#FD0100] active:scale-[0.98] font-black text-[11px] uppercase tracking-widest transition-all py-4"
+              >
+                <Phone className="h-4 w-4" />
+                Santa Luzia
+              </a>
+            </div>
           </motion.div>
 
           <motion.div initial={fu} animate={ft(0.32)} className="flex flex-wrap gap-2">
-            {["Buriticupu/MA", "Santa Luzia/MA", "Delivery", "Abre às 7h30", "Compra Online"].map((tag) => (
+            {["Buriticupu/MA", "Santa Luzia/MA", "Delivery", "Abre às 7h30"].map((tag) => (
               <span
                 key={tag}
-                className="text-[11px] font-bold text-slate-400 border border-slate-200 rounded-full px-4 py-1.5 hover:border-emerald-300 hover:text-emerald-700 transition-colors cursor-default"
+                className="text-[10px] font-black text-slate-400 border border-slate-100 rounded-full px-4 py-2 hover:border-[#1995E8]/30 hover:text-[#1995E8] transition-colors cursor-default"
               >
                 {tag}
               </span>
@@ -238,91 +190,82 @@ export default function SupermercadoPage() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════
-          02. STATS BAR
-      ══════════════════════════════════════════ */}
-      <section className="bg-[#f0faf5] py-16 border-y border-emerald-100 relative overflow-hidden">
+      {/* ── 02. STATS BAR ── */}
+      <section className="bg-[#1995E8]/5 py-12 sm:py-20 border-y border-slate-100 relative overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-          <span className="text-[16vw] font-black text-emerald-600/[0.04] uppercase tracking-tighter whitespace-nowrap">CEVAN</span>
+          <span className="text-[15vw] font-black text-[#202F36]/[0.03] uppercase tracking-tighter whitespace-nowrap">CEVAN</span>
         </div>
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 divide-y-2 lg:divide-y-0 lg:divide-x divide-emerald-100">
+        <div className="max-w-7xl mx-auto px-5 relative z-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-0 lg:divide-x divide-slate-100">
             {[
-              { value: "2", label: "Unidades no Maranhão", icon: MapPin },
+              { value: "2", label: "Unidades", icon: MapPin },
               { value: "15+", label: "Anos de Tradição", icon: Star },
               { value: "7h30", label: "Abre Todo Dia", icon: Clock },
-              { value: "100%", label: "Qualidade Garantida", icon: BadgeCheck },
+              { value: "100%", label: "Qualidade", icon: BadgeCheck },
             ].map((s, i) => (
               <motion.div
                 key={s.label}
                 initial={fu}
                 whileInView={ft(i * 0.08)}
                 viewport={VIEW}
-                className="flex flex-col items-center text-center px-6 py-4"
+                className="flex flex-col items-center text-center px-4 sm:px-8"
               >
-                <s.icon className="h-6 w-6 text-emerald-500 mb-3 opacity-70" />
-                <span className="text-4xl lg:text-5xl font-black text-[#0B1222] tracking-tighter leading-none mb-2">
+                <s.icon className="h-6 w-6 sm:h-7 sm:w-7 text-[#1995E8] mb-3 sm:mb-4 opacity-70" />
+                <span className="text-4xl sm:text-5xl font-black text-[#202F36] tracking-tighter leading-none mb-2 sm:mb-3">
                   {s.value}
                 </span>
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{s.label}</span>
+                <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest">{s.label}</span>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════
-          03. DIFERENCIAIS — editorial rows
-      ══════════════════════════════════════════ */}
-      <section className="py-24 lg:py-32">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-            {/* Sticky label */}
-            <motion.div initial={fu} whileInView={ft(0)} viewport={VIEW} className="lg:col-span-3">
-              <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400 mb-3">Nossos Pilares</p>
-              <h2 className="text-2xl font-black text-[#0B1222] tracking-tight leading-snug">
-                Por que<br />escolher o<br />Cevan?
+      {/* ── 03. DIFERENCIAIS ── */}
+      <section className="py-14 sm:py-24 lg:py-32">
+        <div className="max-w-7xl mx-auto px-5 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+            <motion.div initial={fu} whileInView={ft(0)} viewport={VIEW} className="lg:col-span-4">
+              <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#1995E8] mb-4">NOSSOS PILARES</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#202F36] tracking-tight leading-[1.1]">
+                Por que escolher<br />o Cevan?
               </h2>
+              <p className="text-slate-500 mt-5 text-base sm:text-lg font-medium leading-relaxed">
+                Nossa história é construída sobre confiança e a satisfação de milhares de famílias maranhenses.
+              </p>
             </motion.div>
 
-            {/* Rows */}
-            <div className="lg:col-span-9">
+            <div className="lg:col-span-8">
               {diferenciais.map((d, i) => (
                 <motion.div
                   key={d.title}
                   initial={fu}
                   whileInView={ft(i * 0.1)}
                   viewport={VIEW}
-                  className="group border-t border-slate-100 py-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 hover:bg-slate-50/60 -mx-6 lg:-mx-12 px-6 lg:px-12 transition-colors duration-300"
+                  className="group border-t border-slate-100 py-8 sm:py-12 grid grid-cols-1 md:grid-cols-12 gap-6 hover:bg-slate-50/80 -mx-5 lg:-mx-12 px-5 lg:px-12 transition-colors duration-300"
                 >
-                  {/* Icon + num */}
-                  <div className="lg:col-span-1 flex items-start gap-3 lg:flex-col lg:gap-2">
-                    <div className="h-10 w-10 rounded-xl bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center transition-colors shrink-0">
-                      <d.icon className="h-5 w-5 text-emerald-600" />
+                  <div className="md:col-span-1 flex items-start">
+                    <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-2xl bg-[#1995E8]/10 group-hover:bg-[#1995E8] flex items-center justify-center transition-all duration-300">
+                      <d.icon className="h-5 w-5 sm:h-6 sm:w-6 text-[#1995E8] group-hover:text-white transition-colors" />
                     </div>
-                    <span className="text-[11px] font-black text-slate-200 group-hover:text-emerald-400 transition-colors hidden lg:block mt-1">
-                      0{i + 1}
-                    </span>
                   </div>
 
-                  {/* Title + desc */}
-                  <div className="lg:col-span-7">
-                    <h3 className="text-xl font-black text-[#0B1222] mb-3 group-hover:text-emerald-700 transition-colors">
+                  <div className="md:col-span-7">
+                    <h3 className="text-xl sm:text-2xl font-black text-[#202F36] mb-3 group-hover:text-[#1995E8] transition-colors">
                       {d.title}
                     </h3>
-                    <p className="text-slate-500 font-normal leading-relaxed text-[15px]">{d.desc}</p>
+                    <p className="text-slate-500 font-medium leading-relaxed text-sm sm:text-base">{d.desc}</p>
                   </div>
 
-                  {/* Stat */}
-                  <div className="lg:col-span-4 flex flex-row lg:flex-col items-center lg:items-end justify-start lg:justify-center gap-3">
+                  <div className="md:col-span-4 flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4">
                     <div className="text-right">
-                      <p className="text-3xl lg:text-4xl font-black text-[#0B1222] tracking-tighter leading-none group-hover:text-emerald-600 transition-colors">
+                      <p className="text-3xl sm:text-4xl font-black text-[#202F36] tracking-tighter leading-none group-hover:text-[#FD0100] transition-colors">
                         {d.stat}
                       </p>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">{d.statLabel}</p>
+                      <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-1">{d.statLabel}</p>
                     </div>
-                    <div className="h-9 w-9 rounded-full border border-slate-200 group-hover:border-emerald-400 group-hover:bg-emerald-400 flex items-center justify-center transition-all duration-200 shrink-0">
-                      <ArrowUpRight className="h-4 w-4 text-slate-300 group-hover:text-white transition-colors" />
+                    <div className="h-10 w-10 rounded-full border border-slate-200 group-hover:border-[#FD0100] group-hover:bg-[#FD0100] flex items-center justify-center transition-all duration-300 shrink-0">
+                      <ArrowUpRight className="h-5 w-5 text-slate-300 group-hover:text-white" />
                     </div>
                   </div>
                 </motion.div>
@@ -333,51 +276,48 @@ export default function SupermercadoPage() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════
-          04. DEPARTAMENTOS — bento grid
-      ══════════════════════════════════════════ */}
-      <section className="py-24 lg:py-32 bg-[#f8faff]">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div initial={fu} whileInView={ft(0)} viewport={VIEW} className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-16">
-            <div>
-              <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-emerald-600 mb-4">
-                <span className="h-px w-8 bg-emerald-600" />
-                O que você encontra aqui
+      {/* ── 04. DEPARTAMENTOS ── */}
+      <section className="py-14 sm:py-24 lg:py-32 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-5">
+          <motion.div initial={fu} whileInView={ft(0)} viewport={VIEW} className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12 sm:mb-20">
+            <div className="max-w-2xl">
+              <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-[#FD0100] mb-4">
+                <span className="h-px w-8 bg-[#FD0100]" />
+                O QUE VOCÊ ENCONTRA AQUI
               </span>
-              <h2 className="text-4xl lg:text-5xl font-black text-[#0B1222] tracking-tighter">
+              <h2 className="text-3xl sm:text-4xl lg:text-6xl font-black text-[#202F36] tracking-tighter">
                 Nossos<br />
-                <span className="text-emerald-600">Departamentos</span>
+                <span className="text-[#1995E8]">Departamentos</span>
               </h2>
             </div>
-            <p className="text-slate-500 font-medium max-w-sm text-[15px] leading-relaxed lg:text-right">
-              Tudo que sua família precisa no mesmo lugar, com qualidade, variedade e preço justo.
+            <p className="text-slate-500 font-semibold max-w-sm text-sm sm:text-base leading-relaxed lg:text-right">
+              Tudo que sua família precisa no mesmo lugar, com frescor e preço justo.
             </p>
           </motion.div>
 
-          {/* Bento grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {depts.map((d, i) => (
               <motion.div
                 key={d.title}
                 initial={fu}
                 whileInView={ft(i * 0.08)}
                 viewport={VIEW}
-                className="group bg-white border border-slate-100 rounded-[1.75rem] p-7 hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-50 transition-all duration-300 cursor-default"
+                className="group bg-white border border-slate-100 rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 hover:border-[#1995E8]/30 hover:shadow-2xl active:scale-[0.99] transition-all duration-500"
               >
-                <div className="flex items-start justify-between mb-6">
-                  <div className="h-12 w-12 rounded-2xl bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center transition-colors">
-                    <d.icon className="h-6 w-6 text-emerald-600" />
+                <div className="flex items-start justify-between mb-6 sm:mb-8">
+                  <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-[#1995E8]/5 group-hover:bg-[#1995E8] flex items-center justify-center transition-all duration-300">
+                    <d.icon className="h-6 w-6 sm:h-7 sm:w-7 text-[#1995E8] group-hover:text-white" />
                   </div>
-                  <span className="text-[9px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 group-hover:bg-emerald-100 rounded-full px-3 py-1.5 transition-colors">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-[#1995E8] bg-[#1995E8]/5 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
                     {d.tag}
                   </span>
                 </div>
                 <div>
-                  <div className="flex items-baseline gap-3 mb-2">
-                    <span className="text-[10px] font-black text-slate-200 group-hover:text-emerald-300 transition-colors">{d.num}</span>
-                    <h3 className="text-lg font-black text-[#0B1222]">{d.title}</h3>
+                  <div className="flex items-baseline gap-2 sm:gap-3 mb-3">
+                    <span className="text-sm font-black text-slate-200">{d.num}</span>
+                    <h3 className="text-xl sm:text-2xl font-black text-[#202F36]">{d.title}</h3>
                   </div>
-                  <p className="text-slate-500 text-sm font-normal leading-relaxed">{d.desc}</p>
+                  <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed">{d.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -385,84 +325,65 @@ export default function SupermercadoPage() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════
-          05. SOBRE — image + texto com quote
-      ══════════════════════════════════════════ */}
-      <section className="py-24 lg:py-32 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+      {/* ── 05. SOBRE ── */}
+      <section className="py-14 sm:py-24 lg:py-40 bg-white">
+        <div className="max-w-7xl mx-auto px-5 grid grid-cols-1 lg:grid-cols-2 gap-14 sm:gap-24 items-center">
 
-          {/* Image */}
           <motion.div initial={fu} whileInView={ft(0)} viewport={VIEW} className="relative">
-            <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/5]">
+            <div className="relative rounded-2xl sm:rounded-[3rem] overflow-hidden aspect-[4/3] sm:aspect-[4/5] shadow-2xl">
               <Image src="/cevan-supermarket.png" alt="Cevan Supermercado" fill className="object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1222]/50 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#202F36]/80 via-transparent to-transparent" />
             </div>
-            {/* Ghost number */}
-            <div className="absolute -right-4 -top-4 text-[130px] lg:text-[160px] font-black leading-none text-emerald-600/[0.06] select-none pointer-events-none tracking-tighter">
-              15
-            </div>
-            {/* Floating card */}
+            <div className="hidden sm:block absolute -right-8 -top-8 text-[150px] font-black text-[#202F36]/[0.05] select-none pointer-events-none">15</div>
             <motion.div
-              initial={{ opacity: 0, scale: 0.85 }}
+              initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={VIEW}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="absolute bottom-8 -right-4 lg:-right-8 bg-emerald-600 text-white rounded-2xl p-6 shadow-2xl shadow-emerald-900/30 max-w-[200px]"
+              className="absolute bottom-4 right-2 sm:bottom-6 sm:-right-4 lg:-right-12 bg-[#FD0100] text-white rounded-2xl p-4 sm:p-8 shadow-2xl max-w-[160px] sm:max-w-[240px]"
             >
-              <Users className="h-6 w-6 text-emerald-200 mb-3" />
-              <p className="text-2xl font-black leading-none mb-1">Milhares</p>
-              <p className="text-emerald-200 text-xs font-bold uppercase tracking-wider">de famílias atendidas</p>
+              <Users className="h-7 w-7 sm:h-8 sm:w-8 text-white/40 mb-3" />
+              <p className="text-2xl sm:text-3xl font-black leading-none mb-2">Milhares</p>
+              <p className="text-white/60 text-[10px] sm:text-xs font-black uppercase tracking-widest">de famílias atendidas</p>
             </motion.div>
           </motion.div>
 
-          {/* Content */}
-          <motion.div initial={fu} whileInView={ft(0.15)} viewport={VIEW} className="space-y-8">
+          <motion.div initial={fu} whileInView={ft(0.15)} viewport={VIEW} className="space-y-8 sm:space-y-12">
             <div>
-              <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-emerald-600 mb-5">
-                <span className="h-px w-6 bg-emerald-600" />
-                Sobre Nós
+              <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-[#1995E8] mb-5">
+                <span className="h-px w-8 bg-[#1995E8]" />
+                HISTÓRIA CEVAN
               </span>
-              <h2 className="text-4xl lg:text-5xl font-black text-[#0B1222] leading-[1.05] tracking-tighter">
+              <h2 className="text-3xl sm:text-4xl lg:text-6xl font-black text-[#202F36] leading-[1] tracking-tighter">
                 Presentes no seu<br />
-                <span className="text-emerald-600">dia a dia</span>
+                <span className="text-[#FD0100]">dia a dia</span>
               </h2>
             </div>
 
-            {/* Pull quote */}
-            <blockquote className="relative pl-6 border-l-4 border-emerald-500">
-              <p className="text-slate-700 text-lg font-medium leading-relaxed italic">
-                "No Cevan Supermercados, você é sempre bem-vindo! Fazemos questão de estar presentes no seu dia a dia, oferecendo produtos de qualidade, atendimento feito com carinho e preços que cabem no seu bolso."
+            <blockquote className="relative pl-6 sm:pl-8 border-l-[6px] border-[#1995E8]">
+              <p className="text-slate-600 text-base sm:text-xl font-medium leading-relaxed italic">
+                "No Cevan Supermercados, você é sempre bem-vindo! Fazemos questão de oferecer produtos de qualidade e atendimento com carinho."
               </p>
             </blockquote>
 
-            {/* Trust items */}
-            <div className="space-y-4 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               {[
-                { icon: CheckCircle2, text: "Renovação diária dos produtos frescos" },
-                { icon: CheckCircle2, text: "Equipe treinada e atendimento humanizado" },
-                { icon: CheckCircle2, text: "Preços competitivos e promoções semanais" },
-                { icon: CheckCircle2, text: "Delivery rápido nas duas cidades" },
+                { icon: CheckCircle2, text: "Renovação diária" },
+                { icon: CheckCircle2, text: "Equipe dedicada" },
+                { icon: CheckCircle2, text: "Preços competitivos" },
+                { icon: CheckCircle2, text: "Delivery rápido" },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-3">
-                  <Icon className="h-5 w-5 text-emerald-500 shrink-0" />
-                  <span className="text-slate-700 font-semibold text-[15px]">{text}</span>
+                  <Icon className="h-5 w-5 text-[#FD0100] shrink-0" />
+                  <span className="text-[#202F36] font-black text-sm uppercase tracking-widest">{text}</span>
                 </div>
               ))}
             </div>
 
-            <div className="flex flex-wrap gap-3 pt-2">
-              <a
-                href={units[0].whatsapp}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 h-12 px-7 rounded-2xl bg-[#0B1222] hover:bg-emerald-600 text-white font-black text-[12px] uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5 shadow-lg shadow-slate-900/20"
-              >
-                Falar no WhatsApp <ArrowRight className="h-4 w-4" />
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-2">
+              <a href={units[0].whatsapp} className="inline-flex items-center justify-center gap-3 h-14 px-8 rounded-2xl bg-[#202F36] hover:bg-[#1995E8] active:scale-[0.98] text-white font-black text-[12px] uppercase tracking-widest transition-all">
+                Falar Conosco <ArrowRight className="h-4 w-4" />
               </a>
-              <a
-                href="#lojas"
-                className="inline-flex items-center gap-2 h-12 px-7 rounded-2xl border border-slate-200 text-slate-600 hover:border-emerald-300 hover:text-emerald-700 font-bold text-[12px] uppercase tracking-widest transition-all"
-              >
+              <a href="#lojas" className="inline-flex items-center justify-center gap-3 h-14 px-8 rounded-2xl border-2 border-slate-200 text-[#202F36] hover:border-[#1995E8] hover:text-[#1995E8] active:scale-[0.98] font-black text-[12px] uppercase tracking-widest transition-all">
                 Ver Lojas <MapPin className="h-4 w-4" />
               </a>
             </div>
@@ -470,95 +391,56 @@ export default function SupermercadoPage() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════
-          06. COMO COMPRAR — process
-      ══════════════════════════════════════════ */}
-      <section className="py-24 lg:py-28 bg-[#0B1222]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <motion.div initial={fu} whileInView={ft(0)} viewport={VIEW} className="flex items-end justify-between mb-16 gap-8">
-            <div>
-              <p className="text-[11px] font-medium uppercase tracking-widest text-slate-600 mb-3">Delivery</p>
-              <h2 className="text-3xl lg:text-4xl font-black text-white tracking-tight">
-                Como pedir pelo<br />WhatsApp
-              </h2>
+      {/* ── 06. COMO COMPRAR ── */}
+      <section className="py-14 sm:py-24 bg-[#202F36] text-white">
+        <div className="max-w-7xl mx-auto px-5 lg:px-12">
+          <motion.div initial={fu} whileInView={ft(0)} viewport={VIEW} className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 sm:mb-20 gap-6">
+            <div className="space-y-3">
+              <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#1995E8]">PLATAFORMA DIGITAL</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter">Como comprar pelo Compre Sem Fila</h2>
             </div>
-            <div className="flex gap-3 shrink-0">
-              <a
-                href={units[0].whatsapp}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[11px] uppercase tracking-wider transition-all"
-              >
-                Buriticupu
-              </a>
-              <a
-                href={units[1].whatsapp}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 h-10 px-5 rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/30 font-medium text-[11px] uppercase tracking-wider transition-all"
-              >
-                Santa Luzia
-              </a>
-            </div>
+            <a href={ONLINE_SHOP_URL} target="_blank" rel="noreferrer"
+              className="h-12 px-8 rounded-full bg-[#1995E8] text-white font-black text-[11px] uppercase tracking-widest inline-flex items-center justify-center active:scale-[0.98] shadow-lg shadow-blue-900/20 w-full sm:w-auto">
+              Acessar Loja Online
+            </a>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/[0.05] rounded-2xl overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 rounded-2xl sm:rounded-3xl overflow-hidden">
             {[
-              { n: "01", icon: Phone, title: "Chame no WhatsApp", desc: "Envie uma mensagem para a unidade mais próxima de você e diga o que precisa." },
-              { n: "02", icon: Package, title: "Faça seu Pedido", desc: "Nossa equipe monta a lista completa com os produtos disponíveis no dia." },
-              { n: "03", icon: CheckCircle2, title: "Confirme o Valor", desc: "Receba a confirmação com o total, formas de pagamento e prazo de entrega." },
-              { n: "04", icon: Truck, title: "Receba em Casa", desc: "Seu pedido chega fresquinho, dentro do prazo, direto na sua porta." },
+              { n: "01", icon: ShoppingCart, title: "Acesse a Loja", desc: "Entre no site ou app oficial do Compre Sem Fila." },
+              { n: "02", icon: Package, title: "Monte seu Carrinho", desc: "Escolha seus produtos favoritos entre milhares de itens." },
+              { n: "03", icon: CheckCircle2, title: "Pagamento Seguro", desc: "Finalize sua compra com total segurança e agilidade." },
+              { n: "04", icon: Truck, title: "Receba em Casa", desc: "Nossa equipe entrega tudo fresquinho na sua porta." },
             ].map((s, i) => (
               <motion.div
                 key={s.n}
                 initial={fu}
                 whileInView={ft(i * 0.08)}
                 viewport={VIEW}
-                className="bg-[#0B1222] hover:bg-white/[0.04] transition-colors p-8 flex flex-col gap-5"
+                className="bg-[#202F36] hover:bg-white/[0.05] p-6 sm:p-10 flex flex-col gap-6 sm:gap-8 transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <div className="h-10 w-10 rounded-xl bg-emerald-500/15 flex items-center justify-center">
-                    <s.icon className="h-5 w-5 text-emerald-400" />
+                  <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-2xl bg-[#1995E8]/20 flex items-center justify-center">
+                    <s.icon className="h-5 w-5 sm:h-6 sm:w-6 text-[#1995E8]" />
                   </div>
-                  <span className="text-lg font-black text-emerald-600/40">{s.n}</span>
+                  <span className="text-xl sm:text-2xl font-black text-white/10">{s.n}</span>
                 </div>
                 <div>
-                  <h3 className="text-white font-black text-base mb-2">{s.title}</h3>
-                  <p className="text-slate-500 text-sm font-normal leading-relaxed">{s.desc}</p>
+                  <h3 className="text-lg sm:text-xl font-black mb-2 sm:mb-3">{s.title}</h3>
+                  <p className="text-slate-400 text-sm font-medium leading-relaxed">{s.desc}</p>
                 </div>
               </motion.div>
             ))}
           </div>
-
-          {/* Trust strip */}
-          <motion.div initial={fu} whileInView={ft(0.2)} viewport={VIEW} className="mt-8 flex flex-wrap gap-6 lg:gap-10 items-center">
-            {[
-              { icon: BadgeCheck, text: "Produtos frescos garantidos" },
-              { icon: Clock, text: "Entrega no prazo combinado" },
-              { icon: Heart, text: "Atendimento com carinho" },
-            ].map((t) => (
-              <div key={t.text} className="flex items-center gap-2.5">
-                <t.icon className="h-4 w-4 text-slate-600 shrink-0" />
-                <span className="text-slate-600 font-medium text-sm">{t.text}</span>
-              </div>
-            ))}
-          </motion.div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════
-          07. LOJAS & HORÁRIOS
-      ══════════════════════════════════════════ */}
-      <section id="lojas" className="py-24 lg:py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <motion.div initial={fu} whileInView={ft(0)} viewport={VIEW} className="mb-16">
-            <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-emerald-600 mb-4">
-              <span className="h-px w-8 bg-emerald-600" />
-              Onde estamos
-            </span>
-            <h2 className="text-4xl lg:text-5xl font-black text-[#0B1222] tracking-tighter">
-              Nossas <span className="text-emerald-600">2 Unidades</span>
-            </h2>
+      {/* ── 07. LOJAS ── */}
+      <section id="lojas" className="py-14 sm:py-24 lg:py-32 bg-white">
+        <div className="max-w-7xl mx-auto px-5">
+          <motion.div initial={fu} whileInView={ft(0)} viewport={VIEW} className="mb-12 sm:mb-20 text-center">
+            <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-[#FD0100] mb-4">NOSSAS UNIDADES</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-6xl font-black text-[#202F36] tracking-tighter">Onde encontrar o Cevan</h2>
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -566,46 +448,36 @@ export default function SupermercadoPage() {
               <motion.div
                 key={unit.name}
                 initial={fu}
-                whileInView={ft(i * 0.12)}
+                whileInView={ft(i * 0.1)}
                 viewport={VIEW}
-                className="group border border-slate-100 rounded-[2rem] p-8 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-50 transition-all duration-300"
+                className="group border border-slate-100 rounded-2xl sm:rounded-[2.5rem] p-6 sm:p-10 hover:border-[#1995E8]/30 hover:shadow-2xl transition-all duration-500"
               >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-8">
-                  <div>
-                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Unidade {unit.num}</span>
-                    <h3 className="text-3xl font-black text-[#0B1222] mt-1">{unit.name}</h3>
-                    <div className="flex items-center gap-2 mt-2">
-                      <MapPin className="h-4 w-4 text-emerald-500 shrink-0" />
-                      <span className="text-slate-500 font-medium text-sm">{unit.address}</span>
+                <div className="flex flex-col sm:flex-row justify-between gap-6 mb-8">
+                  <div className="space-y-3">
+                    <span className="text-[10px] font-black text-[#1995E8] uppercase tracking-widest">Unidade {unit.num}</span>
+                    <h3 className="text-3xl sm:text-4xl font-black text-[#202F36]">{unit.name}</h3>
+                    <div className="flex items-center gap-3">
+                      <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-[#FD0100] shrink-0" />
+                      <span className="text-slate-500 font-semibold text-sm sm:text-base">{unit.address}</span>
                     </div>
                   </div>
-                  <div className="h-14 w-14 rounded-2xl bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center transition-colors shrink-0">
-                    <ShoppingCart className="h-7 w-7 text-emerald-600" />
+                  <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl sm:rounded-3xl bg-[#202F36]/5 flex items-center justify-center text-[#202F36] group-hover:bg-[#202F36] group-hover:text-white transition-all duration-500 shrink-0">
+                    <ShoppingCart className="h-8 w-8 sm:h-10 sm:w-10" />
                   </div>
                 </div>
 
-                {/* Divider */}
-                <div className="h-px bg-slate-100 mb-7" />
+                <div className="h-px bg-slate-50 mb-7" />
 
-                {/* Horários */}
                 <div className="mb-8">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Horário de Funcionamento</p>
-                  <div className="space-y-0">
+                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-5">Horário de Funcionamento</p>
+                  <div className="space-y-1">
                     {unit.hours.map((h) => (
-                      <div
-                        key={h.day}
-                        className="flex items-center justify-between py-3 border-b border-slate-50 last:border-0"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <Clock className="h-3.5 w-3.5 text-slate-300 shrink-0" />
-                          <span className="text-slate-600 font-semibold text-sm">{h.day}</span>
-                        </div>
-                        <span className={`font-black text-sm px-3 py-1 rounded-lg ${
-                          h.time === "Fechado"
-                            ? "text-rose-500 bg-rose-50"
-                            : "text-emerald-700 bg-emerald-50"
-                        }`}>
+                      <div key={h.day} className="flex justify-between items-center py-3 border-b border-slate-50 last:border-0">
+                        <span className="text-[#202F36] font-black text-xs sm:text-sm uppercase tracking-widest flex items-center gap-2 sm:gap-3">
+                          <Clock className="h-4 w-4 text-slate-200 shrink-0" />
+                          {h.day}
+                        </span>
+                        <span className={`text-xs sm:text-sm font-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl ${h.time === "Fechado" ? "bg-red-50 text-[#FD0100]" : "bg-[#1995E8]/10 text-[#1995E8]"}`}>
                           {h.time}
                         </span>
                       </div>
@@ -613,18 +485,9 @@ export default function SupermercadoPage() {
                   </div>
                 </div>
 
-                {/* CTA */}
-                <a
-                  href={unit.whatsapp}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group/btn inline-flex items-center justify-between w-full h-13 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[12px] uppercase tracking-widest transition-all"
-                >
-                  <span className="flex items-center gap-2">
-                    <Phone className="h-4 w-4" />
-                    WhatsApp {unit.name}
-                  </span>
-                  <ArrowRight className="h-4 w-4 -translate-x-1 group-hover/btn:translate-x-0 transition-transform" />
+                <a href={unit.whatsapp} className="flex items-center justify-between w-full h-14 sm:h-16 px-6 sm:px-8 rounded-2xl bg-[#FD0100] text-white font-black text-xs uppercase tracking-widest active:scale-[0.98] transition-all hover:scale-[1.02]">
+                  <span>WhatsApp {unit.name}</span>
+                  <ArrowRight className="h-5 w-5" />
                 </a>
               </motion.div>
             ))}
@@ -632,71 +495,29 @@ export default function SupermercadoPage() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════
-          08. CTA FINAL — editorial
-      ══════════════════════════════════════════ */}
-      <section className="py-28 lg:py-36 bg-[#f0faf5] border-t border-emerald-100 overflow-hidden relative">
-        {/* Ghost text */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-          <span className="text-[14vw] font-black text-emerald-600/[0.05] tracking-tighter leading-none whitespace-nowrap">
-            CEVAN
-          </span>
+      {/* ── 08. CTA FINAL ── */}
+      <section className="py-20 sm:py-32 bg-slate-50 relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] select-none">
+          <span className="text-[18vw] font-black text-[#202F36]">CEVAN</span>
         </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
-          <motion.div initial={fu} whileInView={ft(0)} viewport={VIEW} className="lg:col-span-7">
-            <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-emerald-600 mb-6">
-              <span className="h-px w-6 bg-emerald-600" />
-              Venha nos visitar
-            </span>
-            <h2 className="text-5xl lg:text-7xl font-black text-[#0B1222] leading-[0.95] tracking-[-0.03em]">
-              Você é sempre<br />
-              <span className="text-emerald-600">bem-vindo.</span>
-            </h2>
-            <p className="text-slate-500 text-xl font-normal leading-relaxed mt-6 max-w-lg">
-              Duas unidades no Maranhão esperando por você. Venha pessoalmente ou peça pelo WhatsApp — do jeito que for melhor para você.
-            </p>
-          </motion.div>
-
-          <motion.div initial={fu} whileInView={ft(0.12)} viewport={VIEW} className="lg:col-span-5 flex flex-col gap-4">
-            <a
-              href="#lojas"
-              className="group inline-flex items-center justify-between h-14 px-7 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[12px] uppercase tracking-widest transition-all hover:-translate-y-0.5 shadow-xl shadow-emerald-200"
-            >
-              <span className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                Ver Nossas Lojas
-              </span>
-              <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+        <div className="container mx-auto px-5 max-w-6xl relative z-10 text-center space-y-8 sm:space-y-12">
+          <h2 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#202F36] tracking-tighter leading-none">
+            Você é sempre <br />
+            <span className="text-[#FD0100]">bem-vindo.</span>
+          </h2>
+          <p className="text-slate-500 text-base sm:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
+            Duas unidades no Maranhão esperando por você. Qualidade que sua família merece, com o preço que você procura.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <a href={ONLINE_SHOP_URL} target="_blank" rel="noreferrer"
+              className="h-16 px-10 sm:px-12 rounded-2xl bg-[#1995E8] text-white font-black uppercase tracking-widest text-xs inline-flex items-center justify-center gap-4 hover:bg-[#1581c9] active:scale-[0.98] transition-all shadow-xl shadow-blue-200">
+              Compre Online <ShoppingCart className="h-5 w-5" />
             </a>
-            <div className="grid grid-cols-2 gap-3">
-              <a
-                href={units[0].whatsapp}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 h-13 rounded-2xl border-2 border-emerald-200 text-emerald-700 hover:bg-emerald-100 font-black text-[11px] uppercase tracking-wider transition-all"
-              >
-                <Phone className="h-3.5 w-3.5" />
-                Buriticupu
-              </a>
-              <a
-                href={units[1].whatsapp}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 h-13 rounded-2xl border-2 border-emerald-200 text-emerald-700 hover:bg-emerald-100 font-black text-[11px] uppercase tracking-wider transition-all"
-              >
-                <Phone className="h-3.5 w-3.5" />
-                Santa Luzia
-              </a>
-            </div>
-            <Link
-              href="/grupo-cevan"
-              className="inline-flex items-center gap-2 text-slate-400 hover:text-emerald-600 font-medium text-sm transition-colors"
-            >
-              <ChevronRight className="h-4 w-4" />
-              Conhecer o Grupo Cevan
-            </Link>
-          </motion.div>
+            <a href="#lojas"
+              className="h-16 px-10 sm:px-12 rounded-2xl bg-[#202F36] text-white font-black uppercase tracking-widest text-xs inline-flex items-center justify-center gap-4 hover:bg-[#1995E8] active:scale-[0.98] transition-all">
+              Ver Lojas <MapPin className="h-5 w-5" />
+            </a>
+          </div>
         </div>
       </section>
 

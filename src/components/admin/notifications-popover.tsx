@@ -17,6 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { getNotifications, markAsRead } from "@/actions/notifications";
+import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -47,10 +48,10 @@ export function NotificationsPopover() {
     <Popover>
       <PopoverTrigger
         render={
-          <Button variant="ghost" size="icon" className="relative h-11 w-11 rounded-xl bg-white shadow-sm border border-slate-100 group">
-            <Bell className="h-5 w-5 text-slate-400 group-hover:text-blue-600 transition-colors" />
+          <Button variant="ghost" size="icon" className="relative h-8 w-8 lg:h-10 lg:w-10 rounded-full hover:bg-slate-100 group shrink-0">
+            <Bell className="h-4 w-4 lg:h-5 lg:w-5 text-slate-500 group-hover:text-slate-900 transition-colors" />
             {unreadCount > 0 && (
-              <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white animate-pulse" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 lg:w-2.5 lg:h-2.5 bg-rose-500 rounded-full border-2 border-white animate-pulse" />
             )}
           </Button>
         }
@@ -122,7 +123,12 @@ export function NotificationsPopover() {
           )}
         </div>
         <div className="p-3 border-t border-slate-50 bg-slate-50/30 text-center">
-          <Button variant="ghost" className="w-full text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 h-8">
+          <Button
+            nativeButton={false}
+            render={<Link href="/admin/notifications" />}
+            variant="ghost"
+            className="w-full text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 h-8"
+          >
             Ver todas as atividades
           </Button>
         </div>

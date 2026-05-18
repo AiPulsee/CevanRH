@@ -23,6 +23,16 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Cevan Serviços",
   },
+  icons: {
+    apple: [
+      { url: "/cevanempresarial/icon-180.png", sizes: "180x180", type: "image/png" },
+    ],
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32", type: "image/png" },
+      { url: "/cevanempresarial/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/cevanempresarial/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "pt_BR",
@@ -75,6 +85,9 @@ const organizationJsonLd = {
   },
 };
 
+import { PwaRegistry } from "@/components/shared/pwa-registry";
+import { InstallPWAPrompt } from "@/components/shared/install-pwa-prompt";
+
 export default function RootLayout({
   children,
 }: {
@@ -87,6 +100,8 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
+        <PwaRegistry />
+        <InstallPWAPrompt />
         {children}
         <Toaster richColors position="top-right" />
       </body>

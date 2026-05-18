@@ -147,9 +147,9 @@ export function CreateJobModal({ companies }: { companies?: { id: string; name: 
         }
       />
 
-      <DialogContent className="sm:max-w-4xl w-[95vw] bg-white rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden flex flex-col h-[90vh] sm:max-h-[90vh]">
+      <DialogContent className="sm:max-w-4xl w-[calc(100%-1rem)] sm:w-[95vw] bg-white rounded-3xl sm:rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden flex flex-col h-[95vh] sm:h-[90vh]">
         {/* Header */}
-        <div className="bg-slate-900 p-8 text-white relative flex-shrink-0">
+        <div className="bg-slate-900 p-5 sm:p-8 text-white relative flex-shrink-0">
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-[80px]" />
           <DialogHeader className="relative z-10">
             <div className="flex items-center gap-4">
@@ -157,8 +157,8 @@ export function CreateJobModal({ companies }: { companies?: { id: string; name: 
                 <Briefcase className="h-7 w-7 text-blue-400" />
               </div>
               <div>
-                <DialogTitle className="text-2xl font-black text-white">Nova Oportunidade</DialogTitle>
-                <DialogDescription className="text-blue-100/70 font-medium mt-1">
+                <DialogTitle className="text-xl sm:text-2xl font-black text-white">Nova Oportunidade</DialogTitle>
+                <DialogDescription className="text-blue-100/70 font-medium mt-1 text-xs sm:text-sm">
                   Passo {step} de 2 —{" "}
                   {step === 1 ? "Detalhes Básicos" : "Descrição e Requisitos"}
                 </DialogDescription>
@@ -179,7 +179,7 @@ export function CreateJobModal({ companies }: { companies?: { id: string; name: 
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 overflow-y-auto p-5 sm:p-8 custom-scrollbar">
           {step === 1 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in duration-300">
               <div className="space-y-2 md:col-span-2">
@@ -401,7 +401,7 @@ export function CreateJobModal({ companies }: { companies?: { id: string; name: 
         </div>
 
         {/* Footer */}
-        <div className="p-6 sm:px-8 bg-white border-t border-slate-100 flex items-center justify-between flex-shrink-0">
+        <div className="p-4 sm:p-6 sm:px-8 bg-white border-t border-slate-100 flex items-center justify-between flex-shrink-0">
           {step > 1 ? (
             <Button
               variant="ghost"

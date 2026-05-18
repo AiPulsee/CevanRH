@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import Groq from "groq-sdk";
+import { requireAdminPermission } from "@/lib/permissions";
 
 export type GeneratedJob = {
   description: string;
@@ -18,9 +19,8 @@ export async function generateJobContent(
   contractType: string
 ): Promise<{ success: true; data: GeneratedJob } | { success: false; error: string }> {
   const session = await auth();
-  if (!session || (session.user as any)?.role !== "ADMIN") {
-    return { success: false, error: "Não autorizado." };
-  }
+  const permError = requireAdminPermission(session, "MANAGED");
+  if (permError) return { success: false, error: permError.error };
 
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {

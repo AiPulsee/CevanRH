@@ -7,6 +7,7 @@ import { Menu, X, ArrowRight, UserCircle, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { PublicFooter } from "@/components/public/footer";
+import { GrupoCevanFooter } from "@/components/public/grupo-cevan-footer";
 import { useState, useEffect } from "react";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -23,22 +24,23 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   useEffect(() => { setIsMenuOpen(false); }, [pathname]);
 
   const isGrupoCevan = pathname.startsWith("/grupo-cevan");
-  const hideFooter = pathname === "/grupo-cevan/financeira" || pathname === "/grupo-cevan/supermercado";
+  const hideFooter = pathname === "/grupo-cevan/financeira" || pathname === "/grupo-cevan/supermercado" || pathname === "/grupo-cevan/cevanpay";
 
   const defaultNavLinks = [
     { name: "Início", href: "/" },
     { name: "Vagas", href: "/jobs" },
     { name: "Para Empresas", href: "/servicos" },
-    { name: "Grupo Cevan", href: "/grupo-cevan" },
     { name: "Quem Somos", href: "/about" },
+    { name: "Grupo Cevan", href: "/grupo-cevan" },
   ];
 
   const grupoCevanNavLinks = [
     { name: "Início", href: "/grupo-cevan" },
     { name: "Sobre", href: "/grupo-cevan/sobre" },
     { name: "Financeira", href: "/grupo-cevan/financeira" },
+    { name: "CevanPay", href: "/grupo-cevan/cevanpay" },
+    { name: "Supermercados", href: "/grupo-cevan/supermercado" },
     { name: "Serviços Empresariais", href: "/" },
-    { name: "Supermercado", href: "/grupo-cevan/supermercado" },
   ];
 
   const navLinks = isGrupoCevan ? grupoCevanNavLinks : defaultNavLinks;
@@ -54,19 +56,40 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       )}>
 
         {/* Logo */}
-        <Link href={isGrupoCevan ? "/grupo-cevan" : "/"} className="flex-none flex items-center gap-3 group z-10">
-          <Image
-            src={isGrupoCevan ? "/logotipo-grupocevan.png" : "/logoprincipal.png"}
-            alt={isGrupoCevan ? "Grupo Cevan" : "Cevan"}
-            width={220}
-            height={64}
-            className={cn(
-              "w-auto object-contain transition-all duration-300",
-              scrolled ? "h-8" : "h-10 lg:h-12"
-            )}
-            priority
-          />
-        </Link>
+        {(() => {
+          let logoSrc = "/cevanempresarial/logocevanempresarial.png";
+          let logoAlt = "Cevan Serviços Empresariais";
+          if (pathname.startsWith("/grupo-cevan/cevanpay")) {
+            logoSrc = "/cevanpay/Logo - Cevanpay.png";
+            logoAlt = "CevanPay";
+          } else if (pathname.startsWith("/grupo-cevan/financeira")) {
+            logoSrc = "/cevanfinanceira/logo Cevan Financeira 2.png";
+            logoAlt = "Cevan Financeira";
+          } else if (pathname.startsWith("/grupo-cevan/supermercado")) {
+            logoSrc = "/cevansupermercado/Logo - Cevan Supermercado.png";
+            logoAlt = "Cevan Supermercados";
+          } else if (isGrupoCevan) {
+            logoSrc = "/logotipo-grupocevan.png";
+            logoAlt = "Grupo Cevan";
+          }
+          return (
+            <Link href={isGrupoCevan ? "/grupo-cevan" : "/"} className="flex-none flex items-center gap-3 group z-10">
+              <Image
+                src={logoSrc}
+                alt={logoAlt}
+                width={220}
+                height={64}
+                className={cn(
+                  "w-auto object-contain transition-all duration-300",
+                  isGrupoCevan
+                    ? (scrolled ? "h-6" : "h-7 lg:h-8")
+                    : (scrolled ? "h-8" : "h-10 lg:h-11")
+                )}
+                priority
+              />
+            </Link>
+          );
+        })()}
 
         {/* Desktop Nav Links — centered */}
         <div className="hidden lg:flex items-center gap-1 mx-auto z-10">
@@ -154,7 +177,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             >
               {/* Drawer header */}
               <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-                <Image src={isGrupoCevan ? "/logotipo-grupocevan.png" : "/logoprincipal.png"} alt={isGrupoCevan ? "Grupo Cevan" : "Cevan"} width={120} height={36} className="h-7 w-auto object-contain" />
+                <Image src={isGrupoCevan ? "/logotipo-grupocevan.png" : "/cevanempresarial/logocevanempresarial.png"} alt={isGrupoCevan ? "Grupo Cevan" : "Cevan Serviços Empresariais"} width={120} height={36} className="h-7 w-auto object-contain" />
                 <button
                   onClick={() => setIsMenuOpen(false)}
                   className="h-9 w-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors"
@@ -217,7 +240,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <main className="flex-1">
         {children}
       </main>
-      {!hideFooter && <PublicFooter />}
+      {!hideFooter && (isGrupoCevan ? <GrupoCevanFooter /> : <PublicFooter />)}
+
     </div>
   );
 }

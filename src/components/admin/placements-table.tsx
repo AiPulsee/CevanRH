@@ -20,7 +20,9 @@ import {
   Search,
   DollarSign,
   CalendarRange,
+  RefreshCw,
 } from "lucide-react";
+import Link from "next/link";
 import { confirmEffective, terminatePlacement } from "@/actions/placements";
 import { PaginationBar } from "@/components/ui/pagination-bar";
 import { toast } from "sonner";
@@ -40,6 +42,7 @@ type Placement = {
   candidate: { name: string; email: string };
   company: { name: string };
   jobTitle: string;
+  jobId: string;
   commission: {
     id: string;
     amount: number;
@@ -138,21 +141,10 @@ export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { 
       if (r.success) {
         setPlacements((prev) =>
           prev.map((p) =>
-            p.id === id
-              ? {
-                  ...p,
-                  status: "EFFECTIVE" as PlacementStatus,
-                  commission: {
-                    id: crypto.randomUUID(),
-                    amount: Math.round(p.monthlySalary * feePercentage),
-                    status: "PENDING" as CommissionStatus,
-                    invoiceNumber: null,
-                  },
-                }
-              : p
+            p.id === id ? { ...p, status: "EFFECTIVE" as PlacementStatus } : p
           )
         );
-        toast.success("Candidato efetivado! Comissão gerada em Finanças.");
+        toast.success("Candidato efetivado com sucesso!");
       } else {
         toast.error((r as any).error || "Erro ao efetivar candidato.");
       }
@@ -377,35 +369,23 @@ export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { 
                           <p className="font-black text-xs text-slate-900">
                             {fmt(p.commission.amount)}
                           </p>
-                          <p
-                            className={`text-[8px] font-black uppercase tracking-widest mt-0.5 ${
-                              p.commission.status === "PAID"
-                                ? "text-emerald-500"
-                                : p.commission.status === "PENDING"
-                                ? "text-amber-500"
-                                : p.commission.status === "INVOICED"
-                                ? "text-blue-500"
-                                : "text-slate-400"
-                            }`}
-                          >
-                            {p.commission.status === "PAID"
-                              ? "Pago"
-                              : p.commission.status === "PENDING"
-                              ? "Pendente"
-                              : p.commission.status === "INVOICED"
-                              ? "Faturado"
+                          <p className={`text-[8px] font-black uppercase tracking-widest mt-0.5 ${
+                            p.commission.status === "PAID" ? "text-emerald-500"
+                            : p.commission.status === "PENDING" ? "text-amber-500"
+                            : p.commission.status === "INVOICED" ? "text-blue-500"
+                            : "text-slate-400"
+                          }`}>
+                            {p.commission.status === "PAID" ? "Pago"
+                              : p.commission.status === "PENDING" ? "Pendente"
+                              : p.commission.status === "INVOICED" ? "Faturado"
                               : "Dispensado"}
                           </p>
                         </div>
                       ) : p.status === "TRIAL" ? (
-                        <div>
-                          <p className="font-bold text-[10px] text-slate-400">
-                            {fmt(Math.round(p.monthlySalary * feePercentage))}
-                          </p>
-                          <p className="text-[8px] font-bold text-slate-300 uppercase">
-                            Potencial
-                          </p>
-                        </div>
+                        // Replacement candidate — company already paid for the first one
+                        <span className="text-[9px] font-black text-violet-500 bg-violet-50 px-1.5 py-0.5 rounded-md uppercase tracking-wider">
+                          Reposição
+                        </span>
                       ) : (
                         <span className="text-[10px] font-bold text-slate-300">—</span>
                       )}
@@ -426,7 +406,7 @@ export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { 
                             </ConfirmAction>
                             <ConfirmAction
                               title="Encerrar Contratação?"
-                              description="O candidato será desligado e a alocação será encerrada."
+                              description="O candidato será desligado. Se não for efetivado, envie um candidato de reposição."
                               variant="danger"
                               actionText="Encerrar"
                               onConfirm={() => handleTerminate(p.id)}
@@ -436,6 +416,13 @@ export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { 
                               </Button>
                             </ConfirmAction>
                           </>
+                        )}
+                        {p.status === "TERMINATED" && (
+                          <Link href="/admin/managed">
+                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-violet-50 hover:text-violet-600" title="Enviar candidato de reposição">
+                              <RefreshCw className="h-4 w-4" />
+                            </Button>
+                          </Link>
                         )}
                         {p.commission && (p.commission.status === "PENDING" || p.commission.status === "INVOICED") && (
                           <CommissionModal commission={p.commission} candidateName={p.candidate.name} companyName={p.company.name} onUpdate={handleCommissionUpdate}>
@@ -487,7 +474,13 @@ export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { 
                     </div>
                     <div>
                       <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">Comissão</p>
-                      <p className="text-xs font-black text-blue-600">{fmt(p.commission?.amount || Math.round(p.monthlySalary * feePercentage))}</p>
+                      {p.commission ? (
+                        <p className="text-xs font-black text-blue-600">{fmt(p.commission.amount)}</p>
+                      ) : p.status === "TRIAL" ? (
+                        <span className="text-[9px] font-black text-violet-500 bg-violet-50 px-1.5 py-0.5 rounded-md uppercase tracking-wider">Reposição</span>
+                      ) : (
+                        <p className="text-xs font-bold text-slate-300">—</p>
+                      )}
                     </div>
                   </div>
 
@@ -509,7 +502,7 @@ export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { 
                   )}
 
                   <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 flex-wrap">
                       {p.status === "TRIAL" && (
                         <>
                           <ConfirmAction
@@ -524,7 +517,7 @@ export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { 
                           </ConfirmAction>
                           <ConfirmAction
                             title="Encerrar?"
-                            description="O candidato será desligado e a alocação será encerrada."
+                            description="O candidato será desligado. Se não for efetivado, envie um candidato de reposição."
                             variant="danger"
                             actionText="Encerrar"
                             onConfirm={() => handleTerminate(p.id)}
@@ -534,6 +527,14 @@ export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { 
                             </Button>
                           </ConfirmAction>
                         </>
+                      )}
+                      {p.status === "TERMINATED" && (
+                        <Link href="/admin/managed">
+                          <Button size="sm" variant="outline" className="rounded-lg h-8 text-[10px] font-black uppercase border-violet-200 text-violet-600 hover:bg-violet-50 gap-1.5">
+                            <RefreshCw className="h-3 w-3" />
+                            Enviar Reposição
+                          </Button>
+                        </Link>
                       )}
                       {p.commission && (p.commission.status === "PENDING" || p.commission.status === "INVOICED") && (
                         <CommissionModal commission={p.commission} candidateName={p.candidate.name} companyName={p.company.name} onUpdate={handleCommissionUpdate}>

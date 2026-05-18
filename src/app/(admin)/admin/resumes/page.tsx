@@ -43,7 +43,7 @@ export default async function ResumesPage({
     }),
   };
 
-  const [applications, totalApps, allForStats] = await Promise.all([
+  const [applications, totalApps, managedCount, selfServiceCount] = await Promise.all([
     prisma.application.findMany({
       where,
       include: {
@@ -55,9 +55,8 @@ export default async function ResumesPage({
       take: PAGE_SIZE,
     }),
     prisma.application.count({ where }),
-    prisma.application.findMany({
-      select: { job: { select: { type: true } } },
-    }),
+    prisma.application.count({ where: { job: { type: "MANAGED" } } }),
+    prisma.application.count({ where: { job: { type: "SELF_SERVICE" } } }),
   ]);
 
   const totalPages = Math.ceil(totalApps / PAGE_SIZE);
@@ -92,7 +91,7 @@ export default async function ResumesPage({
             } />
             <TooltipContent>Total de candidaturas recebidas na plataforma — cada candidatura inclui um currículo anexado</TooltipContent>
           </Tooltip>
-          <h3 className="text-2xl font-black mt-1 text-slate-900">{allForStats.length}</h3>
+          <h3 className="text-2xl font-black mt-1 text-slate-900">{managedCount + selfServiceCount}</h3>
         </Card>
         <Card className="p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
           <Tooltip>
@@ -102,7 +101,7 @@ export default async function ResumesPage({
             <TooltipContent>Currículos de vagas Curadoria — candidatos que passaram pela triagem especializada da equipe Cevan</TooltipContent>
           </Tooltip>
           <h3 className="text-2xl font-black mt-1 text-blue-600">
-            {allForStats.filter(a => a.job.type === "MANAGED").length}
+            {managedCount}
           </h3>
         </Card>
         <Card className="p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
@@ -113,7 +112,7 @@ export default async function ResumesPage({
             <TooltipContent>Currículos de vagas Self-Service — candidatos que se candidataram diretamente a vagas publicadas pelas empresas parceiras</TooltipContent>
           </Tooltip>
           <h3 className="text-2xl font-black mt-1 text-emerald-600">
-            {allForStats.filter(a => a.job.type === "SELF_SERVICE").length}
+            {selfServiceCount}
           </h3>
         </Card>
       </div>

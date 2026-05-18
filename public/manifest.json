@@ -1,21 +1,42 @@
 {
-  "name": "CevanRH Admin",
-  "short_name": "CevanRH",
-  "description": "Painel Administrativo da Cevan Serviços Empresariais",
-  "start_url": "/admin",
+  "name": "Cevan Serviços Empresariais",
+  "short_name": "Cevan",
+  "description": "Encontre vagas de emprego com curadoria especializada no Maranhão e no Brasil.",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0B1222",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
   "theme_color": "#2563EB",
+  "lang": "pt-BR",
+  "categories": ["business", "productivity"],
   "icons": [
     {
-      "src": "/iconcevan.png",
+      "src": "/cevanempresarial/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "/iconcevan.png",
+      "src": "/cevanempresarial/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/cevanempresarial/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver Vagas",
+      "short_name": "Vagas",
+      "description": "Veja as vagas disponíveis",
+      "url": "/jobs",
+      "icons": [{ "src": "/cevanempresarial/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

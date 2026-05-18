@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { JobType, JobStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { requireAdminPermission, ok, fail } from "@/lib/permissions";
 
 const createJobSchema = z.object({
   title: z.string().min(5, "Título muito curto"),
@@ -31,11 +32,16 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
   const user = session?.user as { role: string; companyId?: string } | null | undefined;
 
   if (!session || !user || (user.role !== "ADMIN" && user.role !== "EMPLOYER")) {
-    return { error: "Não autorizado." };
+    return fail("Não autorizado.");
+  }
+
+  if (user.role === "ADMIN") {
+    const permError = requireAdminPermission(session, "MANAGED");
+    if (permError) return permError;
   }
 
   if (user.role === "EMPLOYER" && !user.companyId) {
-    return { error: "Sua conta não está vinculada a nenhuma empresa." };
+    return fail("Sua conta não está vinculada a nenhuma empresa.");
   }
 
   const validatedFields = createJobSchema.safeParse({
@@ -54,22 +60,29 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
   });
 
   if (!validatedFields.success) {
-    return { error: "Dados inválidos. Verifique os campos." };
+    return fail("Dados inválidos. Verifique os campos.");
   }
 
-  const { title, description, location, isRemote, salaryRange, type, requirements, responsibilities, benefits, tips, contractType, experienceLevel } = validatedFields.data;
+  const {
+    title, description, location, isRemote, salaryRange, type,
+    requirements, responsibilities, benefits, tips, contractType, experienceLevel,
+  } = validatedFields.data;
 
-  const targetCompanyId = session.user.role === "ADMIN" 
-    ? (formData.get("companyId") as string || session.user.companyId)
-    : session.user.companyId;
+  const targetCompanyId =
+    user.role === "ADMIN"
+      ? (formData.get("companyId") as string || user.companyId)
+      : user.companyId;
 
   if (!targetCompanyId) {
-    return { error: "ID da empresa não fornecido ou não autorizado." };
+    return fail("ID da empresa não fornecido ou não autorizado.");
   }
 
-  const companyExists = await prisma.company.findUnique({ where: { id: targetCompanyId }, select: { id: true } });
+  const companyExists = await prisma.company.findUnique({
+    where: { id: targetCompanyId },
+    select: { id: true },
+  });
   if (!companyExists) {
-    return { error: "Empresa não encontrada." };
+    return fail("Empresa não encontrada.");
   }
 
   try {
@@ -77,19 +90,8 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
 
     await prisma.job.create({
       data: {
-        title,
-        slug,
-        description,
-        location,
-        isRemote,
-        salaryRange,
-        type,
-        requirements,
-        responsibilities,
-        benefits,
-        tips,
-        contractType,
-        experienceLevel,
+        title, slug, description, location, isRemote, salaryRange, type,
+        requirements, responsibilities, benefits, tips, contractType, experienceLevel,
         status: JobStatus.ACTIVE,
         companyId: targetCompanyId,
       },
@@ -100,10 +102,10 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
     revalidatePath("/admin/managed");
     revalidatePath("/dashboard/jobs");
 
-    return { success: true };
+    return ok();
   } catch (err) {
     console.error(err);
-    return { error: "Erro interno ao criar vaga." };
+    return fail("Erro interno ao criar vaga.");
   }
 }
 
@@ -123,32 +125,32 @@ export async function updateJob(
   }
 ) {
   const session = await auth();
-  const userRole = session?.user ? (session.user as { role: string }).role : null;
-  if (!session || userRole !== "ADMIN") return { error: "Não autorizado." };
+  const permError = requireAdminPermission(session, "MANAGED");
+  if (permError) return permError;
 
   try {
     await prisma.job.update({ where: { id: jobId }, data });
     revalidatePath("/admin/managed");
     revalidatePath("/admin");
-    return { success: true };
+    return ok();
   } catch (err) {
     console.error(err);
-    return { error: "Erro interno ao atualizar vaga." };
+    return fail("Erro interno ao atualizar vaga.");
   }
 }
 
 export async function deleteJob(jobId: string) {
   const session = await auth();
-  const userRole = session?.user ? (session.user as { role: string }).role : null;
-  if (!session || userRole !== "ADMIN") return { error: "Não autorizado." };
+  const permError = requireAdminPermission(session, "MANAGED");
+  if (permError) return permError;
 
   try {
     await prisma.job.delete({ where: { id: jobId } });
     revalidatePath("/admin/managed");
     revalidatePath("/admin");
-    return { success: true };
+    return ok();
   } catch (err) {
     console.error(err);
-    return { error: "Erro interno ao excluir vaga." };
+    return fail("Erro interno ao excluir vaga.");
   }
 }

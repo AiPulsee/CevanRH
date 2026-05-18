@@ -4,88 +4,75 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { CommissionStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { requireAdminPermission, ok, fail } from "@/lib/permissions";
+import { logAction } from "@/lib/audit";
 
-// --- Marcar comissão como faturada ---
 export async function markCommissionAsInvoiced(commissionId: string, invoiceNumber: string) {
   const session = await auth();
-  const userRole = session?.user ? (session.user as { role: string }).role : null;
-  if (!session || userRole !== "ADMIN") {
-    return { error: "Não autorizado." };
-  }
+  const permError = requireAdminPermission(session, "FINANCE");
+  if (permError) return permError;
 
   try {
     await prisma.commission.update({
       where: { id: commissionId },
-      data: {
-        status: CommissionStatus.INVOICED,
-        invoiceNumber,
-      },
+      data: { status: CommissionStatus.INVOICED, invoiceNumber },
     });
 
+    await logAction("COMMISSION_INVOICED", `Faturou comissão ${commissionId} (NF: ${invoiceNumber})`);
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");
-    return { success: true };
+    return ok();
   } catch (err) {
     console.error(err);
-    return { error: "Erro ao atualizar comissão." };
+    return fail("Erro ao atualizar comissão.");
   }
 }
 
-// --- Registrar pagamento ---
 export async function markCommissionAsPaid(commissionId: string) {
   const session = await auth();
-  const userRole = session?.user ? (session.user as { role: string }).role : null;
-  if (!session || userRole !== "ADMIN") {
-    return { error: "Não autorizado." };
-  }
+  const permError = requireAdminPermission(session, "FINANCE");
+  if (permError) return permError;
 
   try {
     await prisma.commission.update({
       where: { id: commissionId },
-      data: {
-        status: CommissionStatus.PAID,
-        paidAt: new Date(),
-      },
+      data: { status: CommissionStatus.PAID, paidAt: new Date() },
     });
 
+    await logAction("COMMISSION_PAID", `Registrou pagamento da comissão ${commissionId}`);
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");
-    return { success: true };
+    return ok();
   } catch (err) {
     console.error(err);
-    return { error: "Erro ao registrar pagamento." };
+    return fail("Erro ao registrar pagamento.");
   }
 }
 
-// --- Dispensar comissão ---
 export async function waiveCommission(commissionId: string) {
   const session = await auth();
-  const userRole = session?.user ? (session.user as { role: string }).role : null;
-  if (!session || userRole !== "ADMIN") {
-    return { error: "Não autorizado." };
-  }
+  const permError = requireAdminPermission(session, "FINANCE");
+  if (permError) return permError;
 
   try {
     await prisma.commission.update({
       where: { id: commissionId },
-      data: {
-        status: CommissionStatus.WAIVED,
-      },
+      data: { status: CommissionStatus.WAIVED },
     });
 
+    await logAction("COMMISSION_WAIVED", `Dispensou comissão ${commissionId}`);
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");
-    return { success: true };
+    return ok();
   } catch (err) {
     console.error(err);
-    return { error: "Erro ao dispensar comissão." };
+    return fail("Erro ao dispensar comissão.");
   }
 }
 
-// --- Buscar comissões ---
 export async function getCommissions(filters?: { status?: CommissionStatus; companyId?: string }) {
   const session = await auth();
   if (!session) return [];
@@ -94,12 +81,18 @@ export async function getCommissions(filters?: { status?: CommissionStatus; comp
   const role = user.role;
   const userCompanyId = user.companyId;
 
+  if (role === "ADMIN") {
+    const permError = requireAdminPermission(session, "FINANCE");
+    if (permError) return [];
+  } else if (role !== "EMPLOYER") {
+    return [];
+  }
+
   try {
     const where: { status?: CommissionStatus; companyId?: string } = {};
 
     if (filters?.status) where.status = filters.status;
 
-    // Se EMPLOYER, mostrar apenas as comissões da empresa
     if (role === "EMPLOYER" && userCompanyId) {
       where.companyId = userCompanyId;
     } else if (filters?.companyId) {
@@ -134,12 +127,10 @@ export async function getCommissions(filters?: { status?: CommissionStatus; comp
   }
 }
 
-// --- Resumo financeiro de comissões (Admin) ---
 export async function getCommissionSummary() {
   const session = await auth();
-  if (!session || (session.user as any).role !== "ADMIN") {
-    return null;
-  }
+  const permError = requireAdminPermission(session, "FINANCE");
+  if (permError) return null;
 
   try {
     const [pending, invoiced, paid, waived, totalPending, totalPaid] = await Promise.all([
@@ -147,8 +138,14 @@ export async function getCommissionSummary() {
       prisma.commission.count({ where: { status: "INVOICED" } }),
       prisma.commission.count({ where: { status: "PAID" } }),
       prisma.commission.count({ where: { status: "WAIVED" } }),
-      prisma.commission.aggregate({ where: { status: { in: ["PENDING", "INVOICED"] } }, _sum: { amount: true } }),
-      prisma.commission.aggregate({ where: { status: "PAID" }, _sum: { amount: true } }),
+      prisma.commission.aggregate({
+        where: { status: { in: ["PENDING", "INVOICED"] } },
+        _sum: { amount: true },
+      }),
+      prisma.commission.aggregate({
+        where: { status: "PAID" },
+        _sum: { amount: true },
+      }),
     ]);
 
     return {

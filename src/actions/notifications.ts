@@ -8,30 +8,66 @@ export async function getNotifications() {
   const session = await auth();
   if (!session) return [];
 
-  // Trigger check in background (not awaiting to avoid blocking)
   if ((session.user as any).role === "ADMIN") {
     checkTrialExpirations();
   }
 
   return prisma.notification.findMany({
     where: {
-      OR: [
-        { userId: session.user.id },
-        { userId: null } // Notificações globais para admins
-      ]
+      OR: [{ userId: session.user.id }, { userId: null }],
     },
     orderBy: { createdAt: "desc" },
-    take: 10
+    take: 10,
   });
+}
+
+export async function getAllNotifications(page = 1, pageSize = 20) {
+  const session = await auth();
+  if (!session) return { items: [], total: 0 };
+
+  const where = {
+    OR: [{ userId: session.user.id }, { userId: null }],
+  };
+
+  const [items, total] = await Promise.all([
+    prisma.notification.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    prisma.notification.count({ where }),
+  ]);
+
+  return { items, total };
+}
+
+export async function markAllAsRead() {
+  const session = await auth();
+  if (!session) return;
+
+  await prisma.notification.updateMany({
+    where: {
+      isRead: false,
+      OR: [{ userId: session.user.id }, { userId: null }],
+    },
+    data: { isRead: true },
+  });
+  revalidatePath("/admin/notifications");
+  revalidatePath("/admin");
 }
 
 export async function markAsRead(id: string) {
   const session = await auth();
   if (!session) return;
 
-  await prisma.notification.update({
-    where: { id },
-    data: { isRead: true }
+  // Garante que o usuário só pode marcar notificações próprias ou globais como lidas
+  await prisma.notification.updateMany({
+    where: {
+      id,
+      OR: [{ userId: session.user?.id }, { userId: null }],
+    },
+    data: { isRead: true },
   });
   revalidatePath("/admin");
 }
