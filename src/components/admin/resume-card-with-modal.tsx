@@ -24,11 +24,15 @@ import {
   Mail,
   X,
   Zap,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { analyzeCandidate, type AIAnalysisResult } from "@/actions/ai-analysis";
+import { deleteCandidate } from "@/actions/candidates";
 import { AllocateFromResumeModal } from "@/components/admin/allocate-from-resume-modal";
+import { ConfirmAction } from "@/components/ui/confirm-action";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 type Job = {
   id: string;
@@ -84,6 +88,16 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
   const [aiResult, setAiResult] = useState<AIAnalysisResult | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  async function handleDelete() {
+    setIsDeleting(true);
+    const result = await deleteCandidate(app.candidate.id);
+    if (!result.success) {
+      toast.error(result.error || "Erro ao excluir candidato.");
+    }
+    setIsDeleting(false);
+  }
 
   async function handleOpen() {
     setIsOpen(true);
@@ -176,6 +190,23 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
                 candidateName={app.candidate.name ?? "Candidato"}
                 jobs={activeJobs}
               />
+              <ConfirmAction
+                title="Excluir Candidato?"
+                description={`Esta ação removerá ${app.candidate.name ?? "o candidato"} e todas as candidaturas vinculadas permanentemente.`}
+                variant="danger"
+                actionText="Sim, Excluir"
+                onConfirm={handleDelete}
+              >
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  disabled={isDeleting}
+                  className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-slate-400"
+                  title="Excluir candidato"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </ConfirmAction>
             </div>
           </div>
         </div>
