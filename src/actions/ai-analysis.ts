@@ -3,6 +3,8 @@
 import { auth } from "@/lib/auth";
 import Groq from "groq-sdk";
 import { prisma } from "@/lib/prisma";
+import { s3Client } from "@/lib/s3";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
 import * as pdfParseModule from "pdf-parse";
 const pdfParse = (pdfParseModule as any).default ?? pdfParseModule;
 
@@ -15,19 +17,42 @@ export type AIAnalysisResult = {
   source: "pdf" | "cover_letter" | "both";
 };
 
-async function extractPdfText(url: string): Promise<string> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000);
+function extractKeyFromUrl(url: string): string | null {
   try {
-    const response = await fetch(url, { signal: controller.signal });
-    if (!response.ok) return "";
-    const buffer = await response.arrayBuffer();
-    const data = await pdfParse(Buffer.from(buffer));
+    const publicDomain = process.env.R2_PUBLIC_DOMAIN?.replace(/\/$/, "");
+    if (publicDomain && url.startsWith(publicDomain)) {
+      return url.slice(publicDomain.length + 1);
+    }
+    // fallback: extract path after the bucket/domain (last resort)
+    const parsed = new URL(url);
+    return parsed.pathname.replace(/^\//, "");
+  } catch {
+    return null;
+  }
+}
+
+async function extractPdfText(resumeUrl: string): Promise<string> {
+  try {
+    const key = extractKeyFromUrl(resumeUrl);
+    if (!key) return "";
+
+    const command = new GetObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME,
+      Key: key,
+    });
+
+    const response = await s3Client.send(command);
+    if (!response.Body) return "";
+
+    const chunks: Uint8Array[] = [];
+    for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
+      chunks.push(chunk);
+    }
+    const buffer = Buffer.concat(chunks);
+    const data = await pdfParse(buffer);
     return data.text.trim().slice(0, 6000);
   } catch {
     return "";
-  } finally {
-    clearTimeout(timeout);
   }
 }
 
