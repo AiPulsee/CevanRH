@@ -221,11 +221,13 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
                   </div>
 
                   <div className="flex items-center gap-2 w-full xl:w-auto">
-                    <ScreeningModal
-                      jobTitle={job.title}
-                      companyName={job.company.name}
-                      applications={job.applications}
-                    />
+                    {job.status === "ACTIVE" && (
+                      <ScreeningModal
+                        jobTitle={job.title}
+                        companyName={job.company.name}
+                        applications={job.applications}
+                      />
+                    )}
                     <EditJobModal job={job} />
                     <ConfirmAction
                       title="Excluir Vaga?"
