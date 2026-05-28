@@ -53,7 +53,7 @@ async function extractPdfText(resumeUrl: string): Promise<{ text: string; error?
       const pdf = await getDocumentProxy(new Uint8Array(buffer));
       const { text } = await extractText(pdf, { mergePages: true });
       const trimmed = (text as string).trim();
-      if (trimmed.length > 20) return { text: trimmed.slice(0, 6000) };
+      if (trimmed.length > 20) return { text: trimmed.slice(0, 12000) };
       return { text: "", error: "O currículo é uma imagem escaneada e não possui texto selecionável. A IA não consegue ler imagens." };
     } catch (parseErr: unknown) {
       const msg = parseErr instanceof Error ? parseErr.message : String(parseErr);
@@ -178,39 +178,39 @@ Responda SOMENTE com JSON válido, sem markdown. Formato obrigatório:
   "summary": <uma frase direta resumindo o parecer do recrutador>
 }`;
 
-  try {
-    const groq = new Groq({ apiKey });
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
-      temperature: 0.3,
-    });
+  const groq = new Groq({ apiKey });
+  let lastError: unknown;
 
-    const text = completion.choices[0]?.message?.content ?? "";
-    const parsed = JSON.parse(text) as Omit<AIAnalysisResult, "source">;
-    return { success: true, data: { ...parsed, source: sourceKey } };
-  } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error("[AI Analysis Error]", errorMessage);
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const completion = await groq.chat.completions.create({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        temperature: 0.3,
+      });
 
-    if (
-      errorMessage.includes("429") ||
-      errorMessage.includes("rate_limit") ||
-      errorMessage.includes("quota")
-    ) {
-      return {
-        success: false,
-        error: "Limite de uso da IA atingido. Aguarde alguns segundos e tente novamente.",
-      };
+      const text = completion.choices[0]?.message?.content ?? "";
+      const parsed = JSON.parse(text) as Omit<AIAnalysisResult, "source">;
+      return { success: true, data: { ...parsed, source: sourceKey } };
+    } catch (error: unknown) {
+      lastError = error;
+      const msg = error instanceof Error ? error.message : String(error);
+
+      if (msg.includes("429") || msg.includes("rate_limit") || msg.includes("quota")) {
+        return { success: false, error: "Limite de uso da IA atingido. Aguarde alguns segundos e tente novamente." };
+      }
+      if (msg.includes("401") || msg.includes("API key") || msg.includes("403")) {
+        return { success: false, error: "Configuração da IA inválida. Contate o administrador." };
+      }
+
+      const isTransient = msg.includes("ECONNRESET") || msg.includes("ETIMEDOUT") || msg.includes("fetch failed") || msg.includes("socket");
+      if (!isTransient || attempt === 2) break;
+
+      await new Promise((r) => setTimeout(r, 1000));
     }
-    if (
-      errorMessage.includes("401") ||
-      errorMessage.includes("API key") ||
-      errorMessage.includes("403")
-    ) {
-      return { success: false, error: "Configuração da IA inválida. Contate o administrador." };
-    }
-    return { success: false, error: "Erro ao processar análise. Tente novamente." };
   }
+
+  console.error("[AI Analysis Error]", lastError instanceof Error ? lastError.message : lastError);
+  return { success: false, error: "Erro ao processar análise. Tente novamente." };
 }

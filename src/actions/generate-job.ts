@@ -43,24 +43,36 @@ Gere o conteúdo completo para essa vaga. Responda SOMENTE com JSON válido nest
   "skills": [<array de 5-8 strings com as principais habilidades técnicas exigidas>]
 }`;
 
-  try {
-    const groq = new Groq({ apiKey });
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
-      temperature: 0.5,
-    });
+  const groq = new Groq({ apiKey });
+  let lastError: unknown;
 
-    const text = completion.choices[0]?.message?.content ?? "";
-    const parsed = JSON.parse(text) as GeneratedJob;
-    return { success: true, data: parsed };
-  } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : String(error);
-    console.error("[Generate Job Error]", msg);
-    if (msg.includes("429") || msg.includes("rate_limit") || msg.includes("quota")) {
-      return { success: false, error: "Limite da IA atingido. Aguarde e tente novamente." };
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const completion = await groq.chat.completions.create({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        temperature: 0.5,
+      });
+
+      const text = completion.choices[0]?.message?.content ?? "";
+      const parsed = JSON.parse(text) as GeneratedJob;
+      return { success: true, data: parsed };
+    } catch (error: unknown) {
+      lastError = error;
+      const msg = error instanceof Error ? error.message : String(error);
+
+      if (msg.includes("429") || msg.includes("rate_limit") || msg.includes("quota")) {
+        return { success: false, error: "Limite da IA atingido. Aguarde e tente novamente." };
+      }
+
+      const isTransient = msg.includes("ECONNRESET") || msg.includes("ETIMEDOUT") || msg.includes("fetch failed") || msg.includes("socket");
+      if (!isTransient || attempt === 2) break;
+
+      await new Promise((r) => setTimeout(r, 1000));
     }
-    return { success: false, error: "Não foi possível gerar o conteúdo com IA." };
   }
+
+  console.error("[Generate Job Error]", lastError instanceof Error ? lastError.message : lastError);
+  return { success: false, error: "Não foi possível gerar o conteúdo com IA." };
 }

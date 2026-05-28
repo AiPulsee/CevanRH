@@ -6,6 +6,19 @@ import { JobType, JobStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdminPermission, ok, fail } from "@/lib/permissions";
+import { v4 as uuidv4 } from "uuid";
+
+function toSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Mn}/gu, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 60);
+}
 
 const createJobSchema = z.object({
   title: z.string().min(5, "Título muito curto"),
@@ -88,7 +101,7 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
   }
 
   try {
-    const slug = `${title.toLowerCase().replace(/ /g, "-")}-${Math.random().toString(36).substring(2, 7)}`;
+    const slug = `${toSlug(title)}-${uuidv4().slice(0, 8)}`;
 
     await prisma.job.create({
       data: {

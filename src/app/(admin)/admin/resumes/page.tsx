@@ -147,16 +147,13 @@ export default async function ResumesPage({
           </p>
         </div>
         <ResumesExportButton
-          data={applications.map((app) => ({
-            name: app.candidate.name ?? "",
-            email: app.candidate.email ?? "",
-            jobTitle: app.job.title,
-            company: app.job.company.name,
-            type: app.job.type,
-            status: app.status,
-            date: format(new Date(app.createdAt), "dd/MM/yyyy", { locale: ptBR }),
-            resumeUrl: app.resumeUrl,
-          }))}
+          searchParams={new URLSearchParams({
+            ...(query && { q: query }),
+            ...(typeFilter && { type: typeFilter }),
+            ...(statusFilter && { status: statusFilter }),
+            ...(sort !== "desc" && { sort }),
+            ...(companyFilter && { company: companyFilter }),
+          }).toString()}
         />
       </div>
 

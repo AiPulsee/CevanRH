@@ -31,7 +31,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     { name: "Vagas", href: "/jobs" },
     { name: "Para Empresas", href: "/servicos" },
     { name: "Quem Somos", href: "/about" },
-    { name: "Grupo Cevan", href: "/grupo-cevan" },
+    // { name: "Grupo Cevan", href: "/grupo-cevan" },
   ];
 
   const grupoCevanNavLinks = [
