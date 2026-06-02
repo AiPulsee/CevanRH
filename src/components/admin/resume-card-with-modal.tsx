@@ -48,7 +48,7 @@ type ResumeCardProps = {
     resumeUrl: string;
     createdAt: Date;
     candidate: { id: string; name: string | null; email: string | null };
-    job: { title: string; type: string; company: { name: string } };
+    job: { title: string; type: string; company: { name: string } } | null;
   };
   formattedDate: string;
   activeJobs: Job[];
@@ -101,6 +101,7 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
 
   async function handleOpen() {
     setIsOpen(true);
+    if (!app.job) return;
     if (aiResult) return;
     setAiLoading(true);
     setAiError(null);
@@ -154,23 +155,33 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
               <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Vaga Original</p>
               <div className="flex items-center gap-2">
                 <Briefcase className="h-3.5 w-3.5 text-slate-400" />
-                <span className="text-sm font-bold text-slate-700">{app.job.title}</span>
+                <span className="text-sm font-bold text-slate-700">
+                  {app.job?.title ?? "Cadastro Manual"}
+                </span>
               </div>
             </div>
             <div className="space-y-1">
               <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Empresa / Tipo</p>
               <div className="flex items-center gap-3">
-                <span className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
-                  <Building2 className="h-3.5 w-3.5" /> {app.job.company.name}
-                </span>
-                <Badge
-                  className={cn(
-                    "rounded-md px-1.5 py-0 text-[8px] font-black uppercase border-none",
-                    app.job.type === "MANAGED" ? "bg-blue-50 text-blue-600" : "bg-emerald-50 text-emerald-600"
-                  )}
-                >
-                  {app.job.type === "MANAGED" ? "Curadoria" : "Público"}
-                </Badge>
+                {app.job ? (
+                  <>
+                    <span className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
+                      <Building2 className="h-3.5 w-3.5" /> {app.job.company.name}
+                    </span>
+                    <Badge
+                      className={cn(
+                        "rounded-md px-1.5 py-0 text-[8px] font-black uppercase border-none",
+                        app.job.type === "MANAGED" ? "bg-blue-50 text-blue-600" : "bg-emerald-50 text-emerald-600"
+                      )}
+                    >
+                      {app.job.type === "MANAGED" ? "Curadoria" : "Público"}
+                    </Badge>
+                  </>
+                ) : (
+                  <Badge className="rounded-md px-1.5 py-0 text-[8px] font-black uppercase border-none bg-slate-100 text-slate-500">
+                    Manual
+                  </Badge>
+                )}
               </div>
             </div>
           </div>
@@ -247,9 +258,15 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
               </div>
               <div className="flex items-center gap-3 shrink-0">
                 <div className="hidden sm:block text-right">
-                  <p className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Candidatou-se para</p>
-                  <p className="text-xs font-black text-slate-300 mt-0.5">{app.job.title}</p>
-                  <p className="text-[10px] text-slate-500 font-bold">{app.job.company.name}</p>
+                  <p className="text-[9px] font-black uppercase text-slate-500 tracking-widest">
+                    {app.job ? "Candidatou-se para" : "Origem"}
+                  </p>
+                  <p className="text-xs font-black text-slate-300 mt-0.5">
+                    {app.job?.title ?? "Cadastro Manual"}
+                  </p>
+                  {app.job && (
+                    <p className="text-[10px] text-slate-500 font-bold">{app.job.company.name}</p>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 ml-2">
                   <Badge
@@ -278,12 +295,16 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
             {/* Quick Info */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { label: "Vaga", value: app.job.title },
-                { label: "Empresa", value: app.job.company.name },
+                { label: "Vaga", value: app.job?.title ?? "Cadastro Manual" },
+                { label: "Empresa", value: app.job?.company.name ?? "—" },
                 { label: "Recebido", value: formattedDate },
                 {
                   label: "Tipo",
-                  value: app.job.type === "MANAGED" ? "Curadoria" : "Público",
+                  value: app.job
+                    ? app.job.type === "MANAGED"
+                      ? "Curadoria"
+                      : "Público"
+                    : "Manual",
                 },
               ].map((item) => (
                 <div key={item.label} className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
@@ -294,6 +315,19 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
             </div>
 
             {/* AI Analysis */}
+            {!app.job ? (
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex items-start gap-4">
+                <div className="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+                  <Sparkles className="h-5 w-5 text-slate-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-black text-slate-700">Análise Inteligente indisponível</p>
+                  <p className="text-xs text-slate-400 font-medium mt-1 leading-relaxed">
+                    A análise de compatibilidade requer uma vaga vinculada. Aloque este candidato em uma vaga de curadoria para gerar a análise.
+                  </p>
+                </div>
+              </div>
+            ) : (
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
               <div className="flex items-center justify-between p-5 border-b border-slate-50">
                 <div className="flex items-center gap-2">
@@ -370,7 +404,9 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
                     {/* Score + Verdict */}
                     <div className="grid grid-cols-2 gap-4">
                       <div className={cn("p-5 rounded-[1.5rem] border-2 text-center flex flex-col items-center justify-center", SCORE_BG(aiResult.score))}>
-                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Compatibilidade</p>
+                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                          {app.job ? "Compatibilidade" : "Score do Perfil"}
+                        </p>
                         <div className="relative inline-block">
                           <p className={cn("text-5xl font-black", SCORE_COLOR(aiResult.score))}>{aiResult.score}</p>
                           <span className={cn("text-xs font-bold absolute -top-1 -right-4", SCORE_COLOR(aiResult.score))}>%</span>
@@ -451,6 +487,7 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
                 )}
               </AnimatePresence>
             </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

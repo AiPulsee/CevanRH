@@ -7,6 +7,7 @@ import { createNotification } from "./notifications";
 import { ApplicationStatus } from "@prisma/client";
 import { requireAdminPermission, ok, fail } from "@/lib/permissions";
 import { z } from "zod";
+import { randomUUID } from "crypto";
 
 const applySchema = z.object({
   jobId: z.string().min(1, "ID da vaga inválido"),
@@ -59,7 +60,7 @@ export async function applyToJob(data: {
 
     await createNotification({
       title: "Nova Candidatura!",
-      message: `${name} se candidatou para a vaga de ${application.job.title}.`,
+      message: `${name} se candidatou para a vaga de ${application.job?.title ?? "uma vaga"}.`,
       type: "SUCCESS",
     });
 
@@ -74,6 +75,55 @@ export async function applyToJob(data: {
       return fail("Você já se candidatou a esta vaga.");
     }
     return fail("Ocorreu um erro ao enviar sua candidatura.");
+  }
+}
+
+const manualResumeSchema = z.object({
+  name: z.string().min(2, "Nome muito curto").max(100, "Nome muito longo"),
+  email: z.string().email("E-mail inválido"),
+  resumeUrl: z.string().url("URL de currículo inválida"),
+});
+
+export async function createManualResume(data: {
+  name: string;
+  email: string;
+  resumeUrl: string;
+}) {
+  const session = await auth();
+  const permError = requireAdminPermission(session, "MANAGED");
+  if (permError) return permError;
+
+  const validated = manualResumeSchema.safeParse(data);
+  if (!validated.success) return fail(validated.error.issues[0].message);
+
+  const { name, email, resumeUrl } = validated.data;
+
+  const r2Domain = process.env.R2_PUBLIC_DOMAIN;
+  if (!r2Domain || !resumeUrl.startsWith(r2Domain)) {
+    return fail("URL de currículo inválida.");
+  }
+
+  try {
+    let user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      user = await prisma.user.create({
+        data: { name, email, role: "CANDIDATE" },
+      });
+    }
+
+    const id = randomUUID();
+    const now = new Date();
+    await prisma.$executeRaw`
+      INSERT INTO applications (id, resume_url, status, candidate_id, created_at, updated_at)
+      VALUES (${id}, ${resumeUrl}, 'APPLIED', ${user.id}, ${now}, ${now})
+    `;
+
+    revalidatePath("/admin/resumes");
+    revalidatePath("/admin");
+    return ok();
+  } catch (error: any) {
+    console.error("Erro ao cadastrar currículo:", error);
+    return fail("Erro ao cadastrar currículo.");
   }
 }
 

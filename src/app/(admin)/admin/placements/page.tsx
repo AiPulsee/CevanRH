@@ -36,8 +36,8 @@ export default async function AdminPlacementsPage() {
         name: p.application.candidate.name || "Sem Nome",
         email: p.application.candidate.email || ""
       },
-      company: { name: p.application.job.company.name },
-      jobTitle: p.application.job.title,
+      company: { name: p.application.job?.company.name ?? "—" },
+      jobTitle: p.application.job?.title ?? "—",
       jobId: p.application.jobId,
       commission: p.commission ? {
         id: p.commission.id,
@@ -93,24 +93,24 @@ export default async function AdminPlacementsPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {stats.map((stat, i) => (
-          <Card key={i} className="p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
-            <div className="flex items-center justify-between mb-4">
+          <Card key={i} className="p-3.5 sm:p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
+            <div className="flex items-start justify-between mb-3 sm:mb-4">
               <Tooltip>
                 <TooltipTrigger render={
-                  <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center cursor-default">
-                    <stat.icon className="h-5 w-5 text-slate-600" />
+                  <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center cursor-default shrink-0">
+                    <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600" />
                   </div>
                 } />
                 <TooltipContent>{stat.tooltip}</TooltipContent>
               </Tooltip>
-              <Badge className="bg-slate-100 text-slate-600 border-none font-bold text-[10px]">
+              <Badge className="bg-slate-100 text-slate-600 border-none font-bold text-[9px] sm:text-[10px] text-right leading-tight max-w-[80px] sm:max-w-none">
                 {stat.change}
               </Badge>
             </div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.name}</p>
-            <h3 className="text-2xl font-black text-slate-900">{stat.value}</h3>
+            <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">{stat.name}</p>
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">{stat.value}</h3>
           </Card>
         ))}
       </div>
@@ -136,7 +136,7 @@ export default async function AdminPlacementsPage() {
       <PlacementsTable placements={mappedPlacements} feePercentage={revenuePercent} />
 
       {/* Timeline/Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {/* Próximos Vencimentos */}
         <Card className="p-6 border-slate-200 bg-white rounded-2xl shadow-sm">
           <div className="flex items-center gap-2 mb-5">

@@ -116,7 +116,7 @@ export async function checkTrialExpirations() {
 
   for (const trial of expiringTrials) {
     const title = "Andamento Vencendo";
-    const message = `O período de andamento de ${trial.application.candidate.name} na ${trial.application.job.company.name} vence em ${trial.trialEndDate.toLocaleDateString()}.`;
+    const message = `O período de andamento de ${trial.application.candidate.name} na ${trial.application.job?.company.name ?? "empresa"} vence em ${trial.trialEndDate.toLocaleDateString()}.`;
 
     // Evitar spam: checar se já notificamos sobre este trial nas últimas 48h
     const recent = await prisma.notification.findFirst({

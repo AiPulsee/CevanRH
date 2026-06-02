@@ -110,12 +110,12 @@ export function CommissionsTable({
     <TooltipProvider>
     <div className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden border">
       {/* Filters */}
-      <div className="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
-        <div className="relative flex-1 min-w-[200px] max-w-sm">
+      <div className="p-3 sm:p-4 border-b border-slate-100 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-between gap-2 sm:gap-3">
+        <div className="relative flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
             placeholder="Buscar por candidato, empresa ou vaga..."
-            className="pl-10 h-9 border-slate-200 rounded-xl text-xs font-medium"
+            className="pl-10 h-9 border-slate-200 rounded-xl text-xs font-medium w-full"
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
           />

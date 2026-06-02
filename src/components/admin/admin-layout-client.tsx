@@ -38,16 +38,21 @@ const ALL_SECTIONS = [
   {
     label: "Recrutamento & Seleção",
     items: [
-      { name: "Banco de Currículos", mobileName: "Currículos", href: "/admin/resumes", icon: FileText, key: "RESUMES", tooltip: "Todos os currículos recebidos — filtre por tipo de vaga, busque candidatos e exporte planilha" },
+      { name: "Banco de Talentos", mobileName: "Talentos", href: "/admin/resumes", icon: FileText, key: "RESUMES", tooltip: "Todos os currículos recebidos — filtre por tipo de vaga, busque candidatos e exporte planilha" },
       { name: "Curadoria (Vagas)", mobileName: "Curadoria", href: "/admin/managed", icon: Zap, key: "MANAGED", tooltip: "Vagas com triagem especializada pela Cevan — analise candidatos e selecione os melhores perfis" },
       { name: "Alocações", mobileName: "Alocações", href: "/admin/placements", icon: UserCheck, key: "PLACEMENTS", tooltip: "Candidatos contratados — acompanhe o período de experiência e confirme efetivações" },
-      { name: "Finanças", mobileName: "Finanças", href: "/admin/finance", icon: Receipt, key: "FINANCE", tooltip: "Comissões geradas pelas efetivações — emita faturas e registre pagamentos recebidos" },
-      { name: "Empresas", mobileName: "Empresas", href: "/admin/companies", icon: Building2, key: "COMPANIES", tooltip: "Empresas clientes cadastradas, suas vagas e usuários vinculados" },
     ],
   },
   {
-    label: "Sistema & Gestão",
+    label: "Financeiro",
     items: [
+      { name: "Finanças", mobileName: "Finanças", href: "/admin/finance", icon: Receipt, key: "FINANCE", tooltip: "Comissões geradas pelas efetivações — emita faturas e registre pagamentos recebidos" },
+    ],
+  },
+  {
+    label: "Gestão",
+    items: [
+      { name: "Empresas", mobileName: "Empresas", href: "/admin/companies", icon: Building2, key: "COMPANIES", tooltip: "Empresas clientes cadastradas, suas vagas e usuários vinculados" },
       { name: "Usuários ADM", mobileName: "Usuários", href: "/admin/users", icon: Users2, key: "USERS", tooltip: "Gerenciar administradores do sistema, suas funções e permissões de acesso" },
       { name: "Configurações", mobileName: "Config.", href: "/admin/settings", icon: Settings, key: "SETTINGS", tooltip: "Taxa administrativa e outras variáveis globais do sistema" },
     ],
@@ -262,48 +267,64 @@ function SidebarContent({
         </Link>
       </div>
 
-      <nav className="flex-1 px-5 py-8 space-y-8 overflow-y-auto custom-scrollbar pb-10">
-        {menuSections.map((section) => (
-          <div key={section.label} className="space-y-2.5">
-            <p className="px-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">
-              {section.label}
-            </p>
-            <div className="space-y-1">
-              {section.items.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <Tooltip key={item.name}>
-                    <TooltipTrigger render={
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          "flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[13px] font-bold transition-all group relative",
-                          isActive
-                            ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-                            : "text-slate-400 hover:bg-white/5 hover:text-white"
-                        )}
-                      >
-                        <item.icon
+      <nav className="flex-1 px-4 py-6 overflow-y-auto custom-scrollbar pb-10">
+        <div className="space-y-1">
+          {menuSections.map((section, sectionIdx) => (
+            <div key={section.label}>
+              {/* Section label */}
+              <p className={cn(
+                "px-3 text-[9px] font-black uppercase tracking-[0.2em] text-slate-600",
+                sectionIdx > 0 ? "mt-5 mb-2" : "mb-2"
+              )}>
+                {section.label}
+              </p>
+
+              {/* Items */}
+              <div className="space-y-1">
+                {section.items.map((item) => {
+                  const isActive = pathname === item.href ||
+                    (item.href !== "/admin" && pathname.startsWith(item.href));
+                  return (
+                    <Tooltip key={item.name}>
+                      <TooltipTrigger render={
+                        <Link
+                          href={item.href}
                           className={cn(
-                            "h-5 w-5 transition-transform group-hover:scale-110",
-                            isActive ? "text-white" : "text-slate-500 group-hover:text-blue-400"
+                            "flex items-center gap-3 px-3 py-3 rounded-xl text-[13px] font-semibold transition-all group relative",
+                            isActive
+                              ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
+                              : "text-slate-400 hover:bg-white/8 hover:text-slate-200"
                           )}
-                        />
-                        {item.name}
-                        {isActive && (
-                          <div className="absolute right-4 w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                        )}
-                      </Link>
-                    } />
-                    <TooltipContent side="right" className="max-w-[220px]">
-                      {(item as any).tooltip}
-                    </TooltipContent>
-                  </Tooltip>
-                );
-              })}
+                        >
+                          <div className={cn(
+                            "h-8 w-8 rounded-lg flex items-center justify-center shrink-0 transition-all",
+                            isActive
+                              ? "bg-white/15"
+                              : "bg-white/5 group-hover:bg-white/10"
+                          )}>
+                            <item.icon
+                              className={cn(
+                                "h-4 w-4 transition-transform group-hover:scale-110",
+                                isActive ? "text-white" : "text-slate-500 group-hover:text-blue-400"
+                              )}
+                            />
+                          </div>
+                          <span className="truncate">{item.name}</span>
+                          {isActive && (
+                            <div className="absolute right-3 w-1.5 h-1.5 bg-white/70 rounded-full" />
+                          )}
+                        </Link>
+                      } />
+                      <TooltipContent side="right" className="max-w-[220px]">
+                        {(item as any).tooltip}
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </nav>
     </>
   );

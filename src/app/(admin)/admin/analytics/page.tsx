@@ -126,7 +126,7 @@ export default async function AdminAnalyticsPage() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {stats.map((stat) => (
           <Card key={stat.name} className="p-4 sm:p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
             <Tooltip>
@@ -145,7 +145,7 @@ export default async function AdminAnalyticsPage() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {/* Applications per month */}
         <Card className="p-4 sm:p-6 border-slate-200 bg-white rounded-2xl shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -219,7 +219,7 @@ export default async function AdminAnalyticsPage() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {/* Conversion funnel */}
         <Card className="p-6 border-slate-200 bg-white rounded-2xl shadow-sm">
           <h3 className="text-base font-bold text-slate-900 mb-6">Funil de Conversão</h3>

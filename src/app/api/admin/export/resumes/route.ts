@@ -78,9 +78,9 @@ export async function GET(request: NextRequest) {
   const rows = applications.map((app) => [
     app.candidate.name ?? "",
     app.candidate.email ?? "",
-    app.job.title,
-    app.job.company.name,
-    TYPE_LABEL[app.job.type] ?? app.job.type,
+    app.job?.title ?? "Cadastro Manual",
+    app.job?.company.name ?? "",
+    app.job ? (TYPE_LABEL[app.job.type] ?? app.job.type) : "Manual",
     STATUS_LABEL[app.status] ?? app.status,
     format(new Date(app.createdAt), "dd/MM/yyyy", { locale: ptBR }),
     app.resumeUrl ?? "",

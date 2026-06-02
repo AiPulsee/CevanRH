@@ -63,6 +63,10 @@ model Job {
   contractType     String?  @map("contract_type")
   experienceLevel  String?  @map("experience_level")
   openings         Int      @default(1)
+  feeType          String?  @map("fee_type")
+  feePercentage    Float?   @map("fee_percentage")
+  feeFixed         Int?     @map("fee_fixed")
+  trialDays        Int?     @map("trial_days")
   applications     Application[]
   company          Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
@@ -76,12 +80,12 @@ model Application {
   resumeUrl   String            @map("resume_url")
   coverLetter String?           @map("cover_letter")
   status      ApplicationStatus @default(APPLIED)
-  jobId       String            @map("job_id")
+  jobId       String?           @map("job_id")
   candidateId String            @map("candidate_id")
   createdAt   DateTime          @default(now()) @map("created_at")
   updatedAt   DateTime          @updatedAt @map("updated_at")
   candidate   User              @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-  job         Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  job         Job?              @relation(fields: [jobId], references: [id], onDelete: Cascade)
   placement   Placement?
   shortlist   Shortlist?
 

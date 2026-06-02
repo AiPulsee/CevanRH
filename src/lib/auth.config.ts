@@ -9,7 +9,6 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const role = (auth?.user as any)?.role;
 
-      // Redirect already-logged-in admins away from the login page
       if (nextUrl.pathname === "/login" && isLoggedIn && role === "ADMIN") {
         return Response.redirect(new URL("/admin", nextUrl));
       }
@@ -18,21 +17,23 @@ export const authConfig = {
         if (!isLoggedIn) return false;
         if (role !== "ADMIN") return false;
 
-        const permissions = (auth?.user as any)?.permissions || [];
+        const permissions = (auth?.user as any)?.permissions;
         const path = nextUrl.pathname;
 
-        // Se for admin raiz (/) pode entrar
-        if (path === "/admin") return true;
+        // null = master admin, acesso total
+        if (permissions === null || permissions === undefined) return true;
 
-        // Mapeamento de abas
-        if (path.startsWith("/admin/managed") && !permissions.includes("MANAGED")) return false;
-        if (path.startsWith("/admin/resumes") && !permissions.includes("RESUMES")) return false;
-        if (path.startsWith("/admin/companies") && !permissions.includes("COMPANIES")) return false;
-        if (path.startsWith("/admin/placements") && !permissions.includes("PLACEMENTS")) return false;
-        if (path.startsWith("/admin/analytics") && !permissions.includes("ANALYTICS")) return false;
-        if (path.startsWith("/admin/finance") && !permissions.includes("FINANCE")) return false;
-        if (path.startsWith("/admin/users") && !permissions.includes("USERS")) return false;
-        if (path.startsWith("/admin/settings") && !permissions.includes("SETTINGS")) return false;
+        const perms: string[] = Array.isArray(permissions) ? permissions : [];
+
+        if (path === "/admin") return true;
+        if (path.startsWith("/admin/managed") && !perms.includes("MANAGED")) return false;
+        if (path.startsWith("/admin/resumes") && !perms.includes("RESUMES")) return false;
+        if (path.startsWith("/admin/companies") && !perms.includes("COMPANIES")) return false;
+        if (path.startsWith("/admin/placements") && !perms.includes("PLACEMENTS")) return false;
+        if (path.startsWith("/admin/analytics") && !perms.includes("ANALYTICS")) return false;
+        if (path.startsWith("/admin/finance") && !perms.includes("FINANCE")) return false;
+        if (path.startsWith("/admin/users") && !perms.includes("USERS")) return false;
+        if (path.startsWith("/admin/settings") && !perms.includes("SETTINGS")) return false;
 
         return true;
       }

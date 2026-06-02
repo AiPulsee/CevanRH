@@ -44,6 +44,10 @@ type ManagedJob = {
   benefits: string | null;
   tips: string | null;
   openings: number;
+  feeType?: string | null;
+  feePercentage?: number | null;
+  feeFixed?: number | null;
+  trialDays?: number | null;
   company: { name: string; logoUrl: string | null };
   _count: { applications: number };
   applications: App[];
@@ -103,21 +107,21 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1 max-w-sm">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
             placeholder="Buscar vaga ou empresa..."
-            className="pl-10 h-10 bg-white border-slate-200 rounded-lg text-sm"
+            className="pl-10 h-11 bg-white border-slate-200 rounded-xl text-sm w-full"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="flex items-center gap-1.5 bg-slate-100 rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1 shrink-0">
           {(["ALL", "ACTIVE", "CLOSED"] as StatusFilter[]).map((s) => (
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+              className={`px-3 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
                 statusFilter === s
                   ? "bg-white text-slate-900 shadow-sm"
                   : "text-slate-500 hover:text-slate-700"
@@ -148,7 +152,7 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
                 key={job.id}
                 className="p-4 sm:p-5 border-slate-200 bg-white rounded-xl shadow-sm hover:border-blue-200 transition-all group"
               >
-                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <div className="flex items-center gap-3 sm:gap-4 flex-1">
                     <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-blue-500 text-base sm:text-lg overflow-hidden shrink-0">
                       {job.company.logoUrl ? (
@@ -177,7 +181,7 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 flex-[1.5] py-2 border-y border-slate-50 sm:border-none">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-[1.5] py-3 border-y border-slate-100 lg:border-none lg:py-0">
                     <div className="space-y-1">
                       <p className="text-[9px] font-bold uppercase text-slate-400">
                         Status
@@ -225,7 +229,7 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 w-full xl:w-auto">
+                  <div className="flex items-center gap-2 w-full lg:w-auto">
                     {showTriagem && (
                       <ScreeningModal
                         jobTitle={job.title}

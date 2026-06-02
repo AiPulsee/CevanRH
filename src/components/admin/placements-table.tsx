@@ -42,7 +42,7 @@ type Placement = {
   candidate: { name: string; email: string };
   company: { name: string };
   jobTitle: string;
-  jobId: string;
+  jobId: string | null;
   commission: {
     id: string;
     amount: number;
@@ -193,31 +193,31 @@ export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { 
     <TooltipProvider>
       <div className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden border">
         {/* Search & filter bar */}
-        <div className="p-4 border-b border-slate-100 flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[200px] max-w-sm">
+        <div className="p-3 sm:p-4 border-b border-slate-100 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3">
+          <div className="relative flex-1 min-w-0">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               placeholder="Buscar por candidato ou empresa..."
-              className="pl-10 h-9 border-slate-200 rounded-xl text-xs font-medium"
+              className="pl-10 h-9 border-slate-200 rounded-xl text-xs font-medium w-full"
               value={search}
               onChange={(e) => handleSearchChange(e.target.value)}
             />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <CalendarRange className="h-4 w-4 text-slate-400 shrink-0" />
             <Input
               type="date"
               value={dateFrom}
               onChange={(e) => { setDateFrom(e.target.value); setCurrentPage(1); }}
-              className="h-9 border-slate-200 rounded-xl text-xs font-medium w-36"
+              className="h-9 border-slate-200 rounded-xl text-xs font-medium w-full sm:w-32"
             />
             <span className="text-xs text-slate-400 font-bold">até</span>
             <Input
               type="date"
               value={dateTo}
               onChange={(e) => { setDateTo(e.target.value); setCurrentPage(1); }}
-              className="h-9 border-slate-200 rounded-xl text-xs font-medium w-36"
+              className="h-9 border-slate-200 rounded-xl text-xs font-medium w-full sm:w-32"
             />
             {(dateFrom || dateTo) && (
               <button
@@ -394,42 +394,62 @@ export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { 
                       <div className="flex items-center justify-end gap-1.5 md:opacity-0 group-hover:opacity-100 transition-all">
                         {p.status === "TRIAL" && (
                           <>
-                            <ConfirmAction
-                              title="Confirmar Efetivação?"
-                              description={`${p.candidate.name} será marcado como efetivado na ${p.company.name}.`}
-                              actionText="Sim, Efetivar"
-                              onConfirm={() => handleConfirm(p.id)}
-                            >
-                              <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-emerald-50 hover:text-emerald-600">
-                                <CheckCircle2 className="h-4 w-4" />
-                              </Button>
-                            </ConfirmAction>
-                            <ConfirmAction
-                              title="Encerrar Contratação?"
-                              description="O candidato será desligado. Se não for efetivado, envie um candidato de reposição."
-                              variant="danger"
-                              actionText="Encerrar"
-                              onConfirm={() => handleTerminate(p.id)}
-                            >
-                              <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600">
-                                <XCircle className="h-4 w-4" />
-                              </Button>
-                            </ConfirmAction>
+                            <Tooltip>
+                              <TooltipTrigger render={
+                                <ConfirmAction
+                                  title="Confirmar Efetivação?"
+                                  description={`${p.candidate.name} será marcado como efetivado na ${p.company.name}.`}
+                                  actionText="Sim, Efetivar"
+                                  onConfirm={() => handleConfirm(p.id)}
+                                >
+                                  <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-emerald-50 hover:text-emerald-600">
+                                    <CheckCircle2 className="h-4 w-4" />
+                                  </Button>
+                                </ConfirmAction>
+                              } />
+                              <TooltipContent>Confirmar efetivação</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger render={
+                                <ConfirmAction
+                                  title="Encerrar Contratação?"
+                                  description="O candidato será desligado. Se não for efetivado, envie um candidato de reposição."
+                                  variant="danger"
+                                  actionText="Encerrar"
+                                  onConfirm={() => handleTerminate(p.id)}
+                                >
+                                  <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600">
+                                    <XCircle className="h-4 w-4" />
+                                  </Button>
+                                </ConfirmAction>
+                              } />
+                              <TooltipContent>Encerrar contratação</TooltipContent>
+                            </Tooltip>
                           </>
                         )}
                         {p.status === "TERMINATED" && (
-                          <Link href="/admin/managed">
-                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-violet-50 hover:text-violet-600" title="Enviar candidato de reposição">
-                              <RefreshCw className="h-4 w-4" />
-                            </Button>
-                          </Link>
+                          <Tooltip>
+                            <TooltipTrigger render={
+                              <Link href="/admin/managed">
+                                <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-violet-50 hover:text-violet-600">
+                                  <RefreshCw className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                            } />
+                            <TooltipContent>Enviar candidato de reposição</TooltipContent>
+                          </Tooltip>
                         )}
                         {p.commission && (p.commission.status === "PENDING" || p.commission.status === "INVOICED") && (
-                          <CommissionModal commission={p.commission} candidateName={p.candidate.name} companyName={p.company.name} onUpdate={handleCommissionUpdate}>
-                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600">
-                              <DollarSign className="h-4 w-4" />
-                            </Button>
-                          </CommissionModal>
+                          <Tooltip>
+                            <TooltipTrigger render={
+                              <CommissionModal commission={p.commission} candidateName={p.candidate.name} companyName={p.company.name} onUpdate={handleCommissionUpdate}>
+                                <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600">
+                                  <DollarSign className="h-4 w-4" />
+                                </Button>
+                              </CommissionModal>
+                            } />
+                            <TooltipContent>Gerenciar comissão</TooltipContent>
+                          </Tooltip>
                         )}
                       </div>
                     </td>

@@ -6,7 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ConfirmAction } from "@/components/ui/confirm-action";
-import { Building2, Globe, Search, Users2, Zap, Trash2 } from "lucide-react";
+import {
+  Building2,
+  Globe,
+  Search,
+  Users2,
+  Zap,
+  Trash2,
+  MapPin,
+  Mail,
+} from "lucide-react";
 import Image from "next/image";
 import { PaginationBar } from "@/components/ui/pagination-bar";
 import { EditCompanyModal } from "@/components/admin/edit-company-modal";
@@ -14,7 +23,7 @@ import { deleteCompany } from "@/actions/companies";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 15;
 
 type Company = {
   id: string;
@@ -65,30 +74,54 @@ export function CompaniesGrid({ companies: initial }: { companies: Company[] }) 
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm max-w-md">
-        <Search className="h-4 w-4 text-slate-400 ml-2 shrink-0" />
-        <Input
-          placeholder="Buscar empresa por nome ou slug..."
-          className="border-none bg-transparent shadow-none focus-visible:ring-0 h-8 text-sm"
-          value={search}
-          onChange={(e) => handleSearch(e.target.value)}
-        />
-      </div>
-
-      {filtered.length === 0 ? (
-        <div className="py-10 text-center text-sm text-slate-400 font-medium">
-          Nenhuma empresa encontrada para &quot;{search}&quot;.
+      {/* Search */}
+      <Card className="p-4 border-slate-200 bg-white rounded-2xl shadow-sm">
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Input
+            placeholder="Buscar empresa por nome ou slug..."
+            className="h-11 pl-11 bg-slate-50 border-slate-200 rounded-xl text-sm font-medium w-full"
+            value={search}
+            onChange={(e) => handleSearch(e.target.value)}
+          />
         </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-          {paginated.map((company) => (
+      </Card>
+
+      {/* Results count */}
+      {search && (
+        <p className="text-xs font-bold text-slate-400 -mt-2">
+          {filtered.length} resultado{filtered.length !== 1 ? "s" : ""} para &ldquo;{search}&rdquo;
+        </p>
+      )}
+
+      {/* List */}
+      <div className="space-y-3">
+        {paginated.length === 0 ? (
+          <Card className="p-12 text-center border-slate-200 bg-white rounded-2xl">
+            <Building2 className="h-12 w-12 text-slate-200 mx-auto mb-4" />
+            {search ? (
+              <p className="text-slate-400 font-bold">
+                Nenhuma empresa encontrada para &ldquo;{search}&rdquo;.
+              </p>
+            ) : (
+              <>
+                <p className="text-slate-700 font-black text-lg">Nenhuma empresa cadastrada</p>
+                <p className="text-slate-400 text-sm mt-1">
+                  Comece cadastrando seu primeiro cliente.
+                </p>
+              </>
+            )}
+          </Card>
+        ) : (
+          paginated.map((company) => (
             <Card
               key={company.id}
-              className="group overflow-hidden border-slate-200 bg-white rounded-2xl hover:border-blue-500/30 transition-all hover:shadow-lg hover:shadow-blue-500/5"
+              className="p-5 border-slate-200 bg-white rounded-2xl shadow-sm hover:border-blue-200 hover:shadow-md transition-all group"
             >
-              <div className="p-4">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="h-14 w-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-slate-400 text-lg overflow-hidden shrink-0">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                {/* Logo + Name */}
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                  <div className="h-14 w-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-slate-400 text-xl overflow-hidden shrink-0">
                     {company.logoUrl ? (
                       <Image
                         src={company.logoUrl}
@@ -101,10 +134,70 @@ export function CompaniesGrid({ companies: initial }: { companies: Company[] }) 
                       company.name.charAt(0)
                     )}
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Badge className="rounded-lg px-2 py-0.5 text-[9px] font-black uppercase border-none bg-blue-50 text-blue-600">
-                      Cliente
-                    </Badge>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="font-black text-base text-slate-900 group-hover:text-blue-600 transition-colors truncate">
+                        {company.name}
+                      </h4>
+                      <Badge className="rounded-md px-2 py-0.5 text-[9px] font-black uppercase border-none bg-blue-50 text-blue-600 shrink-0">
+                        Cliente
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <Globe className="h-3 w-3 text-slate-400 shrink-0" />
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight truncate">
+                        {company.slug}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Meta info */}
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 sm:flex-nowrap">
+                  {company.location && (
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                      <span className="text-xs font-bold text-slate-500">{company.location}</span>
+                    </div>
+                  )}
+                  {company.email && (
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <Mail className="h-3.5 w-3.5 text-slate-400" />
+                      <span className="text-xs font-bold text-slate-500 truncate max-w-[160px]">
+                        {company.email}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Stats + Actions */}
+                <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 border-t sm:border-none pt-4 sm:pt-0 mt-1 sm:mt-0">
+                  <div className="flex items-center gap-4">
+                    <div className="text-center">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                        Vagas
+                      </p>
+                      <div className="flex items-center gap-1 justify-center mt-0.5">
+                        <Zap className="h-3 w-3 text-indigo-500" />
+                        <span className="text-sm font-black text-slate-900">
+                          {company._count.jobs}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                        Usuários
+                      </p>
+                      <div className="flex items-center gap-1 justify-center mt-0.5">
+                        <Users2 className="h-3 w-3 text-blue-500" />
+                        <span className="text-sm font-black text-slate-900">
+                          {company._count.users}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
                     <EditCompanyModal company={company} />
                     <ConfirmAction
                       title="Excluir Empresa?"
@@ -116,68 +209,21 @@ export function CompaniesGrid({ companies: initial }: { companies: Company[] }) 
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 rounded-lg hover:bg-rose-50 hover:text-rose-600"
+                        className="h-10 w-10 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-slate-400"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </ConfirmAction>
                   </div>
                 </div>
-
-                <div className="space-y-1 mb-4">
-                  <h4 className="text-base font-black text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">
-                    {company.name}
-                  </h4>
-                  <div className="flex items-center gap-1.5 text-slate-400">
-                    <Globe className="h-3 w-3 shrink-0" />
-                    <span className="text-[9px] font-bold uppercase tracking-tight truncate">
-                      {company.slug}.cevan.com.br
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 pt-3 border-t border-slate-50">
-                  <div className="flex items-center gap-1.5">
-                    <Zap className="h-3.5 w-3.5 text-blue-500" />
-                    <div className="flex flex-col">
-                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">
-                        Vagas
-                      </span>
-                      <span className="text-xs font-black text-slate-900">
-                        {company._count.jobs}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Users2 className="h-3.5 w-3.5 text-indigo-500" />
-                    <div className="flex flex-col">
-                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">
-                        Usuários
-                      </span>
-                      <span className="text-xs font-black text-slate-900">
-                        {company._count.users}
-                      </span>
-                    </div>
-                  </div>
-                </div>
               </div>
             </Card>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
 
       {totalPages > 1 && (
         <PaginationBar page={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-      )}
-
-      {companies.length === 0 && (
-        <div className="py-20 text-center">
-          <Building2 className="h-16 w-16 text-slate-100 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-slate-900">Nenhuma empresa cadastrada</h3>
-          <p className="text-slate-400 text-sm max-w-xs mx-auto mt-1">
-            Comece cadastrando seu primeiro cliente.
-          </p>
-        </div>
       )}
     </div>
   );

@@ -14,10 +14,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Pencil, Loader2, Save } from "lucide-react";
+import { Pencil, Loader2, Save, Percent, Clock, Receipt } from "lucide-react";
 import { updateJob } from "@/actions/jobs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 type Job = {
   id: string;
@@ -32,6 +33,10 @@ type Job = {
   benefits: string | null;
   tips: string | null;
   openings: number;
+  feeType?: string | null;
+  feePercentage?: number | null;
+  feeFixed?: number | null;
+  trialDays?: number | null;
 };
 
 export function EditJobModal({ job }: { job: Job }) {
@@ -50,6 +55,15 @@ export function EditJobModal({ job }: { job: Job }) {
   const [responsibilities, setResponsibilities] = useState(job.responsibilities ?? "");
   const [benefits, setBenefits] = useState(job.benefits ?? "");
   const [tips, setTips] = useState(job.tips ?? "");
+  const [feeType, setFeeType] = useState<"percentage" | "fixed">(
+    (job.feeType as "percentage" | "fixed") ?? "percentage"
+  );
+  const [feeValue, setFeeValue] = useState(
+    job.feeType === "fixed"
+      ? String((job.feeFixed ?? 0) / 100)
+      : String(job.feePercentage ?? "")
+  );
+  const [trialDays, setTrialDays] = useState(String(job.trialDays ?? 90));
 
   function handleSave() {
     startTransition(async () => {
@@ -65,6 +79,10 @@ export function EditJobModal({ job }: { job: Job }) {
         responsibilities: responsibilities || undefined,
         benefits: benefits || undefined,
         tips: tips || undefined,
+        feeType,
+        feePercentage: feeType === "percentage" && feeValue ? parseFloat(feeValue) : null,
+        feeFixed: feeType === "fixed" && feeValue ? Math.round(parseFloat(feeValue) * 100) : null,
+        trialDays: trialDays ? parseInt(trialDays) : null,
       });
 
       if (result.success) {
@@ -87,7 +105,7 @@ export function EditJobModal({ job }: { job: Job }) {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600"
+            className="h-10 w-10 rounded-xl hover:bg-blue-50 hover:text-blue-600 text-slate-400"
           >
             <Pencil className="h-4 w-4" />
           </Button>
@@ -135,11 +153,7 @@ export function EditJobModal({ job }: { job: Job }) {
 
             <div className="space-y-2">
               <Label className="font-bold text-slate-700">Status</Label>
-              <select
-                className={selectCls}
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-              >
+              <select className={selectCls} value={status} onChange={(e) => setStatus(e.target.value)}>
                 <option value="ACTIVE">Triagem Ativa</option>
                 <option value="DRAFT">Rascunho</option>
                 <option value="CLOSED">Encerrada</option>
@@ -157,7 +171,7 @@ export function EditJobModal({ job }: { job: Job }) {
               />
             </div>
 
-            <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+            <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100 md:col-span-2">
               <input
                 type="checkbox"
                 id="editIsRemote"
@@ -168,6 +182,75 @@ export function EditJobModal({ job }: { job: Job }) {
               <Label htmlFor="editIsRemote" className="font-bold text-slate-700 cursor-pointer">
                 Vaga 100% Remota
               </Label>
+            </div>
+          </div>
+
+          {/* Configurações Comerciais */}
+          <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <Receipt className="h-4 w-4 text-blue-600" />
+              <p className="text-sm font-black text-blue-900">Configurações Comerciais</p>
+              <span className="text-[10px] font-bold text-blue-400 ml-1">por vaga</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="font-bold text-slate-700 flex items-center gap-1.5">
+                  <Percent className="h-3.5 w-3.5 text-slate-400" /> Taxa de Curadoria
+                </Label>
+                <div className="flex items-center gap-2 bg-white rounded-xl border border-slate-200 p-1">
+                  <button
+                    type="button"
+                    onClick={() => setFeeType("percentage")}
+                    className={cn(
+                      "flex-1 py-2 rounded-lg text-xs font-bold transition-all",
+                      feeType === "percentage" ? "bg-blue-600 text-white shadow-sm" : "text-slate-500 hover:text-slate-700"
+                    )}
+                  >
+                    Percentual
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFeeType("fixed")}
+                    className={cn(
+                      "flex-1 py-2 rounded-lg text-xs font-bold transition-all",
+                      feeType === "fixed" ? "bg-blue-600 text-white shadow-sm" : "text-slate-500 hover:text-slate-700"
+                    )}
+                  >
+                    Valor Fixo
+                  </button>
+                </div>
+                <Input
+                  type="number"
+                  min={0}
+                  placeholder={feeType === "percentage" ? "Ex: 50 (%)" : "Ex: 2500 (R$)"}
+                  className="h-11 bg-white border-slate-200 rounded-xl font-bold"
+                  value={feeValue}
+                  onChange={(e) => setFeeValue(e.target.value)}
+                />
+                <p className="text-[10px] text-slate-400 font-medium">
+                  {feeType === "percentage"
+                    ? "Percentual do 1º salário mensal do candidato"
+                    : "Valor fixo em R$ cobrado na efetivação"}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="font-bold text-slate-700 flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5 text-slate-400" /> Período de Experiência
+                </Label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={365}
+                  className="h-11 bg-white border-slate-200 rounded-xl font-bold"
+                  value={trialDays}
+                  onChange={(e) => setTrialDays(e.target.value)}
+                />
+                <p className="text-[10px] text-slate-400 font-medium">
+                  Dias de experiência antes da efetivação (padrão: 90 dias)
+                </p>
+              </div>
             </div>
           </div>
 
@@ -230,11 +313,7 @@ export function EditJobModal({ job }: { job: Job }) {
             disabled={isPending || !title || !description}
             className="rounded-xl font-black h-11 px-8 bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 uppercase text-xs tracking-widest"
           >
-            {isPending ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Save className="h-4 w-4 mr-2" />
-            )}
+            {isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
             {isPending ? "Salvando..." : "Salvar Alterações"}
           </Button>
         </DialogFooter>

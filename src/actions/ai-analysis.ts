@@ -121,16 +121,18 @@ export async function analyzeCandidate(
     };
   }
 
-  const jobContext = [
-    `Vaga: ${application.job.title}`,
-    application.job.description ? `Descrição: ${application.job.description}` : "",
-    application.job.requirements ? `Requisitos: ${application.job.requirements}` : "",
-    application.job.responsibilities
-      ? `Responsabilidades: ${application.job.responsibilities}`
-      : "",
-  ]
-    .filter(Boolean)
-    .join("\n\n");
+  const jobContext = application.job
+    ? [
+        `Vaga: ${application.job.title}`,
+        application.job.description ? `Descrição: ${application.job.description}` : "",
+        application.job.requirements ? `Requisitos: ${application.job.requirements}` : "",
+        application.job.responsibilities
+          ? `Responsabilidades: ${application.job.responsibilities}`
+          : "",
+      ]
+        .filter(Boolean)
+        .join("\n\n")
+    : "Análise geral de perfil (candidato sem vaga específica — avalie pontos fortes e experiências relevantes).";
 
   const candidateContext = [
     `Candidato: ${application.candidate.name ?? "Sem nome"}`,

@@ -100,35 +100,35 @@ export default async function AdminPage() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {stats.map((stat) => (
-          <Card key={stat.name} className="p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
-            <div className="flex items-center justify-between mb-4">
+          <Card key={stat.name} className="p-3.5 sm:p-5 border-slate-200 bg-white rounded-2xl shadow-sm">
+            <div className="flex items-start justify-between mb-3 sm:mb-4">
               <Tooltip>
                 <TooltipTrigger render={
-                  <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center cursor-default">
-                    <stat.icon className="h-5 w-5 text-slate-600" />
+                  <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center cursor-default shrink-0">
+                    <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600" />
                   </div>
                 } />
                 <TooltipContent>{stat.tooltip}</TooltipContent>
               </Tooltip>
-              <Badge className="bg-slate-100 text-slate-600 border-none font-bold text-[10px]">{stat.change}</Badge>
+              <Badge className="bg-slate-100 text-slate-600 border-none font-bold text-[9px] sm:text-[10px] text-right leading-tight max-w-[80px] sm:max-w-none">{stat.change}</Badge>
             </div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.name}</p>
-            <h3 className="text-2xl font-black text-slate-900">{stat.value}</h3>
+            <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">{stat.name}</p>
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">{stat.value}</h3>
           </Card>
         ))}
       </div>
 
       {/* Charts */}
-      <Card className="p-6 border-slate-200 bg-white rounded-2xl shadow-sm">
-        <div className="flex items-center justify-between mb-8">
+      <Card className="p-4 sm:p-6 border-slate-200 bg-white rounded-2xl shadow-sm">
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
           <div>
-            <h3 className="text-lg font-bold text-slate-900">Evolução de Receita</h3>
-            <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">Últimos 6 Meses (Comissões Pagas)</p>
+            <h3 className="text-base sm:text-lg font-bold text-slate-900">Evolução de Receita</h3>
+            <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">Últimos 6 Meses</p>
           </div>
         </div>
-        <div className="h-[200px] w-full flex items-end gap-3 px-2">
+        <div className="h-[160px] sm:h-[200px] w-full flex items-end gap-1.5 sm:gap-3 px-1 sm:px-2">
           {revenueChartBars.map((bar, i) => (
             <div key={i} className="flex-1 flex flex-col items-center gap-3 group">
               <div className="w-full flex flex-col justify-end" style={{ height: "100%" }}>
@@ -144,7 +144,7 @@ export default async function AdminPage() {
       </Card>
 
       {/* Operations row */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* ATS metrics */}
         <Card className="p-6 border-slate-200 bg-white rounded-2xl shadow-sm">
           <div className="flex items-center gap-2 mb-4">
@@ -168,7 +168,7 @@ export default async function AdminPage() {
         </Card>
 
         {/* Recent activity */}
-        <Card className="lg:col-span-2 p-6 border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden">
+        <Card className="md:col-span-2 lg:col-span-2 p-4 sm:p-6 border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <Activity className="h-4 w-4 text-emerald-500" /> Atividade Recente
@@ -181,7 +181,7 @@ export default async function AdminPage() {
                 <div className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 rounded-full bg-blue-500" />
                   <p className="text-[11px] font-medium text-slate-700 truncate max-w-[200px]">
-                    {app.candidate.name} → {app.job.title}
+                    {app.candidate.name} → {app.job?.title ?? "Sem vaga"}
                   </p>
                 </div>
                 <span className="text-[9px] font-bold text-slate-400 shrink-0">
@@ -231,7 +231,7 @@ export default async function AdminPage() {
         </div>
 
         {curationJobs.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {curationJobs.map((job) => (
               <div key={job.id} className="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition-all cursor-pointer group">
                 <div className="flex justify-between items-start mb-3">

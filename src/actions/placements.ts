@@ -8,6 +8,37 @@ import { getSettings } from "@/actions/settings";
 import { requireAdminPermission, ok, fail } from "@/lib/permissions";
 import { logAction } from "@/lib/audit";
 
+async function resolveFeeAndTrial(job: {
+  feeType?: string | null;
+  feePercentage?: number | null;
+  feeFixed?: number | null;
+  trialDays?: number | null;
+} | null, monthlySalary: number) {
+  const trialDays = job?.trialDays ?? 90;
+
+  if (job?.feeType) {
+    const isFixed = job.feeType === "fixed";
+    const feePercentage = isFixed ? 0 : (job.feePercentage ?? 50);
+    const commissionAmount = isFixed
+      ? (job.feeFixed ?? 0)
+      : Math.round((monthlySalary * feePercentage) / 100);
+    return { trialDays, feePercentage, commissionAmount };
+  }
+
+  const feeSettings = await getSettings([
+    "managed.fee_type",
+    "managed.fee_percentage",
+    "managed.fee_fixed",
+  ]);
+  const isFixed = (feeSettings["managed.fee_type"] || "percentage") === "fixed";
+  const feePercentage = isFixed ? 0 : parseFloat(feeSettings["managed.fee_percentage"] || "50");
+  const commissionAmount = isFixed
+    ? Math.round(parseFloat(feeSettings["managed.fee_fixed"] || "0") * 100)
+    : Math.round((monthlySalary * (isNaN(feePercentage) ? 50 : feePercentage)) / 100);
+
+  return { trialDays, feePercentage, commissionAmount };
+}
+
 export async function createPlacement(data: {
   applicationId: string;
   monthlySalary: number;
@@ -27,9 +58,10 @@ export async function createPlacement(data: {
     if (application.status !== "HIRED") return fail("Candidato precisa ter status HIRED.");
     if (application.placement) return fail("Esta candidatura já possui uma alocação.");
 
+    const { trialDays } = await resolveFeeAndTrial(application.job as any, data.monthlySalary);
     const start = new Date(data.startDate);
     const trialEnd = new Date(start);
-    trialEnd.setDate(trialEnd.getDate() + 90);
+    trialEnd.setDate(trialEnd.getDate() + trialDays);
 
     await prisma.placement.create({
       data: {
@@ -82,7 +114,7 @@ export async function confirmEffective(placementId: string) {
 
     if (role === "EMPLOYER") {
       const companyId = (session.user as any).companyId;
-      if (placement.application.job.companyId !== companyId) {
+      if (placement.application.job?.companyId !== companyId) {
         return fail("Não autorizado.");
       }
     }
@@ -137,7 +169,7 @@ export async function terminatePlacement(placementId: string, reason?: string) {
 
     if (role === "EMPLOYER") {
       const companyId = (session.user as any).companyId;
-      if (placement.application.job.companyId !== companyId) {
+      if (placement.application.job?.companyId !== companyId) {
         return fail("Não autorizado.");
       }
     }
@@ -151,10 +183,12 @@ export async function terminatePlacement(placementId: string, reason?: string) {
       },
     });
 
-    await prisma.job.update({
-      where: { id: placement.application.job.id },
-      data: { status: "ACTIVE" },
-    });
+    if (placement.application.job?.id) {
+      await prisma.job.update({
+        where: { id: placement.application.job.id },
+        data: { status: "ACTIVE" },
+      });
+    }
 
     await logAction("TERMINATE_PLACEMENT", `Encerrou alocação ${placementId}`);
     revalidatePath("/admin/placements");
@@ -179,21 +213,18 @@ export async function hireAndPlace(data: {
   if (permError) return permError;
 
   try {
+    const jobForFee = await prisma.application.findUnique({
+      where: { id: data.applicationId },
+      select: { job: { select: { feeType: true, feePercentage: true, feeFixed: true, trialDays: true } as any } },
+    });
+    const { feePercentage, commissionAmount, trialDays } = await resolveFeeAndTrial(
+      (jobForFee?.job as any) ?? null,
+      data.monthlySalary
+    );
+
     const start = new Date(data.startDate);
     const trialEnd = new Date(start);
-    trialEnd.setDate(trialEnd.getDate() + 90);
-
-    // Fetch fee settings outside the transaction
-    const feeSettings = await getSettings([
-      "managed.fee_type",
-      "managed.fee_percentage",
-      "managed.fee_fixed",
-    ]);
-    const isFixed = (feeSettings["managed.fee_type"] || "percentage") === "fixed";
-    const feePercentage = isFixed ? 0 : parseFloat(feeSettings["managed.fee_percentage"] ?? "50");
-    const commissionAmount = isFixed
-      ? Math.round(parseFloat(feeSettings["managed.fee_fixed"] ?? "0") * 100)
-      : Math.round((data.monthlySalary * feePercentage) / 100);
+    trialEnd.setDate(trialEnd.getDate() + trialDays);
 
     await prisma.$transaction(async (tx) => {
       // Get application to resolve jobId and companyId
@@ -213,10 +244,12 @@ export async function hireAndPlace(data: {
         data: { status: "HIRED" },
       });
 
-      await tx.job.update({
-        where: { id: application.jobId },
-        data: { status: "CLOSED" },
-      });
+      if (application.jobId) {
+        await tx.job.update({
+          where: { id: application.jobId },
+          data: { status: "CLOSED" },
+        });
+      }
 
       const placement = await tx.placement.create({
         data: {
@@ -251,7 +284,7 @@ export async function hireAndPlace(data: {
             amount: commissionAmount,
             status: "PENDING",
             dueDate,
-            companyId: application.job.companyId,
+            companyId: application.job?.companyId ?? "",
           },
         });
       }
@@ -280,21 +313,19 @@ export async function adminAllocateCandidate(data: {
   const permError = requireAdminPermission(session, "PLACEMENTS");
   if (permError) return permError;
 
-  const start = new Date(data.startDate);
-  const trialEnd = new Date(start);
-  trialEnd.setDate(trialEnd.getDate() + 90);
-
   try {
-    const feeSettings = await getSettings([
-      "managed.fee_type",
-      "managed.fee_percentage",
-      "managed.fee_fixed",
-    ]);
-    const isFixed = (feeSettings["managed.fee_type"] || "percentage") === "fixed";
-    const feePercentage = isFixed ? 0 : parseFloat(feeSettings["managed.fee_percentage"] ?? "50");
-    const commissionAmount = isFixed
-      ? Math.round(parseFloat(feeSettings["managed.fee_fixed"] ?? "0") * 100)
-      : Math.round((data.monthlySalary * feePercentage) / 100);
+    const jobForFee = await prisma.job.findUnique({
+      where: { id: data.jobId },
+      select: { feeType: true, feePercentage: true, feeFixed: true, trialDays: true } as any,
+    });
+    const { feePercentage, commissionAmount, trialDays } = await resolveFeeAndTrial(
+      (jobForFee as any) ?? null,
+      data.monthlySalary
+    );
+
+    const start = new Date(data.startDate);
+    const trialEnd = new Date(start);
+    trialEnd.setDate(trialEnd.getDate() + trialDays);
 
     await prisma.$transaction(async (tx) => {
       const job = await tx.job.findUnique({
@@ -318,6 +349,7 @@ export async function adminAllocateCandidate(data: {
       const resumeUrl = candidate.applications[0]?.resumeUrl ?? "";
       if (!resumeUrl) throw new Error("Candidato não possui currículo cadastrado.");
 
+      // Check if already linked to this job
       let application = await tx.application.findUnique({
         where: { jobId_candidateId: { jobId: data.jobId, candidateId: data.candidateId } },
       });
@@ -332,14 +364,26 @@ export async function adminAllocateCandidate(data: {
           data: { status: "HIRED" },
         });
       } else {
-        application = await tx.application.create({
-          data: {
-            jobId: data.jobId,
-            candidateId: data.candidateId,
-            resumeUrl,
-            status: "HIRED",
-          },
+        // Reuse manual application (jobId = null) if exists, avoiding duplicate records
+        const manualApp = await tx.application.findFirst({
+          where: { candidateId: data.candidateId, jobId: null },
         });
+
+        if (manualApp) {
+          application = await tx.application.update({
+            where: { id: manualApp.id },
+            data: { jobId: data.jobId, status: "HIRED" },
+          });
+        } else {
+          application = await tx.application.create({
+            data: {
+              jobId: data.jobId,
+              candidateId: data.candidateId,
+              resumeUrl,
+              status: "HIRED",
+            },
+          });
+        }
       }
 
       await tx.job.update({

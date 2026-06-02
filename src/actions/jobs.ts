@@ -34,6 +34,10 @@ const createJobSchema = z.object({
   contractType: z.string().optional(),
   experienceLevel: z.string().optional(),
   openings: z.coerce.number().int().min(1).default(1),
+  feeType: z.enum(["percentage", "fixed"]).optional(),
+  feePercentage: z.coerce.number().min(0).max(100).optional(),
+  feeFixed: z.coerce.number().min(0).optional(),
+  trialDays: z.coerce.number().int().min(1).max(365).optional(),
 });
 
 export type CreateJobState = {
@@ -81,6 +85,7 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
   const {
     title, description, location, isRemote, salaryRange, type,
     requirements, responsibilities, benefits, tips, contractType, experienceLevel, openings,
+    feeType, feePercentage, feeFixed, trialDays,
   } = validatedFields.data;
 
   const targetCompanyId =
@@ -108,9 +113,13 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
         title, slug, description, location, isRemote, salaryRange, type,
         requirements, responsibilities, benefits, tips, contractType, experienceLevel,
         openings,
+        feeType: feeType ?? null,
+        feePercentage: feeType === "percentage" ? (feePercentage ?? null) : null,
+        feeFixed: feeType === "fixed" ? (feeFixed ? Math.round(feeFixed * 100) : null) : null,
+        trialDays: trialDays ?? null,
         status: JobStatus.ACTIVE,
         companyId: targetCompanyId,
-      },
+      } as any,
     });
 
     revalidatePath("/jobs");
@@ -139,6 +148,10 @@ export async function updateJob(
     tips?: string;
     status: JobStatus;
     openings?: number;
+    feeType?: string | null;
+    feePercentage?: number | null;
+    feeFixed?: number | null;
+    trialDays?: number | null;
   }
 ) {
   const session = await auth();
@@ -146,7 +159,7 @@ export async function updateJob(
   if (permError) return permError;
 
   try {
-    await prisma.job.update({ where: { id: jobId }, data });
+    await prisma.job.update({ where: { id: jobId }, data: data as any });
     revalidatePath("/admin/managed");
     revalidatePath("/admin");
     return ok();

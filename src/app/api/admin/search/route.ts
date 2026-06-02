@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     .map((a) => ({
       name: a.candidate.name,
       email: a.candidate.email,
-      job: a.job.title,
+      job: a.job?.title ?? "—",
     }));
 
   return NextResponse.json({

@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 import { ResumesExportButton } from "@/components/admin/resumes-export-button";
+import { AddResumeModal } from "@/components/admin/add-resume-modal";
 import { PaginationBar } from "@/components/ui/pagination-bar";
 import { ResumeCardWithModal } from "@/components/admin/resume-card-with-modal";
 import { CompanyFilterSelect } from "@/components/admin/company-filter-select";
@@ -146,15 +147,7 @@ export default async function ResumesPage({
             Gestão centralizada de todos os talentos recebidos pelo sistema.
           </p>
         </div>
-        <ResumesExportButton
-          searchParams={new URLSearchParams({
-            ...(query && { q: query }),
-            ...(typeFilter && { type: typeFilter }),
-            ...(statusFilter && { status: statusFilter }),
-            ...(sort !== "desc" && { sort }),
-            ...(companyFilter && { company: companyFilter }),
-          }).toString()}
-        />
+        <AddResumeModal />
       </div>
 
       {/* Stats */}
@@ -185,6 +178,7 @@ export default async function ResumesPage({
             {sort !== "desc" && <input type="hidden" name="sort" value={sort} />}
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
+              key={query}
               name="q"
               defaultValue={query}
               placeholder="Buscar por nome, email, vaga ou empresa..."

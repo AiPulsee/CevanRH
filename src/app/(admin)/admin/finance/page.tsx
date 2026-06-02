@@ -41,8 +41,8 @@ export default async function AdminFinancePage() {
     paidAt: c.paidAt,
     candidateName: c.placement.application.candidate.name ?? "Sem Nome",
     candidateEmail: c.placement.application.candidate.email ?? "",
-    companyName: c.placement.application.job.company.name,
-    jobTitle: c.placement.application.job.title,
+    companyName: c.placement.application.job?.company.name ?? "—",
+    jobTitle: c.placement.application.job?.title ?? "—",
   }));
 
   function fmt(cents: number) {
@@ -122,7 +122,7 @@ export default async function AdminFinancePage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {stats.map((s) => (
           <Card
             key={s.name}

@@ -35,6 +35,10 @@ export default async function AdminManagedJobs({
         tips: true,
         openings: true,
         company: { select: { name: true, logoUrl: true } },
+        feeType: true,
+        feePercentage: true,
+        feeFixed: true,
+        trialDays: true,
         _count: { select: { applications: true } },
         applications: {
           select: {

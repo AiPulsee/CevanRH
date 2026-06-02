@@ -295,15 +295,29 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
 
         {apps.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-white">
-            <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center mb-6">
-              <Briefcase className="h-8 w-8 text-slate-300" />
-            </div>
-            <h3 className="text-xl font-black text-slate-900 tracking-tight">Triagem concluída</h3>
-            <p className="text-sm text-slate-500 max-w-sm mx-auto mt-2 leading-relaxed">
-              Todos os currículos deste lote foram processados.
-            </p>
+            {applications.length === 0 ? (
+              <>
+                <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-6">
+                  <Briefcase className="h-8 w-8 text-blue-300" />
+                </div>
+                <h3 className="text-xl font-black text-slate-900 tracking-tight">Aguardando candidatos</h3>
+                <p className="text-sm text-slate-500 max-w-sm mx-auto mt-2 leading-relaxed">
+                  Nenhum candidato se inscreveu nesta vaga ainda. Compartilhe o link da vaga para receber inscrições.
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mb-6">
+                  <CheckCircle2 className="h-8 w-8 text-emerald-400" />
+                </div>
+                <h3 className="text-xl font-black text-slate-900 tracking-tight">Triagem concluída</h3>
+                <p className="text-sm text-slate-500 max-w-sm mx-auto mt-2 leading-relaxed">
+                  Todos os {applications.length} currículos deste lote foram processados.
+                </p>
+              </>
+            )}
             <Button onClick={() => setIsOpen(false)} className="mt-8 rounded-xl h-11 px-8 font-bold bg-slate-900 text-white w-full sm:w-auto">
-              Sair
+              Fechar
             </Button>
           </div>
         ) : (
