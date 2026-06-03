@@ -62,7 +62,7 @@ export function CreateCompanyModal() {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-xl w-[95vw] bg-white rounded-[1.5rem] sm:rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden max-h-[95vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-xl w-[95vw] bg-white rounded-[1.5rem] sm:rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden max-h-[95vh] flex flex-col">
         <div className="bg-slate-900 p-6 sm:p-10 text-white flex-shrink-0">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
@@ -77,7 +77,7 @@ export function CreateCompanyModal() {
           </DialogHeader>
         </div>
 
-        <div className="p-6 sm:p-8 space-y-6">
+        <div className="p-6 sm:p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label className="font-bold text-slate-700">Logotipo</Label>

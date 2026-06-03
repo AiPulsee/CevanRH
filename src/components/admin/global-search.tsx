@@ -171,8 +171,8 @@ export function GlobalSearch() {
                       onSelect={() => { setOpen(false); setQuery(""); }}
                       primary={j.title}
                       secondary={j.company}
-                      badge={j.type === "MANAGED" ? "Curadoria" : "Público"}
-                      badgeColor={j.type === "MANAGED" ? "blue" : "emerald"}
+                      badge="Curadoria"
+                      badgeColor="blue"
                     />
                   ))}
                 </Section>

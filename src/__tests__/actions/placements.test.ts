@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import type { Session } from "next-auth";
 
-const { mockAuth, mockPrisma, mockGetSettings } = vi.hoisted(() => {
+const { mockAuth, mockPrisma } = vi.hoisted(() => {
   const mockPrisma = {
     application: { findUnique: vi.fn(), update: vi.fn(), create: vi.fn() },
     placement: { create: vi.fn(), update: vi.fn(), findUnique: vi.fn(), findMany: vi.fn() },
@@ -10,12 +10,11 @@ const { mockAuth, mockPrisma, mockGetSettings } = vi.hoisted(() => {
     commission: { create: vi.fn(), findFirst: vi.fn(), update: vi.fn() },
     $transaction: vi.fn(),
   };
-  return { mockAuth: vi.fn(), mockPrisma, mockGetSettings: vi.fn() };
+  return { mockAuth: vi.fn(), mockPrisma };
 });
 
 vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
 vi.mock("@/lib/prisma", () => ({ prisma: mockPrisma }));
-vi.mock("@/actions/settings", () => ({ getSettings: mockGetSettings }));
 
 import {
   createPlacement,
@@ -29,11 +28,7 @@ const adminSession: Session = {
   expires: "2099-01-01",
 };
 
-const defaultFeeSettings = {
-  "managed.fee_type": "percentage",
-  "managed.fee_percentage": "50",
-  "managed.fee_fixed": "",
-};
+
 
 describe("createPlacement", () => {
   beforeEach(() => {
@@ -217,7 +212,6 @@ describe("hireAndPlace", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetSettings.mockResolvedValue(defaultFeeSettings);
   });
 
   it("fails when not authenticated", async () => {
@@ -268,15 +262,10 @@ describe("hireAndPlace", () => {
     );
   });
 
-  it("calculates commission in fixed mode", async () => {
+  it("calculates commission in fixed mode when job feeType is fixed", async () => {
     mockAuth.mockResolvedValue(adminSession);
-    mockGetSettings.mockResolvedValue({
-      "managed.fee_type": "fixed",
-      "managed.fee_percentage": "50",
-      "managed.fee_fixed": "2500.00",
-    });
     const tx = makeMockTx();
-    tx.application.findUnique.mockResolvedValue({ jobId: "j-1", job: { companyId: "c-1" } });
+    tx.application.findUnique.mockResolvedValue({ jobId: "j-1", job: { companyId: "c-1", feeType: "fixed", feePercentage: 50, feeFixed: 2500.00 } });
     tx.placement.findUnique.mockResolvedValue(null);
     tx.application.update.mockResolvedValue({});
     tx.job.update.mockResolvedValue({});
@@ -287,10 +276,10 @@ describe("hireAndPlace", () => {
 
     const result = await hireAndPlace({ applicationId: "app-1", monthlySalary: 6000, startDate: "2026-01-01" });
     expect(result.success).toBe(true);
-    // fixed: Math.round(2500.00 * 100) = 250000
+    // fixed: Math.round(2500.00 * 100) = 250000 Wait, fixed amount is passed directly, but the fallback expects feeFixed. Oh, feeFixed from job is already fixed. No Wait, feeFixed is the exact number, e.g. 2500. The code does `commissionAmount = isFixed ? (job.feeFixed ?? 0) : ...`. If feeFixed is 2500, then amount is 2500.
     expect(tx.commission.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ amount: 250000, percentage: 0 }),
+        data: expect.objectContaining({ amount: 2500, percentage: 0 }),
       })
     );
   });

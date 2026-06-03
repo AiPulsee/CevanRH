@@ -19,6 +19,7 @@ export default async function AdminPage() {
 
   const [
     companiesCount,
+    newCompaniesThisMonth,
     managedActiveCount,
     applicantsToScreen,
     monthlyRevenue,
@@ -28,6 +29,7 @@ export default async function AdminPage() {
     effectiveCount,
   ] = await Promise.all([
     prisma.company.count(),
+    prisma.company.count({ where: { createdAt: { gte: monthStart } } }),
     prisma.job.count({ where: { type: "MANAGED", status: "ACTIVE" } }),
     prisma.application.count({ where: { status: "APPLIED" } }),
     prisma.commission.aggregate({
@@ -79,7 +81,7 @@ export default async function AdminPage() {
   );
 
   const stats = [
-    { name: "Empresas Cadastradas", value: companiesCount.toString(), icon: Building2, change: "Total na plataforma", tooltip: "Número total de empresas clientes cadastradas na plataforma" },
+    { name: "Novas Empresas", value: newCompaniesThisMonth.toString(), icon: Building2, change: "Neste mês", tooltip: "Número de novas empresas clientes cadastradas neste mês" },
     { name: "Vagas em Curadoria", value: managedActiveCount.toString(), icon: Zap, change: "Ativas agora", tooltip: "Vagas do tipo Curadoria com status Ativo — aguardando triagem de candidatos pela equipe Cevan" },
     { name: "Candidatos p/ Triar", value: applicantsToScreen.toString(), icon: Users2, change: "Aguardando revisão", tooltip: "Candidatos com status Candidatado que ainda não foram revisados pela equipe" },
     { name: "Receita do Mês", value: `R$ ${revenueFormatted}`, icon: TrendingUp, change: "Comissões pagas", tooltip: "Total de comissões com status Pago recebidas no mês corrente" },
@@ -199,7 +201,7 @@ export default async function AdminPage() {
           <h3 className="text-sm font-bold mb-4">Plataforma</h3>
           <div className="space-y-4">
             <div>
-              <p className="text-[9px] font-bold uppercase text-blue-200">Candidaturas Totais</p>
+              <p className="text-[9px] font-bold uppercase text-blue-200">Fila de Triagem</p>
               <p className="text-xl font-black">{applicantsToScreen}</p>
               <div className="h-1 w-full bg-white/20 rounded-full mt-1.5">
                 <div className="h-full bg-white rounded-full w-full" />

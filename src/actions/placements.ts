@@ -4,7 +4,6 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { PlacementStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { getSettings } from "@/actions/settings";
 import { requireAdminPermission, ok, fail } from "@/lib/permissions";
 import { logAction } from "@/lib/audit";
 
@@ -25,16 +24,10 @@ async function resolveFeeAndTrial(job: {
     return { trialDays, feePercentage, commissionAmount };
   }
 
-  const feeSettings = await getSettings([
-    "managed.fee_type",
-    "managed.fee_percentage",
-    "managed.fee_fixed",
-  ]);
-  const isFixed = (feeSettings["managed.fee_type"] || "percentage") === "fixed";
-  const feePercentage = isFixed ? 0 : parseFloat(feeSettings["managed.fee_percentage"] || "50");
-  const commissionAmount = isFixed
-    ? Math.round(parseFloat(feeSettings["managed.fee_fixed"] || "0") * 100)
-    : Math.round((monthlySalary * (isNaN(feePercentage) ? 50 : feePercentage)) / 100);
+  // Fallbacks Se a vaga não tiver nada configurado
+  const isFixed = false;
+  const feePercentage = 50;
+  const commissionAmount = Math.round((monthlySalary * feePercentage) / 100);
 
   return { trialDays, feePercentage, commissionAmount };
 }

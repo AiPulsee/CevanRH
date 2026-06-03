@@ -98,7 +98,7 @@ function urgency(days: number) {
   return "text-slate-600 bg-slate-50";
 }
 
-export function PlacementsTable({ placements: initial, feePercentage = 0.5 }: { placements: Placement[]; feePercentage?: number }) {
+export function PlacementsTable({ placements: initial }: { placements: Placement[] }) {
   const [placements, setPlacements] = useState(initial);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<(typeof FILTERS)[number]>("Todos");

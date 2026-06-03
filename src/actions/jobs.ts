@@ -175,7 +175,25 @@ export async function deleteJob(jobId: string) {
   if (permError) return permError;
 
   try {
+    // Deletar na ordem correta respeitando as FK constraints:
+    // Commission → Placement → Application (+ Shortlist via cascade) → Job
+
+    const applications = await prisma.application.findMany({
+      where: { jobId },
+      select: { id: true, placement: { select: { id: true } } },
+    });
+
+    const placementIds = applications
+      .map((a) => a.placement?.id)
+      .filter(Boolean) as string[];
+
+    if (placementIds.length > 0) {
+      await prisma.commission.deleteMany({ where: { placementId: { in: placementIds } } });
+      await prisma.placement.deleteMany({ where: { id: { in: placementIds } } });
+    }
+
     await prisma.job.delete({ where: { id: jobId } });
+
     revalidatePath("/admin/managed");
     revalidatePath("/admin");
     return ok();

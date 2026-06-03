@@ -75,7 +75,7 @@ export function EditCompanyModal({ company }: { company: Company }) {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-xl w-[95vw] bg-white rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden max-h-[95vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-xl w-[95vw] bg-white rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-2xl p-0 overflow-hidden max-h-[95vh] flex flex-col">
         <div className="bg-slate-900 p-6 sm:p-8 text-white flex-shrink-0">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-1">
@@ -90,7 +90,7 @@ export function EditCompanyModal({ company }: { company: Company }) {
           </DialogHeader>
         </div>
 
-        <div className="p-6 sm:p-8 space-y-5">
+        <div className="p-6 sm:p-8 space-y-5 overflow-y-auto custom-scrollbar flex-1">
           <div className="space-y-2">
             <Label className="font-bold text-slate-700">Logotipo</Label>
             <LogoUpload value={logoUrl} onChange={setLogoUrl} />

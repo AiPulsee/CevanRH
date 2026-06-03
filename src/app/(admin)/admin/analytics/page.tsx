@@ -78,8 +78,6 @@ export default async function AdminAnalyticsPage() {
   // Job type distribution
   const typeMap = Object.fromEntries(jobsByType.map((t) => [t.type, t._count.id]));
   const managed = typeMap["MANAGED"] ?? 0;
-  const selfService = typeMap["SELF_SERVICE"] ?? 0;
-  const totalForPct = managed + selfService || 1;
 
   const stats = [
     {
@@ -252,36 +250,17 @@ export default async function AdminAnalyticsPage() {
           )}
         </Card>
 
-        {/* Job type distribution */}
+        {/* Job distribution */}
         <Card className="p-6 border-slate-200 bg-white rounded-2xl shadow-sm">
-          <h3 className="text-base font-bold text-slate-900 mb-6">Distribuição de Vagas</h3>
+          <h3 className="text-base font-bold text-slate-900 mb-6">Vagas de Curadoria</h3>
           <div className="space-y-5">
             <div className="space-y-1.5">
               <div className="flex justify-between text-[11px] font-bold">
-                <span className="text-slate-600">Curadoria (Managed)</span>
-                <span className="text-slate-900">
-                  {managed} ({Math.round((managed / totalForPct) * 100)}%)
-                </span>
+                <span className="text-slate-600">Total de vagas</span>
+                <span className="text-slate-900">{managed}</span>
               </div>
               <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-blue-600 rounded-full transition-all duration-700"
-                  style={{ width: `${(managed / totalForPct) * 100}%` }}
-                />
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-[11px] font-bold">
-                <span className="text-slate-600">Self-Service</span>
-                <span className="text-slate-900">
-                  {selfService} ({Math.round((selfService / totalForPct) * 100)}%)
-                </span>
-              </div>
-              <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-slate-400 rounded-full transition-all duration-700"
-                  style={{ width: `${(selfService / totalForPct) * 100}%` }}
-                />
+                <div className="h-full bg-blue-600 rounded-full transition-all duration-700 w-full" />
               </div>
             </div>
           </div>

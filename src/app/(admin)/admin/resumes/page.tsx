@@ -28,7 +28,6 @@ const STATUS_OPTIONS = [
 const TYPE_OPTIONS = [
   { value: "", label: "Todos" },
   { value: "MANAGED", label: "Curadoria" },
-  { value: "SELF_SERVICE", label: "Público" },
 ];
 
 const SORT_OPTIONS = [
@@ -272,7 +271,7 @@ export default async function ResumesPage({
               )}
               {typeFilter && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 rounded-lg text-[10px] font-black">
-                  {typeFilter === "MANAGED" ? "Curadoria" : "Público"}
+                  Curadoria
                 </span>
               )}
               {statusFilter && (

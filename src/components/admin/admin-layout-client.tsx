@@ -53,8 +53,7 @@ const ALL_SECTIONS = [
     label: "Gestão",
     items: [
       { name: "Empresas", mobileName: "Empresas", href: "/admin/companies", icon: Building2, key: "COMPANIES", tooltip: "Empresas clientes cadastradas, suas vagas e usuários vinculados" },
-      { name: "Usuários ADM", mobileName: "Usuários", href: "/admin/users", icon: Users2, key: "USERS", tooltip: "Gerenciar administradores do sistema, suas funções e permissões de acesso" },
-      { name: "Configurações", mobileName: "Config.", href: "/admin/settings", icon: Settings, key: "SETTINGS", tooltip: "Taxa administrativa e outras variáveis globais do sistema" },
+      { name: "Usuários", mobileName: "Usuários", href: "/admin/users", icon: Users2, key: "USERS", tooltip: "Gerenciar administradores do sistema, suas funções e permissões de acesso" },
     ],
   },
 ];
@@ -152,14 +151,14 @@ export function AdminLayoutClient({ children, userName, permissions }: Props) {
 
               {/* Desktop: current page name + icon */}
               <div className="hidden lg:flex items-center gap-3">
-                <div className="h-9 w-9 rounded-xl bg-blue-600/10 flex items-center justify-center">
+                <div className="h-8 w-8 rounded-lg bg-blue-600/10 flex items-center justify-center">
                   <currentPage.icon className="h-4 w-4 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-0.5">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 leading-none mb-0.5">
                     Admin
                   </p>
-                  <h1 className="text-sm font-black text-slate-900 leading-none">
+                  <h1 className="text-sm font-bold text-slate-700 leading-none">
                     {currentPage.name}
                   </h1>
                 </div>
@@ -273,8 +272,8 @@ function SidebarContent({
             <div key={section.label}>
               {/* Section label */}
               <p className={cn(
-                "px-3 text-[9px] font-black uppercase tracking-[0.2em] text-slate-600",
-                sectionIdx > 0 ? "mt-5 mb-2" : "mb-2"
+                "px-3 text-[9px] font-black uppercase tracking-[0.2em] text-slate-500",
+                sectionIdx > 0 ? "mt-6 mb-2" : "mb-2"
               )}>
                 {section.label}
               </p>

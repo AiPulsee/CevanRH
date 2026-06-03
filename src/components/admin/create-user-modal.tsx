@@ -111,7 +111,7 @@ export function CreateUserModal() {
           </DialogHeader>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-5">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 sm:p-8 space-y-5">
           {/* Dados básicos */}
           <div className="space-y-4">
             <div className="space-y-2">

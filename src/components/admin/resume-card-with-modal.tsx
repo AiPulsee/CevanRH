@@ -168,13 +168,8 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
                     <span className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
                       <Building2 className="h-3.5 w-3.5" /> {app.job.company.name}
                     </span>
-                    <Badge
-                      className={cn(
-                        "rounded-md px-1.5 py-0 text-[8px] font-black uppercase border-none",
-                        app.job.type === "MANAGED" ? "bg-blue-50 text-blue-600" : "bg-emerald-50 text-emerald-600"
-                      )}
-                    >
-                      {app.job.type === "MANAGED" ? "Curadoria" : "Público"}
+                    <Badge className="rounded-md px-1.5 py-0 text-[8px] font-black uppercase border-none bg-blue-50 text-blue-600">
+                      Curadoria
                     </Badge>
                   </>
                 ) : (
@@ -300,11 +295,7 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
                 { label: "Recebido", value: formattedDate },
                 {
                   label: "Tipo",
-                  value: app.job
-                    ? app.job.type === "MANAGED"
-                      ? "Curadoria"
-                      : "Público"
-                    : "Manual",
+                  value: app.job ? "Curadoria" : "Manual",
                 },
               ].map((item) => (
                 <div key={item.label} className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
