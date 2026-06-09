@@ -104,6 +104,7 @@ export default async function ResumesPage({
         id: true,
         title: true,
         openings: true,
+        salaryRange: true,
         company: { select: { name: true, logoUrl: true } },
       },
       orderBy: { title: "asc" },

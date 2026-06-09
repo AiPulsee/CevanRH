@@ -42,7 +42,6 @@ import {
   Clock,
   Bookmark,
   Building2,
-  Zap,
   ChevronRight,
   MapPin,
   Search,
@@ -185,11 +184,6 @@ export default async function JobsPublicPage({
                       <div className="pr-8 sm:pr-12 md:pr-0">
                         <div className="flex flex-wrap gap-2 mb-3">
                           <Badge className="bg-blue-50/80 hover:bg-blue-100 text-[#1967D2] border-none rounded-full px-3 py-1 text-[10px] sm:text-[11px] font-bold transition-colors">{job.isRemote ? "Remoto" : "Presencial"}</Badge>
-                          {job.type === 'MANAGED' && (
-                            <Badge className="bg-orange-50/80 hover:bg-orange-100 text-orange-600 border-none rounded-full px-3 py-1 text-[10px] sm:text-[11px] font-bold transition-colors flex items-center gap-1">
-                              <Zap className="h-3 w-3 fill-current" /> Patrocinada
-                            </Badge>
-                          )}
                         </div>
                         <h4 className="font-bold text-base sm:text-[18px] text-slate-900 group-hover:text-[#1967D2] transition-colors leading-tight mb-1.5 sm:mb-2 line-clamp-1">{job.title}</h4>
                         <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1.5 text-[11px] sm:text-[13px] text-slate-500 font-medium">

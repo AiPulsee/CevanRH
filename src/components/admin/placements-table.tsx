@@ -23,6 +23,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import Link from "next/link";
+import { differenceInDays } from "date-fns";
 import { confirmEffective, terminatePlacement } from "@/actions/placements";
 import { PaginationBar } from "@/components/ui/pagination-bar";
 import { toast } from "sonner";
@@ -285,10 +286,11 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
               )}
               {paginated.map((p) => {
                 const cfg = STATUS_CONFIG[p.status];
+                const totalDays = differenceInDays(new Date(p.trialEndDate), new Date(p.startDate));
                 const progress =
                   p.status === "TRIAL"
                     ? Math.round(
-                        Math.max(0, Math.min(100, ((90 - p.daysRemaining) / 90) * 100))
+                        Math.max(0, Math.min(100, ((totalDays - p.daysRemaining) / totalDays) * 100))
                       )
                     : 0;
                 return (
@@ -469,7 +471,8 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
           ) : (
             paginated.map((p) => {
               const cfg = STATUS_CONFIG[p.status];
-              const progress = p.status === "TRIAL" ? Math.round(Math.max(0, Math.min(100, ((90 - p.daysRemaining) / 90) * 100))) : 0;
+              const totalDays = differenceInDays(new Date(p.trialEndDate), new Date(p.startDate));
+              const progress = p.status === "TRIAL" ? Math.round(Math.max(0, Math.min(100, ((totalDays - p.daysRemaining) / totalDays) * 100))) : 0;
               return (
                 <div key={p.id} className="p-5 space-y-5">
                   <div className="flex items-start justify-between">

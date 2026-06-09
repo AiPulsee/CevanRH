@@ -15,10 +15,10 @@ export async function generateMetadata({
   });
   if (!job) return { title: "Vaga não encontrada" };
 
-  const title = `${job.title} — ${job.company.name}`;
+  const title = `${job.title} — Cevan Serviços Empresariais`;
   const description = job.description
     ? job.description.slice(0, 155).replace(/\n/g, " ").trim() + "…"
-    : `Vaga de ${job.title} na ${job.company.name}${job.location ? ` em ${job.location}` : ""}. Candidate-se pela Cevan Serviços Empresariais.`;
+    : `Vaga de ${job.title}${job.location ? ` em ${job.location}` : ""}. Candidate-se pela Cevan Serviços Empresariais.`;
 
   return {
     title,
@@ -57,6 +57,14 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
 
   if (!job) notFound();
 
+  const CEVAN = {
+    name: "Cevan Serviços Empresariais",
+    logoUrl: "/cevanempresarial/logocevanempresarial.png",
+    description: "A Cevan Serviços Empresariais conecta talentos às melhores oportunidades do mercado, oferecendo um processo seletivo ágil, humanizado e focado no desenvolvimento profissional.",
+    industry: "Serviços Empresariais",
+    location: "Santa Luzia/MA",
+  };
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "JobPosting",
@@ -65,8 +73,8 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
     datePosted: job.createdAt.toISOString().split("T")[0],
     hiringOrganization: {
       "@type": "Organization",
-      name: job.company.name,
-      ...(job.company.logoUrl ? { logo: job.company.logoUrl } : {}),
+      name: "Cevan Serviços Empresariais",
+      logo: "/cevanempresarial/logocevanempresarial.png",
     },
     jobLocation: {
       "@type": "Place",
@@ -120,21 +128,17 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 pt-2">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center shadow-sm border border-slate-100 shrink-0 overflow-hidden">
-                    {job.company.logoUrl ? (
-                      <Image
-                        src={job.company.logoUrl}
-                        alt={job.company.name}
-                        width={40}
-                        height={40}
-                        className="object-contain p-1 w-full h-full"
-                      />
-                    ) : (
-                      <Building2 className="h-5 w-5 text-blue-600" />
-                    )}
+                    <Image
+                      src="/cevanempresarial/logocevanempresarial.png"
+                      alt="Cevan Serviços Empresariais"
+                      width={40}
+                      height={40}
+                      className="object-contain p-1 w-full h-full"
+                    />
                   </div>
                   <div>
                     <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Empresa</p>
-                    <p className="text-[14px] font-black text-slate-900">{job.company.name}</p>
+                    <p className="text-[14px] font-black text-slate-900">Cevan Serviços Empresariais</p>
                   </div>
                 </div>
 
@@ -247,39 +251,32 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
               
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                 <div className="flex items-center gap-4 sm:gap-6">
-                  <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-blue-600 text-xl sm:text-2xl overflow-hidden shadow-sm shrink-0">
-                    {job.company.logoUrl ? (
-                      <Image src={job.company.logoUrl} alt={job.company.name} width={80} height={80} className="h-full w-full object-contain p-2" />
-                    ) : (
-                      job.company.name.charAt(0)
-                    )}
+                  <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
+                    <Image src={CEVAN.logoUrl} alt={CEVAN.name} width={80} height={80} className="h-full w-full object-contain p-2" />
                   </div>
                   <div>
-                    <h3 className="font-black text-xl sm:text-2xl text-slate-900 leading-tight mb-1 sm:mb-2">Sobre a {job.company.name}</h3>
+                    <h3 className="font-black text-xl sm:text-2xl text-slate-900 leading-tight mb-1 sm:mb-2">Sobre a {CEVAN.name}</h3>
                     <p className="text-[9px] sm:text-[10px] text-emerald-600 font-bold uppercase flex items-center gap-1.5">
                       <ShieldCheck className="h-4 w-4" /> Empresa Verificada
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" className="w-full md:w-auto h-12 px-8 rounded-xl font-black text-[10px] sm:text-[11px] uppercase tracking-widest border-slate-200 text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-100 transition-all">
-                  Conhecer a Empresa
-                </Button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
                 <div className="md:col-span-2">
                   <p className="text-[15px] text-slate-500 leading-relaxed font-medium">
-                    {job.company.description || "Empresa parceira da Cevan focada em excelência e crescimento profissional."}
+                    {CEVAN.description}
                   </p>
                 </div>
                 <div className="space-y-4">
                   <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Setor</p>
-                    <p className="text-[14px] font-black text-slate-900">{job.company.industry || "Serviços"}</p>
+                    <p className="text-[14px] font-black text-slate-900">{CEVAN.industry}</p>
                   </div>
                   <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Localização</p>
-                    <p className="text-[14px] font-black text-slate-900">{job.company.location || "Brasil"}</p>
+                    <p className="text-[14px] font-black text-slate-900">{CEVAN.location}</p>
                   </div>
                 </div>
               </div>

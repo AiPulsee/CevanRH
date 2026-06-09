@@ -34,7 +34,8 @@ const securityHeaders = [
       `connect-src 'self' https://api.groq.com ${process.env.R2_ENDPOINT ?? ""} https://*.r2.cloudflarestorage.com`,
       // Upload direto para o R2 via pre-signed URL
       `form-action 'self'`,
-      // Frames: nunca
+      // Frames: permite embutir PDFs do R2
+      `frame-src 'self' ${process.env.R2_PUBLIC_DOMAIN ?? ""}`,
       "frame-ancestors 'none'",
     ]
       .join("; ")

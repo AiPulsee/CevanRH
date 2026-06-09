@@ -80,13 +80,13 @@ export async function applyToJob(data: {
 
 const manualResumeSchema = z.object({
   name: z.string().min(2, "Nome muito curto").max(100, "Nome muito longo"),
-  email: z.string().email("E-mail inválido"),
+  email: z.string().email("E-mail inválido").optional().or(z.literal("")),
   resumeUrl: z.string().url("URL de currículo inválida"),
 });
 
 export async function createManualResume(data: {
   name: string;
-  email: string;
+  email?: string;
   resumeUrl: string;
 }) {
   const session = await auth();
@@ -104,10 +104,13 @@ export async function createManualResume(data: {
   }
 
   try {
-    let user = await prisma.user.findUnique({ where: { email } });
+    const resolvedEmail = email || `sem-email-${randomUUID()}@cevanrh.local`;
+    let user = email
+      ? await prisma.user.findUnique({ where: { email } })
+      : null;
     if (!user) {
       user = await prisma.user.create({
-        data: { name, email, role: "CANDIDATE" },
+        data: { name, email: resolvedEmail, role: "CANDIDATE" },
       });
     }
 

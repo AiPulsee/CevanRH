@@ -38,6 +38,7 @@ type Job = {
   id: string;
   title: string;
   openings: number;
+  salaryRange: string | null;
   company: { name: string; logoUrl: string | null };
 };
 
@@ -202,6 +203,7 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
                 <Download className="h-4 w-4" />
               </Button>
               <AllocateFromResumeModal
+                applicationId={app.id}
                 candidateId={app.candidate.id}
                 candidateName={app.candidate.name ?? "Candidato"}
                 jobs={activeJobs}
@@ -305,21 +307,8 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
               ))}
             </div>
 
-            {/* AI Analysis */}
-            {!app.job ? (
-              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex items-start gap-4">
-                <div className="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
-                  <Sparkles className="h-5 w-5 text-slate-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-black text-slate-700">Análise Inteligente indisponível</p>
-                  <p className="text-xs text-slate-400 font-medium mt-1 leading-relaxed">
-                    A análise de compatibilidade requer uma vaga vinculada. Aloque este candidato em uma vaga de curadoria para gerar a análise.
-                  </p>
-                </div>
-              </div>
-            ) : (
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            {/* AI Analysis — só exibe quando há vaga vinculada */}
+            {app.job && <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
               <div className="flex items-center justify-between p-5 border-b border-slate-50">
                 <div className="flex items-center gap-2">
                   <div className="h-8 w-8 rounded-xl bg-violet-600 flex items-center justify-center shadow-md shadow-violet-500/20">
@@ -461,24 +450,24 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
                       )}
                     </div>
 
-                    {/* Resume link */}
-                    <a
-                      href={app.resumeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50 transition-all group/link"
-                    >
-                      <FileText className="h-5 w-5 text-slate-400 group-hover/link:text-blue-600 transition-colors" />
-                      <span className="text-sm font-bold text-slate-600 group-hover/link:text-blue-600 transition-colors">
-                        Abrir currículo completo
-                      </span>
-                      <Download className="h-4 w-4 text-slate-300 ml-auto group-hover/link:text-blue-500 transition-colors" />
-                    </a>
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
-            )}
+            </div>}
+
+            {/* Resume link */}
+            <a
+              href={app.resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-blue-200 hover:bg-blue-50 transition-all group/link"
+            >
+              <FileText className="h-5 w-5 text-slate-400 group-hover/link:text-blue-600 transition-colors" />
+              <span className="text-sm font-bold text-slate-600 group-hover/link:text-blue-600 transition-colors">
+                Abrir currículo completo
+              </span>
+              <Download className="h-4 w-4 text-slate-300 ml-auto group-hover/link:text-blue-500 transition-colors" />
+            </a>
           </div>
         </DialogContent>
       </Dialog>

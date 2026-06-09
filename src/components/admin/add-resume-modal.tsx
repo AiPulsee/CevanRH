@@ -35,7 +35,7 @@ export function AddResumeModal() {
   }
 
   function handleSubmit() {
-    if (!name || !email || !resumeUrl) return;
+    if (!name || !resumeUrl) return;
     startTransition(async () => {
       const result = await createManualResume({ name, email, resumeUrl });
       if (result.success) {
@@ -48,7 +48,7 @@ export function AddResumeModal() {
     });
   }
 
-  const canSubmit = name.trim().length >= 2 && email.includes("@") && !!resumeUrl;
+  const canSubmit = name.trim().length >= 2 && (!email || email.includes("@")) && !!resumeUrl;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleClose(); else setIsOpen(true); }}>
@@ -85,7 +85,9 @@ export function AddResumeModal() {
           </div>
 
           <div className="space-y-2">
-            <Label className="font-bold text-slate-700">E-mail</Label>
+            <Label className="font-bold text-slate-700">
+              E-mail <span className="text-slate-400 font-medium text-xs">(opcional)</span>
+            </Label>
             <Input
               type="email"
               placeholder="Ex: joao@email.com"

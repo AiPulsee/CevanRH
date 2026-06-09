@@ -216,3 +216,106 @@ Responda SOMENTE com JSON válido, sem markdown. Formato obrigatório:
   console.error("[AI Analysis Error]", lastError instanceof Error ? lastError.message : lastError);
   return { success: false, error: "Erro ao processar análise. Tente novamente." };
 }
+
+export async function analyzeAgainstJob(
+  applicationId: string,
+  jobId: string
+): Promise<{ success: true; data: AIAnalysisResult } | { success: false; error: string }> {
+  const session = await auth();
+  if (!session || (session.user as any)?.role !== "ADMIN") {
+    return { success: false, error: "Não autorizado." };
+  }
+
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    return { success: false, error: "GROQ_API_KEY não configurada no servidor." };
+  }
+
+  const [application, job] = await Promise.all([
+    prisma.application.findUnique({
+      where: { id: applicationId },
+      include: { candidate: { select: { name: true } } },
+    }),
+    prisma.job.findUnique({
+      where: { id: jobId },
+      select: { title: true, description: true, requirements: true, responsibilities: true },
+    }),
+  ]);
+
+  if (!application) return { success: false, error: "Candidatura não encontrada." };
+  if (!job) return { success: false, error: "Vaga não encontrada." };
+
+  let resumeText = "";
+  let resumeError: string | undefined;
+  if (application.resumeUrl?.toLowerCase().includes(".pdf")) {
+    const result = await extractPdfText(application.resumeUrl);
+    resumeText = result.text;
+    resumeError = result.error;
+  }
+
+  const hasCoverLetter = !!application.coverLetter?.trim();
+  if (!resumeText && !hasCoverLetter) {
+    const reason = resumeError ?? "Formato Word ou PDF protegido.";
+    return { success: false, error: `Não foi possível analisar o currículo: ${reason}` };
+  }
+
+  const jobContext = [
+    `Vaga: ${job.title}`,
+    job.description ? `Descrição: ${job.description}` : "",
+    job.requirements ? `Requisitos: ${job.requirements}` : "",
+    job.responsibilities ? `Responsabilidades: ${job.responsibilities}` : "",
+  ].filter(Boolean).join("\n\n");
+
+  const candidateContext = [
+    `Candidato: ${application.candidate.name ?? "Sem nome"}`,
+    resumeText ? `Currículo:\n${resumeText}` : "",
+    hasCoverLetter ? `Carta de apresentação:\n${application.coverLetter}` : "",
+  ].filter(Boolean).join("\n\n");
+
+  const sourceKey: AIAnalysisResult["source"] = resumeText ? (hasCoverLetter ? "both" : "pdf") : "cover_letter";
+  const dataSource = resumeText ? (hasCoverLetter ? "currículo + carta" : "currículo") : "carta de apresentação";
+
+  const prompt = `Você é um especialista sênior em recrutamento da Cevan RH. Analise a compatibilidade entre candidato e vaga com base em: ${dataSource}.
+
+CRITÉRIOS (score 0-100):
+- 85-100: Experiência direta e específica com os requisitos principais
+- 70-84: Boa aderência, maioria dos requisitos evidenciados
+- 50-69: Experiência relevante mas com lacunas
+- 30-49: Experiência parcial, fit incerto
+- 0-29: Candidato inadequado para a vaga
+
+${jobContext}
+---
+${candidateContext}
+
+Responda SOMENTE com JSON válido, sem markdown:
+{"score":<0-100>,"recommendation":<"APPROVE"|"MAYBE"|"REJECT">,"strengths":[<2-3 pontos positivos>],"concerns":[<1-2 pontos de atenção>],"summary":<uma frase direta do parecer>}`;
+
+  const groq = new Groq({ apiKey });
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const completion = await groq.chat.completions.create({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        temperature: 0.3,
+      });
+      const text = completion.choices[0]?.message?.content ?? "";
+      const parsed = JSON.parse(text) as Omit<AIAnalysisResult, "source">;
+      return { success: true, data: { ...parsed, source: sourceKey } };
+    } catch (error: unknown) {
+      lastError = error;
+      const msg = error instanceof Error ? error.message : String(error);
+      if (msg.includes("429") || msg.includes("rate_limit")) {
+        return { success: false, error: "Limite da IA atingido. Aguarde e tente novamente." };
+      }
+      const isTransient = msg.includes("ECONNRESET") || msg.includes("ETIMEDOUT") || msg.includes("fetch failed");
+      if (!isTransient || attempt === 2) break;
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
+
+  console.error("[analyzeAgainstJob Error]", lastError instanceof Error ? lastError.message : lastError);
+  return { success: false, error: "Erro ao processar análise. Tente novamente." };
+}

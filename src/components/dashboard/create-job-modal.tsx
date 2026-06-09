@@ -152,6 +152,7 @@ export function CreateJobModal({ companies }: { companies?: { id: string; name: 
 
   const canNext1 = !!title && !!location;
   const canNext2 = !!description;
+  const canPublish = !!feeValue && parseFloat(feeValue) > 0;
 
   const selectCls =
     "w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-500/20 outline-none appearance-none";
@@ -604,7 +605,7 @@ export function CreateJobModal({ companies }: { companies?: { id: string; name: 
             <Button
               className="rounded-xl font-black h-11 px-6 bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-200 uppercase text-xs tracking-widest"
               onClick={handlePublish}
-              disabled={isPending}
+              disabled={isPending || !canPublish}
             >
               {isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <CheckCircle2 className="h-4 w-4 mr-2" />}
               {isPending ? "Publicando..." : "Publicar Vaga"}
