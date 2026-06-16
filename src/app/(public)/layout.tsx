@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight, UserCircle, Mail } from "lucide-react";
+import { Menu, X, ArrowRight, UserCircle, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { PublicFooter } from "@/components/public/footer";
 import { GrupoCevanFooter } from "@/components/public/grupo-cevan-footer";
 import { useState, useEffect } from "react";
+import { WHATSAPP_HREF } from "@/lib/contact";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -134,13 +135,15 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             </>
           )}
 
-          <Link
-            href="/#contato"
+          <a
+            href={WHATSAPP_HREF}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-[#1967D2] hover:bg-[#1250b0] text-white font-bold text-[13px] transition-all hover:shadow-lg hover:shadow-blue-200 active:scale-95"
           >
             Fale Conosco
             <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+          </a>
         </div>
 
         {/* Mobile Hamburger */}
@@ -223,14 +226,16 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                   <UserCircle className="h-5 w-5 text-slate-400" />
                   Área Restrita
                 </Link>
-                <Link
-                  href="/#contato"
+                <a
+                  href={WHATSAPP_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={() => setIsMenuOpen(false)}
                   className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-[#1967D2] text-white font-black text-[13px] uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-[#1250b0] transition-all"
                 >
-                  <Mail className="h-4 w-4" />
+                  <MessageCircle className="h-4 w-4" />
                   Fale Conosco
-                </Link>
+                </a>
               </div>
             </motion.div>
           </>

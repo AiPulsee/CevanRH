@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Instagram, Facebook } from "lucide-react";
+import { WHATSAPP_HREF } from "@/lib/contact";
 
 export function PublicFooter() {
   return (
@@ -13,7 +15,14 @@ export function PublicFooter() {
              </div>
              <div className="space-y-1">
                <p className="text-slate-400 text-[11px] sm:text-[13px] font-black tracking-widest uppercase">Fale com um Especialista</p>
-               <p className="text-white text-[24px] sm:text-[32px] font-black tracking-tight leading-none">98 92000-7888</p>
+               <a
+                 href={WHATSAPP_HREF}
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 className="text-white text-[24px] sm:text-[32px] font-black tracking-tight leading-none hover:text-[#1967D2] transition-colors inline-block"
+               >
+                 98 92000-7888
+               </a>
              </div>
              <p className="text-sm sm:text-[15px] text-slate-400 leading-relaxed font-medium">
                Avenida Newton Belo, Centro, Santa Luzia/MA <br/>
@@ -44,10 +53,19 @@ export function PublicFooter() {
           <p>© {new Date().getFullYear()} Cevan Serviços Empresariais. <br className="sm:hidden" /> Todos os direitos reservados.</p>
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             {[
-              { name: 'Instagram', href: 'https://www.instagram.com/cevanempresarial/' },
-              { name: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61589249430689' }
+              { name: 'Instagram', href: 'https://www.instagram.com/cevanempresarial/', icon: Instagram },
+              { name: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61589249430689', icon: Facebook },
             ].map(social => (
-              <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors bg-slate-800/50 hover:bg-[#1967D2] px-4 py-2 rounded-full shadow-sm text-[11px] sm:text-[13px] tracking-wide font-bold">{social.name}</a>
+              <a
+                key={social.name}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.name}
+                className="flex items-center justify-center h-10 w-10 rounded-full bg-slate-800/50 text-slate-300 hover:text-white hover:bg-[#1967D2] transition-colors shadow-sm"
+              >
+                <social.icon className="h-4 w-4" />
+              </a>
             ))}
           </div>
         </div>

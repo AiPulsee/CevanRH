@@ -50,9 +50,7 @@ export default async function HomePage() {
 
         {/* Photo — 0 size on mobile, right half on desktop */}
         <div className="absolute top-0 right-0 w-0 h-0 lg:w-[48%] lg:h-full z-0 lg:rounded-bl-[350px] overflow-hidden lg:shadow-[-20px_0_50px_rgba(0,0,0,0.05)]">
-          <div className="absolute inset-0 bg-gradient-to-tr from-[#1967D2]/95 via-[#1967D2]/75 to-blue-400/40 mix-blend-multiply z-10" />
-          <div className="absolute inset-0 bg-blue-900/10 backdrop-blur-[1px] z-10" />
-          <Image src="/cevanempresarial/imagemsite/empresario-hero.png" alt="Cevan Serviços Empresariais" fill className="object-cover object-top opacity-90 scale-105 hover:scale-110 transition-transform duration-[10000ms]" priority />
+          <Image src="/cevanempresarial/imagemsite/empresario-hero.png" alt="Cevan Serviços Empresariais" fill className="object-cover object-top scale-105 hover:scale-110 transition-transform duration-[10000ms]" priority />
         </div>
 
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
