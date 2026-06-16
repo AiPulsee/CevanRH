@@ -83,7 +83,9 @@
       "Bash(mv \"iMAGENS-Site-Cevan-S-empresariais5 \\(1\\).png\" \"ia-expertise.png\")",
       "Bash(git status *)",
       "Bash(git fetch *)",
-      "Bash(git merge *)"
+      "Bash(git merge *)",
+      "Bash(node -e \"console.log\\(require\\('sharp'\\)\\)\")",
+      "Bash(node make-favicon.js)"
     ]
   }
 }

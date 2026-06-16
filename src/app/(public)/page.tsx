@@ -56,6 +56,11 @@ export default async function HomePage() {
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
           <div className="w-full lg:w-[58%] pr-0 lg:pr-16 space-y-7 lg:space-y-10">
 
+            {/* Mobile-only photo */}
+            <div className="lg:hidden relative w-full max-w-xs mx-auto h-72 rounded-[2rem] overflow-hidden shadow-xl">
+              <Image src="/cevanempresarial/imagemsite/empresario-hero.png" alt="Cevan Serviços Empresariais" fill className="object-cover object-top" priority />
+            </div>
+
             <div className="space-y-4 lg:space-y-5 text-center lg:text-left">
               <Badge className="bg-[#1967D2]/10 text-[#1967D2] border-none rounded-full px-4 py-1.5 font-black uppercase tracking-widest text-[10px]">
                 Cevan Serviços Empresariais

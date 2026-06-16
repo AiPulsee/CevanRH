@@ -159,7 +159,7 @@ export default function ServicosPage() {
               { step: "03", icon: Users, title: "Entrevistas", desc: "Condução das entrevistas pela equipe especializada da Cevan." },
               { step: "04", icon: ShieldCheck, title: "Checagem de Antecedentes", desc: "Verificação de histórico criminal e referências profissionais." },
               { step: "05", icon: UserCheck, title: "Apresentação dos Finalistas", desc: "A empresa recebe apenas candidatos pré-aprovados e toma a decisão final." },
-              { step: "06", icon: Award, title: "Garantia de Reposição", desc: "Se o candidato não for efetivado em 90 dias, a Cevan refaz o processo gratuitamente." },
+              { step: "06", icon: Award, title: "Garantia de Reposição", desc: "Se o candidato não for efetivado em 45 dias, a Cevan refaz o processo gratuitamente." },
             ].map(({ step, icon: Icon, title, desc }) => (
               <div key={step} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                 <div className="flex items-start gap-3 mb-4">
@@ -366,7 +366,7 @@ export default function ServicosPage() {
                 </div>
                 <div className="h-px bg-slate-100" />
                 <div className="space-y-2">
-                  {["Triagem e entrevistas inclusos", "Checagem de antecedentes", "Reposição gratuita em 90 dias"].map(item => (
+                  {["Triagem e entrevistas inclusos", "Checagem de antecedentes", "Reposição gratuita em 45 dias"].map(item => (
                     <div key={item} className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
                       <span className="text-[13px] text-slate-600 font-medium">{item}</span>
@@ -395,7 +395,7 @@ export default function ServicosPage() {
               { icon: Star, title: "Atendimento Consultivo e Próximo", desc: "Somos pessoas resolvendo problemas reais com atenção personalizada e presença constante." },
               { icon: Target, title: "Foco em Pequenas e Médias Empresas", desc: "Preços justos, processos simples e resultados concretos para quem está crescendo." },
               { icon: ShieldCheck, title: "Suporte Contábil e Jurídico Integrado", desc: "Parceiros em contabilidade e direito empresarial para uma solução completa e segura." },
-              { icon: Award, title: "Garantia de Reposição no Recrutamento", desc: "Se o candidato não for efetivado em 90 dias, refazemos o processo sem custo adicional." },
+              { icon: Award, title: "Garantia de Reposição no Recrutamento", desc: "Se o candidato não for efetivado em 45 dias, refazemos o processo sem custo adicional." },
               { icon: Zap, title: "Resolução de Dores Reais", desc: "Eliminamos erros de folha, impostos a mais, contratações erradas e falta de controle financeiro." },
             ].map(({ icon: Icon, title, desc }) => (
               <div key={title} className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-[#1967D2]/40 transition-all duration-300 group">
