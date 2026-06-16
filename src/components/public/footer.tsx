@@ -51,6 +51,17 @@ export function PublicFooter() {
 
         <div className="pt-8 sm:pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6 text-[13px] sm:text-[14px] text-slate-500 font-medium text-center">
           <p>© {new Date().getFullYear()} Cevan Serviços Empresariais. <br className="sm:hidden" /> Todos os direitos reservados.</p>
+
+          <a
+            href="https://www.instagram.com/ipulsemkt?igsh=MWlpb3A3MWQzb3Z5"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-slate-800/40 border border-slate-700/50 rounded-full pl-1.5 pr-4 py-1.5 hover:border-[#1967D2]/50 hover:bg-slate-800/70 transition-colors"
+          >
+            <Image src="/brasaoipulse.png" alt="iPulse" width={24} height={24} className="h-6 w-6 rounded-full object-contain shrink-0" />
+            <span className="text-slate-400">Desenvolvido por <span className="text-slate-200 font-bold">iPulse</span></span>
+          </a>
+
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             {[
               { name: 'Instagram', href: 'https://www.instagram.com/cevanempresarial/', icon: Instagram },
