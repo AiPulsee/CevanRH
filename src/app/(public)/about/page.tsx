@@ -16,12 +16,12 @@ export default function AboutPage() {
                 Conheça a Cevan
               </Badge>
               <h1 className="text-4xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.1]">
-                Unindo Expertise Humana à <span className="text-blue-600">Inteligência Artificial</span>.
+                A Cevan nasceu para impulsionar o <span className="text-blue-600">crescimento das empresas</span>.
               </h1>
               <p className="text-slate-600 text-lg leading-relaxed">
-                A <strong>Cevan Serviços Empresariais</strong> nasceu com uma missão clara: desburocratizar o RH e encontrar o &quot;match&quot; perfeito entre empresas e talentos.
+                A <strong>Cevan Serviços Empresariais</strong> é o braço estratégico do Grupo Cevan, especializada em transformar desafios empresariais em oportunidades de crescimento. Atuamos ao lado de pequenas e médias empresas, oferecendo suporte na gestão de processos, organização administrativa e estruturação operacional.
                 <br /><br />
-                Acreditamos que a tecnologia deve ser uma ponte, não uma barreira. Por isso, desenvolvemos a <strong>Cevan Serviços Empresariais</strong>, uma plataforma que utiliza IA de ponta para o trabalho pesado, permitindo que nossos especialistas foquem no que realmente importa: <strong>o potencial humano</strong>.
+                <strong>Nossa missão</strong> é simplificar a rotina empresarial, reduzir falhas que impactam os resultados e criar uma base sólida para que o empresário possa focar no que realmente importa: expandir seu negócio, aumentar sua lucratividade e conquistar novos mercados.
               </p>
               
               <div className="grid grid-cols-2 gap-8 pt-4">
@@ -38,11 +38,11 @@ export default function AboutPage() {
             
             <div className="flex-1 relative">
               <div className="relative z-10 rounded-[4rem] overflow-hidden shadow-2xl shadow-blue-200">
-                <Image 
-                  src="/feature-woman.png" 
-                  alt="Cevan Expertise" 
-                  width={600} 
-                  height={800} 
+                <Image
+                  src="/cevanempresarial/imagemsite/ia-expertise.png"
+                  alt="Cevan Expertise"
+                  width={500}
+                  height={500}
                   className="w-full h-auto object-cover"
                 />
               </div>
@@ -106,9 +106,9 @@ export default function AboutPage() {
               <div className="h-16 w-16 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-8">
                 <Target className="h-8 w-8 text-blue-400" />
               </div>
-              <h2 className="text-3xl lg:text-5xl font-black mb-8 leading-tight">Nossa Visão de Futuro</h2>
+              <h2 className="text-3xl lg:text-5xl font-black mb-8 leading-tight">Nosso Propósito</h2>
               <p className="text-slate-400 text-lg leading-relaxed">
-                Queremos ser a maior referência em <strong>Recrutamento Inteligente</strong> do Brasil, provando que é possível escalar um negócio de RH mantendo a essência humana e a qualidade impecável de cada entrega.
+                Organizar, estruturar e fortalecer empresas por meio de soluções estratégicas e eficientes, eliminando prejuízos ocultos, otimizando processos e proporcionando crescimento sustentável com segurança e previsibilidade.
               </p>
             </div>
             <div className="flex-1 grid grid-cols-1 gap-6 w-full">

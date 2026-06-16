@@ -59,7 +59,7 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
 
   const CEVAN = {
     name: "Cevan Serviços Empresariais",
-    logoUrl: "/cevanempresarial/logocevanempresarial.png",
+    logoUrl: "/cevanempresarial/iconparaapp.png",
     description: "A Cevan Serviços Empresariais conecta talentos às melhores oportunidades do mercado, oferecendo um processo seletivo ágil, humanizado e focado no desenvolvimento profissional.",
     industry: "Serviços Empresariais",
     location: "Santa Luzia/MA",
@@ -129,7 +129,7 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center shadow-sm border border-slate-100 shrink-0 overflow-hidden">
                     <Image
-                      src="/cevanempresarial/logocevanempresarial.png"
+                      src="/cevanempresarial/iconparaapp.png"
                       alt="Cevan Serviços Empresariais"
                       width={40}
                       height={40}

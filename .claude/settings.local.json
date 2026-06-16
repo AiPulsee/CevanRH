@@ -75,7 +75,15 @@
       "Bash(xxd \"c:/Users/danil/Desktop/CevanRH/package.json\")",
       "Bash(git stash *)",
       "Bash(node -e \"require\\('postcss'\\)\")",
-      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\danil\\\\Desktop\\\\CevanRH\\\\src\\\\app\\\\\\(admin\\)\\\\admin\\\\settings\" -ErrorAction SilentlyContinue)"
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\danil\\\\Desktop\\\\CevanRH\\\\src\\\\app\\\\\\(admin\\)\\\\admin\\\\settings\" -ErrorAction SilentlyContinue)",
+      "Bash(mv \"iMAGENS-Site-Cevan-S-empresariais1.png\" \"empresario-hero.png\")",
+      "Bash(mv \"iMAGENS-Site-Cevan-S-empresariais2.png\" \"atendimento-mulher.png\")",
+      "Bash(mv \"iMAGENS-Site-Cevan-S-empresariais3.png\" \"lucro-desperdicio.png\")",
+      "Bash(mv \"iMAGENS-Site-Cevan-S-empresariais4.png\" \"menos-imposto.png\")",
+      "Bash(mv \"iMAGENS-Site-Cevan-S-empresariais5 \\(1\\).png\" \"ia-expertise.png\")",
+      "Bash(git status *)",
+      "Bash(git fetch *)",
+      "Bash(git merge *)"
     ]
   }
 }

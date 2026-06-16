@@ -52,7 +52,7 @@ export default async function HomePage() {
         <div className="absolute top-0 right-0 w-0 h-0 lg:w-[48%] lg:h-full z-0 lg:rounded-bl-[350px] overflow-hidden lg:shadow-[-20px_0_50px_rgba(0,0,0,0.05)]">
           <div className="absolute inset-0 bg-gradient-to-tr from-[#1967D2]/95 via-[#1967D2]/75 to-blue-400/40 mix-blend-multiply z-10" />
           <div className="absolute inset-0 bg-blue-900/10 backdrop-blur-[1px] z-10" />
-          <Image src="/hero-man.png" alt="Cevan Serviços Empresariais" fill className="object-cover opacity-90 scale-105 hover:scale-110 transition-transform duration-[10000ms]" priority />
+          <Image src="/cevanempresarial/imagemsite/empresario-hero.png" alt="Cevan Serviços Empresariais" fill className="object-cover object-top opacity-90 scale-105 hover:scale-110 transition-transform duration-[10000ms]" priority />
         </div>
 
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
@@ -126,10 +126,8 @@ export default async function HomePage() {
                 <Link key={job.id} href={`/jobs/${job.slug}`} className="group">
                   <div className="flex items-center gap-5 py-5 hover:bg-slate-50/70 -mx-4 px-4 rounded-2xl transition-all duration-200">
                     {/* Logo */}
-                    <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-2xl flex items-center justify-center text-white font-black text-lg shrink-0 group-hover:scale-105 transition-transform duration-300 overflow-hidden ${job.company.logoUrl ? "bg-white border border-slate-100" : job.type === "MANAGED" ? "bg-[#1967D2]" : "bg-slate-700"}`}>
-                      {job.company.logoUrl
-                        ? <img src={job.company.logoUrl} alt={job.company.name} className="h-full w-full object-contain p-1.5" />
-                        : job.company.name.charAt(0)}
+                    <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300 overflow-hidden bg-white border border-slate-100">
+                      <img src="/cevanempresarial/iconparaapp.png" alt="Cevan Serviços Empresariais" className="h-full w-full object-contain p-1" />
                     </div>
 
                     {/* Info */}
@@ -139,7 +137,7 @@ export default async function HomePage() {
                         <span className="font-black text-green-600 text-[14px] shrink-0">{job.salaryRange || "A combinar"}</span>
                       </div>
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-[12px] text-slate-400 font-medium">
-                        <span className="flex items-center gap-1.5"><Building2 className="h-3 w-3" />{job.company.name}</span>
+                        <span className="flex items-center gap-1.5"><Building2 className="h-3 w-3" />Cevan Serviços Empresariais</span>
                         <span className="flex items-center gap-1.5"><MapPin className="h-3 w-3" />{job.isRemote ? "Remoto" : job.location}</span>
                         <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" />{formatDistanceToNow(new Date(job.createdAt), { addSuffix: true, locale: ptBR })}</span>
                       </div>
@@ -273,12 +271,12 @@ export default async function HomePage() {
                 Fale agora com um especialista e descubra como eliminar os custos invisíveis que travam o crescimento da sua empresa.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <a href="mailto:atendimento@cevan.com.br">
+                <a href="mailto:rh.cevanservicos@gmail.com">
                   <Button size="lg" className="h-13 w-full sm:w-auto px-8 rounded-2xl bg-[#1967D2] hover:bg-blue-700 font-black text-[11px] uppercase tracking-[0.15em] shadow-xl shadow-blue-200/60 hover:-translate-y-0.5 transition-all">
                     <Mail className="mr-2.5 h-4 w-4" /> Enviar E-mail
                   </Button>
                 </a>
-                <a href="tel:+551234567890">
+                <a href="tel:+5598920007888">
                   <Button size="lg" variant="outline" className="h-13 w-full sm:w-auto px-8 rounded-2xl border-slate-200 text-slate-700 font-black text-[11px] uppercase tracking-[0.15em] hover:border-[#1967D2]/30 hover:bg-blue-50/40 transition-all">
                     <Phone className="mr-2.5 h-4 w-4" /> Ligar Agora
                   </Button>
@@ -291,10 +289,10 @@ export default async function HomePage() {
               <div className="absolute inset-0 bg-[#1967D2]/10 rounded-[2.5rem] blur-3xl group-hover:bg-[#1967D2]/20 transition-all duration-700" />
               <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white">
                 <Image
-                  src="/feature-woman.png"
+                  src="/cevanempresarial/imagemsite/atendimento-mulher.png"
                   alt="Equipe Cevan"
-                  width={700}
-                  height={520}
+                  width={500}
+                  height={500}
                   className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-1000"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent" />

@@ -22,6 +22,7 @@ import {
   ClipboardList, Banknote, Scale, Target,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function ServicosPage() {
   return (
@@ -218,18 +219,14 @@ export default function ServicosPage() {
               </div>
             </div>
 
-            <div className="relative">
-              <div className="rounded-[2.5rem] bg-gradient-to-br from-emerald-500 to-teal-700 p-10 text-white text-center space-y-5 shadow-2xl">
-                <BarChart2 className="h-16 w-16 mx-auto opacity-80" />
-                <div className="space-y-1">
-                  <p className="font-black text-4xl">+ Lucro</p>
-                  <p className="font-black text-4xl text-emerald-200">- Desperdício</p>
-                </div>
-                <p className="text-emerald-100 font-medium text-[15px] max-w-xs mx-auto leading-relaxed">
-                  Controle real sobre os números do seu negócio.
-                </p>
-                <p className="text-[11px] font-black uppercase tracking-widest text-emerald-300">Parte do Pacote de Gestão Completa</p>
-              </div>
+            <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl">
+              <Image
+                src="/cevanempresarial/imagemsite/lucro-desperdicio.png"
+                alt="Mais lucro, menos desperdício"
+                width={500}
+                height={300}
+                className="w-full h-auto object-cover"
+              />
             </div>
           </div>
         </div>
@@ -239,18 +236,14 @@ export default function ServicosPage() {
       <section id="tributario" className="py-20 bg-slate-50">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
-            <div className="relative order-2 lg:order-1">
-              <div className="rounded-[2.5rem] bg-gradient-to-br from-violet-600 to-purple-800 p-10 text-white text-center space-y-5 shadow-2xl">
-                <ShieldCheck className="h-16 w-16 mx-auto opacity-80" />
-                <div className="space-y-1">
-                  <p className="font-black text-4xl">Menos</p>
-                  <p className="font-black text-4xl text-violet-200">Imposto.</p>
-                  <p className="font-black text-2xl text-violet-300">Dentro da lei.</p>
-                </div>
-                <p className="text-violet-100 font-medium text-[15px] max-w-xs mx-auto leading-relaxed">
-                  Redução legal e ética da carga tributária.
-                </p>
-              </div>
+            <div className="relative order-2 lg:order-1 rounded-[2.5rem] overflow-hidden shadow-2xl">
+              <Image
+                src="/cevanempresarial/imagemsite/menos-imposto.png"
+                alt="Menos imposto, dentro da lei"
+                width={500}
+                height={300}
+                className="w-full h-auto object-cover"
+              />
             </div>
 
             <div className="space-y-7 order-1 lg:order-2">

@@ -168,18 +168,14 @@ export default async function JobsPublicPage({
 
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
                     <div className="flex items-start sm:items-center gap-4 sm:gap-5 flex-1">
-                      <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl flex-shrink-0 flex items-center justify-center font-bold text-white text-base sm:text-xl shadow-sm overflow-hidden ${job.company.logoUrl ? 'bg-white border border-slate-100' : job.type === 'MANAGED' ? 'bg-blue-600' : 'bg-slate-600'}`}>
-                        {job.company.logoUrl ? (
-                          <Image
-                            src={job.company.logoUrl}
-                            alt={job.company.name}
-                            width={56}
-                            height={56}
-                            className="h-full w-full object-contain p-1.5"
-                          />
-                        ) : (
-                          job.company.name.charAt(0)
-                        )}
+                      <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl flex-shrink-0 flex items-center justify-center shadow-sm overflow-hidden bg-white border border-slate-100">
+                        <Image
+                          src="/cevanempresarial/iconparaapp.png"
+                          alt="Cevan Serviços Empresariais"
+                          width={56}
+                          height={56}
+                          className="h-full w-full object-contain p-1.5"
+                        />
                       </div>
                       <div className="pr-8 sm:pr-12 md:pr-0">
                         <div className="flex flex-wrap gap-2 mb-3">
@@ -187,7 +183,7 @@ export default async function JobsPublicPage({
                         </div>
                         <h4 className="font-bold text-base sm:text-[18px] text-slate-900 group-hover:text-[#1967D2] transition-colors leading-tight mb-1.5 sm:mb-2 line-clamp-1">{job.title}</h4>
                         <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1.5 text-[11px] sm:text-[13px] text-slate-500 font-medium">
-                          <span className="flex items-center gap-1.5"><Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#1967D2]" /> {job.company.name}</span>
+                          <span className="flex items-center gap-1.5"><Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#1967D2]" /> Cevan Serviços Empresariais</span>
                           <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" /> {job.location}</span>
                           <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" /> {formatDistanceToNow(new Date(job.createdAt), { addSuffix: true, locale: ptBR })}</span>
                           <span className="flex items-center gap-1.5 font-black text-green-600 text-xs sm:text-sm">{job.salaryRange || "A combinar"}</span>

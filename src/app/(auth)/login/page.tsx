@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Lock, Mail, ArrowRight, Zap } from "lucide-react";
+import { Lock, Mail, ArrowRight } from "lucide-react";
 import { loginWithCredentials } from "@/actions/auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -121,33 +121,13 @@ export default function LoginPage() {
 
         {/* Content */}
         <div className="relative z-10 max-w-lg space-y-8 animate-in fade-in slide-in-from-right duration-1000">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-black uppercase tracking-widest">
-            <Zap className="h-3 w-3 fill-white" />
-            Curadoria Especializada
-          </div>
-          
           <h2 className="text-5xl font-black text-white leading-tight tracking-tight">
-            Encontre os <span className="text-blue-400 italic">melhores</span> talentos sem o ruído.
+            Toda a gestão de RH em <span className="text-blue-400 italic">um só lugar</span>.
           </h2>
-          
-          <p className="text-xl text-blue-100/70 font-medium leading-relaxed">
-            Nossa plataforma utiliza curadoria humana e tecnologia para conectar sua empresa apenas aos candidatos que realmente importam.
-          </p>
 
-          <div className="pt-8 flex items-center gap-6">
-            <div className="flex -space-x-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-12 w-12 rounded-full border-4 border-slate-900 bg-slate-800 overflow-hidden shadow-xl">
-                  <div className="w-full h-full bg-blue-500/20 flex items-center justify-center font-bold text-white text-xs">
-                    U{i}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p className="text-sm font-bold text-white">
-              +500 empresas <br /> <span className="text-blue-400 font-medium">contratando agora</span>
-            </p>
-          </div>
+          <p className="text-xl text-blue-100/70 font-medium leading-relaxed">
+            Centralize vagas, candidatos e contratações em um único painel, do recebimento do currículo até a efetivação.
+          </p>
         </div>
 
         {/* Decorative elements */}
