@@ -218,6 +218,7 @@ export default async function JobsPublicPage({
           )}
         </div>
       </div>
+
     </div>
   );
 }

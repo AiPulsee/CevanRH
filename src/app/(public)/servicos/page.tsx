@@ -65,15 +65,15 @@ export default function ServicosPage() {
               <div className="space-y-5">
                 <Badge className="bg-[#1967D2]/10 text-[#1967D2] border-none rounded-full px-4 py-1.5 font-black uppercase tracking-widest text-[10px]">Quem Somos</Badge>
                 <h2 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
-                  A Cevan nasceu para resolver os <span className="text-[#1967D2]">problemas reais</span> do empresário.
+                  A Cevan nasceu para impulsionar o <span className="text-[#1967D2]">crescimento das empresas</span>.
                 </h2>
                 <p className="text-slate-500 text-[15px] font-medium leading-relaxed">
-                  A Cevan Serviços Empresariais é o braço estratégico do Grupo Cevan, criado para ajudar pequenas e médias empresas a crescerem com mais organização, lucro e segurança. Nossa equipe assume a rotina, os processos e a burocracia, enquanto você foca no que importa: vender e crescer.
+                  A Cevan Serviços Empresariais é o braço estratégico do Grupo Cevan, especializada em transformar desafios empresariais em oportunidades de crescimento. Atuamos ao lado de pequenas e médias empresas, oferecendo suporte na gestão de processos, organização administrativa e estruturação operacional. Nossa missão é simplificar a rotina empresarial, reduzir falhas que impactam os resultados e criar uma base sólida para que o empresário possa focar no que realmente importa: expandir seu negócio, aumentar sua lucratividade e conquistar novos mercados.
                 </p>
                 <div className="bg-[#1967D2]/5 border border-[#1967D2]/15 rounded-xl p-4">
-                  <p className="text-[#1967D2] font-black text-[12px] uppercase tracking-widest mb-1">Missão</p>
+                  <p className="text-[#1967D2] font-black text-[12px] uppercase tracking-widest mb-1">Nosso Propósito</p>
                   <p className="text-slate-700 font-semibold text-[14px] leading-relaxed">
-                    Organizar empresas desorganizadas, reduzir prejuízos invisíveis e estruturar o negócio para crescer com segurança.
+                    Organizar, estruturar e fortalecer empresas por meio de soluções estratégicas e eficientes, eliminando prejuízos ocultos, otimizando processos e proporcionando crescimento sustentável com segurança e previsibilidade.
                   </p>
                 </div>
               </div>
