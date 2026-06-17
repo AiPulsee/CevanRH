@@ -25,6 +25,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { WHATSAPP_HREF } from "@/lib/contact";
 
 export default async function HomePage() {
   const featuredJobs = await prisma.job.findMany({
@@ -274,14 +275,9 @@ export default async function HomePage() {
                 Fale agora com um especialista e descubra como eliminar os custos invisíveis que travam o crescimento da sua empresa.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <a href="mailto:rh.cevanservicos@gmail.com">
-                  <Button size="lg" className="h-13 w-full sm:w-auto px-8 rounded-2xl bg-[#1967D2] hover:bg-blue-700 font-black text-[11px] uppercase tracking-[0.15em] shadow-xl shadow-blue-200/60 hover:-translate-y-0.5 transition-all">
-                    <Mail className="mr-2.5 h-4 w-4" /> Enviar E-mail
-                  </Button>
-                </a>
-                <a href="tel:+5598920007888">
-                  <Button size="lg" variant="outline" className="h-13 w-full sm:w-auto px-8 rounded-2xl border-slate-200 text-slate-700 font-black text-[11px] uppercase tracking-[0.15em] hover:border-[#1967D2]/30 hover:bg-blue-50/40 transition-all">
-                    <Phone className="mr-2.5 h-4 w-4" /> Ligar Agora
+                <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer">
+                  <Button size="lg" className="h-13 w-full sm:w-auto px-10 rounded-2xl bg-[#1967D2] hover:bg-blue-700 font-black text-[11px] uppercase tracking-[0.15em] shadow-xl shadow-blue-200/60 hover:-translate-y-0.5 transition-all">
+                    <Phone className="mr-2.5 h-4 w-4" /> Falar com um Especialista
                   </Button>
                 </a>
               </div>

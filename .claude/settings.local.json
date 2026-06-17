@@ -85,7 +85,8 @@
       "Bash(git fetch *)",
       "Bash(git merge *)",
       "Bash(node -e \"console.log\\(require\\('sharp'\\)\\)\")",
-      "Bash(node make-favicon.js)"
+      "Bash(node make-favicon.js)",
+      "Bash(git commit *)"
     ]
   }
 }

@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { WHATSAPP_HREF } from "@/lib/contact";
 
 export default function ServicosPage() {
   return (
@@ -421,14 +422,9 @@ export default function ServicosPage() {
             Fale com um especialista e descubra como a Cevan pode eliminar os custos invisíveis que travam o seu crescimento.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="mailto:atendimento@cevan.com.br">
-              <Button size="lg" className="h-14 px-10 rounded-2xl bg-[#1967D2] hover:bg-blue-700 font-black text-[11px] uppercase tracking-[0.15em] shadow-2xl shadow-blue-200/60 hover:-translate-y-0.5 transition-all">
-                <Mail className="mr-2.5 h-5 w-5" /> Enviar E-mail
-              </Button>
-            </a>
-            <a href="tel:+551234567890">
-              <Button size="lg" variant="outline" className="h-14 px-10 rounded-2xl border-slate-200 text-slate-700 font-black text-[11px] uppercase tracking-[0.15em] hover:bg-slate-50 transition-all">
-                <Phone className="mr-2.5 h-5 w-5" /> Ligar Agora
+            <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer">
+              <Button size="lg" className="h-14 px-12 rounded-2xl bg-[#1967D2] hover:bg-blue-700 font-black text-[11px] uppercase tracking-[0.15em] shadow-2xl shadow-blue-200/60 hover:-translate-y-0.5 transition-all">
+                <Phone className="mr-2.5 h-5 w-5" /> Falar com um Especialista
               </Button>
             </a>
           </div>
