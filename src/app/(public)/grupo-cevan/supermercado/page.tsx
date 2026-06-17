@@ -36,7 +36,7 @@ const units = [
     num: "02",
     name: "Santa Luzia",
     city: "Santa Luzia — MA",
-    address: "Av. Newton Bello, 687 — Santa Luzia/MA",
+    address: "Av. Newton Bello, 1032 - B — Santa Luzia/MA",
     whatsapp: "https://wa.me/5598000000002",
     hours: [
       { day: "Segunda a Sexta", time: "07:30 – 19:00" },

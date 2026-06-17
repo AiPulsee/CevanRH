@@ -25,7 +25,7 @@ export function PublicFooter() {
                </a>
              </div>
              <p className="text-sm sm:text-[15px] text-slate-400 leading-relaxed font-medium">
-               Avenida Newton Belo, Centro, Santa Luzia/MA <br/>
+               Av. Newton Bello, 1032 - B, Centro, Santa Luzia/MA <br/>
                <a href="mailto:rh.cevanservicos@gmail.com" className="text-white font-bold hover:text-[#1967D2] transition-colors mt-4 inline-block underline underline-offset-4 decoration-slate-600 hover:decoration-[#1967D2]">rh.cevanservicos@gmail.com</a>
              </p>
           </div>
