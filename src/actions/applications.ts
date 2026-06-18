@@ -37,7 +37,7 @@ export async function applyToJob(data: {
   }
 
   try {
-    const job = await prisma.job.findUnique({
+    const job = await prisma.job.findFirst({
       where: { id: jobId },
       select: { id: true, status: true, title: true },
     });
@@ -45,7 +45,7 @@ export async function applyToJob(data: {
     if (!job) return fail("Vaga não encontrada.");
     if (job.status !== "ACTIVE") return fail("Esta vaga não está mais aceitando candidaturas.");
 
-    let user = await prisma.user.findUnique({ where: { email } });
+    let user = await prisma.user.findFirst({ where: { email } });
 
     if (!user) {
       user = await prisma.user.create({
@@ -106,7 +106,7 @@ export async function createManualResume(data: {
   try {
     const resolvedEmail = email || `sem-email-${randomUUID()}@cevanrh.local`;
     let user = email
-      ? await prisma.user.findUnique({ where: { email } })
+      ? await prisma.user.findFirst({ where: { email } })
       : null;
     if (!user) {
       user = await prisma.user.create({
@@ -159,6 +159,14 @@ export async function rejectApplication(applicationId: string) {
   if (permError) return permError;
 
   try {
+    const app = await prisma.application.findUnique({
+      where: { id: applicationId },
+      select: { status: true },
+    });
+    if (!app) return fail("Candidatura não encontrada.");
+    if (app.status === "HIRED") return fail("Não é possível reprovar uma candidatura já contratada.");
+    if (app.status === "REJECTED") return fail("Candidatura já está reprovada.");
+
     await prisma.application.update({
       where: { id: applicationId },
       data: { status: "REJECTED" },
@@ -178,6 +186,14 @@ export async function shortlistApplication(applicationId: string, feedback?: str
   if (permError) return permError;
 
   try {
+    const app = await prisma.application.findUnique({
+      where: { id: applicationId },
+      select: { status: true },
+    });
+    if (!app) return fail("Candidatura não encontrada.");
+    if (app.status === "HIRED") return fail("Não é possível selecionar uma candidatura já contratada.");
+    if (app.status === "REJECTED") return fail("Não é possível selecionar uma candidatura reprovada.");
+
     await prisma.application.update({
       where: { id: applicationId },
       data: {

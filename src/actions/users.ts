@@ -122,9 +122,15 @@ export async function deleteUser(userId: string) {
       where: { id: userId },
       select: { name: true, email: true },
     });
-    await prisma.user.delete({ where: { id: userId } });
+    await prisma.user.update({
+      where: { id: userId },
+      data: { deletedAt: new Date() },
+    });
 
-    await logAction("DELETE_USER", `Excluiu o usuário ${user?.name || user?.email} (${userId})`);
+    await logAction("DELETE_USER", `Excluiu o usuário ${user?.name || user?.email} (${userId})`, {
+      before: { userId, name: user?.name, email: user?.email },
+      after: { deletedAt: new Date() },
+    });
     revalidatePath("/admin/users");
     return ok();
   } catch {

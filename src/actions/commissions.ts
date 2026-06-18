@@ -13,12 +13,17 @@ export async function markCommissionAsInvoiced(commissionId: string, invoiceNumb
   if (permError) return permError;
 
   try {
-    await prisma.commission.update({
-      where: { id: commissionId },
+    const result = await prisma.commission.updateMany({
+      where: { id: commissionId, status: CommissionStatus.PENDING },
       data: { status: CommissionStatus.INVOICED, invoiceNumber },
     });
 
-    await logAction("COMMISSION_INVOICED", `Faturou comissão ${commissionId} (NF: ${invoiceNumber})`);
+    if (result.count === 0) return fail("Comissão só pode ser faturada quando estiver pendente.");
+
+    await logAction("COMMISSION_INVOICED", `Faturou comissão ${commissionId} (NF: ${invoiceNumber})`, {
+      before: { commissionId, status: "PENDING" },
+      after: { commissionId, status: "INVOICED", invoiceNumber },
+    });
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");
@@ -35,12 +40,19 @@ export async function markCommissionAsPaid(commissionId: string) {
   if (permError) return permError;
 
   try {
-    await prisma.commission.update({
-      where: { id: commissionId },
+    const result = await prisma.commission.updateMany({
+      where: {
+        id: commissionId,
+        status: { in: [CommissionStatus.PENDING, CommissionStatus.INVOICED] },
+      },
       data: { status: CommissionStatus.PAID, paidAt: new Date() },
     });
 
-    await logAction("COMMISSION_PAID", `Registrou pagamento da comissão ${commissionId}`);
+    if (result.count === 0) return fail("Comissão só pode ser paga quando estiver pendente ou faturada.");
+
+    await logAction("COMMISSION_PAID", `Registrou pagamento da comissão ${commissionId}`, {
+      after: { commissionId, status: "PAID", paidAt: new Date() },
+    });
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");
@@ -57,12 +69,19 @@ export async function waiveCommission(commissionId: string) {
   if (permError) return permError;
 
   try {
-    await prisma.commission.update({
-      where: { id: commissionId },
+    const result = await prisma.commission.updateMany({
+      where: {
+        id: commissionId,
+        status: { in: [CommissionStatus.PENDING, CommissionStatus.INVOICED] },
+      },
       data: { status: CommissionStatus.WAIVED },
     });
 
-    await logAction("COMMISSION_WAIVED", `Dispensou comissão ${commissionId}`);
+    if (result.count === 0) return fail("Comissão já foi paga e não pode ser dispensada.");
+
+    await logAction("COMMISSION_WAIVED", `Dispensou comissão ${commissionId}`, {
+      after: { commissionId, status: "WAIVED" },
+    });
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");

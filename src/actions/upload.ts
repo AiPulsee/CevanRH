@@ -6,6 +6,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";
 import { headers } from "next/headers";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { auth } from "@/lib/auth";
 
 const ALLOWED_TYPES = [
   "application/pdf",
@@ -13,7 +14,7 @@ const ALLOWED_TYPES = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 
-const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml"];
+const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
 
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 const MAX_LOGO_SIZE_BYTES = 2 * 1024 * 1024; // 2 MB
@@ -57,8 +58,13 @@ export async function getPresignedUrl(fileName: string, fileType: string, fileSi
 }
 
 export async function getLogoPresignedUrl(fileName: string, fileType: string, fileSize: number) {
+  const session = await auth();
+  if (!session?.user || (session.user as any).role !== "ADMIN") {
+    throw new Error("Não autorizado.");
+  }
+
   if (!ALLOWED_IMAGE_TYPES.includes(fileType)) {
-    throw new Error("Tipo de arquivo não permitido. Use PNG, JPG, WEBP ou SVG.");
+    throw new Error("Tipo de arquivo não permitido. Use PNG, JPG ou WEBP.");
   }
 
   if (fileSize > MAX_LOGO_SIZE_BYTES) {

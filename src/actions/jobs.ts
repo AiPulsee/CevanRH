@@ -6,6 +6,7 @@ import { JobType, JobStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdminPermission, ok, fail } from "@/lib/permissions";
+import { logAction } from "@/lib/audit";
 import { v4 as uuidv4 } from "uuid";
 
 function toSlug(title: string): string {
@@ -38,6 +39,26 @@ const createJobSchema = z.object({
   feePercentage: z.coerce.number().min(0).max(100).optional(),
   feeFixed: z.coerce.number().min(0).optional(),
   trialDays: z.coerce.number().int().min(1).max(365).optional(),
+});
+
+const updateJobSchema = z.object({
+  title: z.string().min(5, "Título muito curto"),
+  description: z.string().min(20, "Descrição precisa ser mais detalhada"),
+  location: z.string().min(2, "Localização obrigatória"),
+  isRemote: z.boolean(),
+  salaryRange: z.string().nullish(),
+  requirements: z.string().nullish(),
+  responsibilities: z.string().nullish(),
+  benefits: z.string().nullish(),
+  tips: z.string().nullish(),
+  contractType: z.string().nullish(),
+  experienceLevel: z.string().nullish(),
+  status: z.nativeEnum(JobStatus),
+  openings: z.number().int().min(1).optional(),
+  feeType: z.enum(["percentage", "fixed"]).nullish(),
+  feePercentage: z.number().min(0).max(100).nullish(),
+  feeFixed: z.number().min(0).nullish(),
+  trialDays: z.number().int().min(1).max(365).nullish(),
 });
 
 export type CreateJobState = {
@@ -76,6 +97,10 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
     contractType: formData.get("contractType"),
     experienceLevel: formData.get("experienceLevel"),
     openings: formData.get("openings") || 1,
+    feeType: formData.get("feeType") || undefined,
+    feePercentage: formData.get("feePercentage") || undefined,
+    feeFixed: formData.get("feeFixed") || undefined,
+    trialDays: formData.get("trialDays") || undefined,
   });
 
   if (!validatedFields.success) {
@@ -97,7 +122,7 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
     return fail("ID da empresa não fornecido ou não autorizado.");
   }
 
-  const companyExists = await prisma.company.findUnique({
+  const companyExists = await prisma.company.findFirst({
     where: { id: targetCompanyId },
     select: { id: true },
   });
@@ -134,32 +159,18 @@ export async function createJob(prevState: unknown, formData: FormData): Promise
   }
 }
 
-export async function updateJob(
-  jobId: string,
-  data: {
-    title: string;
-    description: string;
-    location: string;
-    isRemote: boolean;
-    salaryRange?: string;
-    requirements?: string;
-    responsibilities?: string;
-    benefits?: string;
-    tips?: string;
-    status: JobStatus;
-    openings?: number;
-    feeType?: string | null;
-    feePercentage?: number | null;
-    feeFixed?: number | null;
-    trialDays?: number | null;
-  }
-) {
+export async function updateJob(jobId: string, data: unknown) {
   const session = await auth();
   const permError = requireAdminPermission(session, "MANAGED");
   if (permError) return permError;
 
+  const validated = updateJobSchema.safeParse(data);
+  if (!validated.success) {
+    return fail("Dados inválidos. Verifique os campos.");
+  }
+
   try {
-    await prisma.job.update({ where: { id: jobId }, data: data as any });
+    await prisma.job.update({ where: { id: jobId }, data: validated.data });
     revalidatePath("/admin/managed");
     revalidatePath("/admin");
     return ok();
@@ -175,27 +186,19 @@ export async function deleteJob(jobId: string) {
   if (permError) return permError;
 
   try {
-    // Deletar na ordem correta respeitando as FK constraints:
-    // Commission → Placement → Application (+ Shortlist via cascade) → Job
-
-    const applications = await prisma.application.findMany({
-      where: { jobId },
-      select: { id: true, placement: { select: { id: true } } },
+    const now = new Date();
+    await prisma.job.update({
+      where: { id: jobId },
+      data: { deletedAt: now },
     });
 
-    const placementIds = applications
-      .map((a) => a.placement?.id)
-      .filter(Boolean) as string[];
-
-    if (placementIds.length > 0) {
-      await prisma.commission.deleteMany({ where: { placementId: { in: placementIds } } });
-      await prisma.placement.deleteMany({ where: { id: { in: placementIds } } });
-    }
-
-    await prisma.job.delete({ where: { id: jobId } });
+    await logAction("DELETE_JOB", `Excluiu vaga ${jobId}`, {
+      after: { jobId, deletedAt: now },
+    });
 
     revalidatePath("/admin/managed");
     revalidatePath("/admin");
+    revalidatePath("/jobs");
     return ok();
   } catch (err) {
     console.error(err);

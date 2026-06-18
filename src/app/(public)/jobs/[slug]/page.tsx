@@ -94,7 +94,7 @@ export default async function JobDetailsPage({ params }: { params: Promise<{ slu
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
     <div className="bg-[#FAFBFC] min-h-screen pt-24 pb-20">
       

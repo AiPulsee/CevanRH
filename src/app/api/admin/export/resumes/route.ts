@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
       ? { ...where, job: { type: typeFilter as JobType, company: { id: companyFilter } } }
       : where;
 
-  const applications = await prisma.application.findMany({
+  const raw = await prisma.application.findMany({
     where: whereResolved,
     select: {
       candidate: { select: { name: true, email: true } },
@@ -71,8 +71,11 @@ export async function GET(request: NextRequest) {
       createdAt: true,
     },
     orderBy: { createdAt: sort === "asc" ? "asc" : "desc" },
-    take: 5000,
+    take: 5001,
   });
+
+  const truncated = raw.length > 5000;
+  const applications = truncated ? raw.slice(0, 5000) : raw;
 
   const headers = ["Nome", "Email", "Vaga", "Empresa", "Tipo", "Status", "Data", "URL Currículo"];
   const rows = applications.map((app) => [
@@ -92,12 +95,16 @@ export async function GET(request: NextRequest) {
       .map((row) => row.map(escapeCsv).join(","))
       .join("\n");
 
-  const filename = `curriculos-${new Date().toISOString().slice(0, 10)}.csv`;
+  const suffix = truncated ? "-parcial" : "";
+  const filename = `curriculos-${new Date().toISOString().slice(0, 10)}${suffix}.csv`;
 
-  return new NextResponse(csv, {
-    headers: {
-      "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${filename}"`,
-    },
-  });
+  const responseHeaders: Record<string, string> = {
+    "Content-Type": "text/csv; charset=utf-8",
+    "Content-Disposition": `attachment; filename="${filename}"`,
+  };
+  if (truncated) {
+    responseHeaders["X-Records-Truncated"] = "true";
+  }
+
+  return new NextResponse(csv, { headers: responseHeaders });
 }

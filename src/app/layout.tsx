@@ -98,7 +98,7 @@ export default function RootLayout({
       <body className={`${inter.className} h-full bg-background text-foreground antialiased`}>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c") }}
         />
         <PwaRegistry />
         <InstallPWAPrompt />

@@ -51,23 +51,47 @@ export async function createPlacement(data: {
     if (application.status !== "HIRED") return fail("Candidato precisa ter status HIRED.");
     if (application.placement) return fail("Esta candidatura já possui uma alocação.");
 
-    const { trialDays } = await resolveFeeAndTrial(application.job as any, data.monthlySalary);
+    const { feePercentage, commissionAmount, trialDays } = await resolveFeeAndTrial(
+      application.job as any,
+      data.monthlySalary
+    );
     const start = new Date(data.startDate);
     const trialEnd = new Date(start);
     trialEnd.setDate(trialEnd.getDate() + trialDays);
 
-    await prisma.placement.create({
-      data: {
-        applicationId: data.applicationId,
-        monthlySalary: data.monthlySalary,
-        startDate: start,
-        trialEndDate: trialEnd,
-        status: PlacementStatus.TRIAL,
-      },
+    await prisma.$transaction(async (tx) => {
+      const placement = await tx.placement.create({
+        data: {
+          applicationId: data.applicationId,
+          monthlySalary: data.monthlySalary,
+          startDate: start,
+          trialEndDate: trialEnd,
+          status: PlacementStatus.TRIAL,
+        },
+      });
+
+      if (application.job?.companyId) {
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + 30);
+        await tx.commission.create({
+          data: {
+            placementId: placement.id,
+            baseSalary: data.monthlySalary,
+            percentage: feePercentage,
+            amount: commissionAmount,
+            status: "PENDING",
+            dueDate,
+            companyId: application.job.companyId,
+          },
+        });
+      }
     });
 
-    await logAction("CREATE_PLACEMENT", `Criou alocação para candidatura ${data.applicationId}`);
+    await logAction("CREATE_PLACEMENT", `Criou alocação para candidatura ${data.applicationId}`, {
+      after: { applicationId: data.applicationId, monthlySalary: data.monthlySalary, startDate: start, trialEndDate: trialEnd, feePercentage, commissionAmount },
+    });
     revalidatePath("/admin/placements");
+    revalidatePath("/admin/finance");
     revalidatePath("/admin");
     revalidatePath("/dashboard/placements");
 
@@ -120,7 +144,10 @@ export async function confirmEffective(placementId: string) {
       data: { status: PlacementStatus.EFFECTIVE, effectiveDate: now },
     });
 
-    await logAction("CONFIRM_EFFECTIVE", `Confirmou efetivação da alocação ${placementId}`);
+    await logAction("CONFIRM_EFFECTIVE", `Confirmou efetivação da alocação ${placementId}`, {
+      before: { placementId, status: "TRIAL" },
+      after: { placementId, status: "EFFECTIVE", effectiveDate: now },
+    });
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");
@@ -167,23 +194,35 @@ export async function terminatePlacement(placementId: string, reason?: string) {
       }
     }
 
-    await prisma.placement.update({
-      where: { id: placementId },
-      data: {
-        status: PlacementStatus.TERMINATED,
-        terminationDate: new Date(),
-        terminationReason: reason || "Não efetivado pela empresa.",
-      },
+    await prisma.$transaction(async (tx) => {
+      await tx.placement.update({
+        where: { id: placementId },
+        data: {
+          status: PlacementStatus.TERMINATED,
+          terminationDate: new Date(),
+          terminationReason: reason || "Não efetivado pela empresa.",
+        },
+      });
+
+      // Experiência falhou: dispensa automaticamente comissões pendentes.
+      // Comissões já faturadas (INVOICED) ficam para o admin tratar manualmente.
+      await tx.commission.updateMany({
+        where: { placementId, status: "PENDING" },
+        data: { status: "WAIVED" },
+      });
+
+      if (placement.application.job?.id) {
+        await tx.job.update({
+          where: { id: placement.application.job.id },
+          data: { status: "ACTIVE" },
+        });
+      }
     });
 
-    if (placement.application.job?.id) {
-      await prisma.job.update({
-        where: { id: placement.application.job.id },
-        data: { status: "ACTIVE" },
-      });
-    }
-
-    await logAction("TERMINATE_PLACEMENT", `Encerrou alocação ${placementId}`);
+    await logAction("TERMINATE_PLACEMENT", `Encerrou alocação ${placementId}`, {
+      before: { placementId, status: "TRIAL" },
+      after: { placementId, status: "TERMINATED", terminationReason: reason || "Não efetivado pela empresa." },
+    });
     revalidatePath("/admin/placements");
     revalidatePath("/admin/managed");
     revalidatePath("/admin");
@@ -255,10 +294,15 @@ export async function hireAndPlace(data: {
       });
 
       // Commission is charged when the trial starts.
-      // If replacing a candidate, relink the existing commission to the new placement.
-      const existingCommission = await tx.commission.findFirst({
-        where: { placement: { application: { jobId: application.jobId } } },
-      });
+      // If replacing a candidate, relink the existing active commission to the new placement.
+      const existingCommission = application.jobId
+        ? await tx.commission.findFirst({
+            where: {
+              placement: { application: { jobId: application.jobId } },
+              status: { notIn: ["PAID", "WAIVED"] },
+            },
+          })
+        : null;
 
       if (existingCommission) {
         await tx.commission.update({
@@ -283,7 +327,9 @@ export async function hireAndPlace(data: {
       }
     });
 
-    await logAction("HIRE_AND_PLACE", `Contratou e alocou candidatura ${data.applicationId}`);
+    await logAction("HIRE_AND_PLACE", `Contratou e alocou candidatura ${data.applicationId}`, {
+      after: { applicationId: data.applicationId, monthlySalary: data.monthlySalary, startDate: start, trialEndDate: trialEnd, feePercentage, commissionAmount },
+    });
     revalidatePath("/admin/placements");
     revalidatePath("/admin/managed");
     revalidatePath("/admin/finance");
@@ -307,7 +353,7 @@ export async function adminAllocateCandidate(data: {
   if (permError) return permError;
 
   try {
-    const jobForFee = await prisma.job.findUnique({
+    const jobForFee = await prisma.job.findFirst({
       where: { id: data.jobId },
       select: { feeType: true, feePercentage: true, feeFixed: true, trialDays: true } as any,
     });
@@ -321,14 +367,14 @@ export async function adminAllocateCandidate(data: {
     trialEnd.setDate(trialEnd.getDate() + trialDays);
 
     await prisma.$transaction(async (tx) => {
-      const job = await tx.job.findUnique({
-        where: { id: data.jobId },
+      const job = await tx.job.findFirst({
+        where: { id: data.jobId, deletedAt: null },
         select: { id: true, type: true, companyId: true },
       });
       if (!job || job.type !== "MANAGED") throw new Error("Vaga inválida.");
 
-      const candidate = await tx.user.findUnique({
-        where: { id: data.candidateId },
+      const candidate = await tx.user.findFirst({
+        where: { id: data.candidateId, deletedAt: null },
         select: {
           id: true,
           applications: {
@@ -360,6 +406,7 @@ export async function adminAllocateCandidate(data: {
         // Reuse manual application (jobId = null) if exists, avoiding duplicate records
         const manualApp = await tx.application.findFirst({
           where: { candidateId: data.candidateId, jobId: null },
+          orderBy: { createdAt: "desc" },
         });
 
         if (manualApp) {
@@ -420,7 +467,9 @@ export async function adminAllocateCandidate(data: {
       }
     });
 
-    await logAction("ADMIN_ALLOCATE", `Admin alocou candidato ${data.candidateId} para vaga ${data.jobId}`);
+    await logAction("ADMIN_ALLOCATE", `Admin alocou candidato ${data.candidateId} para vaga ${data.jobId}`, {
+      after: { candidateId: data.candidateId, jobId: data.jobId, monthlySalary: data.monthlySalary, feePercentage, commissionAmount },
+    });
     revalidatePath("/admin/placements");
     revalidatePath("/admin/managed");
     revalidatePath("/admin/resumes");

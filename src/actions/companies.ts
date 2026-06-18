@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdminPermission, ok, fail } from "@/lib/permissions";
+import { logAction } from "@/lib/audit";
 
 const createCompanySchema = z.object({
   name: z.string().min(2, "Nome muito curto"),
@@ -83,8 +84,27 @@ export async function deleteCompany(companyId: string) {
   if (permError) return permError;
 
   try {
-    await prisma.company.delete({ where: { id: companyId } });
+    const now = new Date();
+    await prisma.$transaction(async (tx) => {
+      // Cascade soft-delete: jobs for this company must also be hidden
+      await tx.job.updateMany({
+        where: { companyId, deletedAt: null },
+        data: { deletedAt: now },
+      });
+      await tx.company.update({
+        where: { id: companyId },
+        data: { deletedAt: now },
+      });
+    });
+
+    await logAction("DELETE_COMPANY", `Excluiu empresa ${companyId}`, {
+      after: { companyId, deletedAt: now },
+    });
+
     revalidatePath("/admin/companies");
+    revalidatePath("/admin/managed");
+    revalidatePath("/admin");
+    revalidatePath("/jobs");
     return ok();
   } catch (err) {
     console.error(err);

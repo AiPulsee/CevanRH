@@ -1,13 +1,13 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
+import { prismaAdapter, prisma } from "@/lib/prisma";
 import { authConfig } from "./auth.config";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prismaAdapter),
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 dias
@@ -16,7 +16,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.findFirst({
           where: { email: credentials.email as string },
         });
 

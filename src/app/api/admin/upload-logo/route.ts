@@ -4,7 +4,7 @@ import { s3Client } from "@/lib/s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 
-const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml"];
+const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const MAX_BYTES = 2 * 1024 * 1024;
 
 export async function POST(request: NextRequest) {
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (!ALLOWED_TYPES.includes(file.type)) {
-    return NextResponse.json({ error: "Tipo não permitido. Use PNG, JPG, WEBP ou SVG." }, { status: 400 });
+    return NextResponse.json({ error: "Tipo não permitido. Use PNG, JPG ou WEBP." }, { status: 400 });
   }
 
   if (file.size > MAX_BYTES) {
