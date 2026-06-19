@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BookOpen, Zap, UserCheck, Receipt, FileText, Building2, CheckCircle2, XCircle, AlertTriangle, DollarSign, RefreshCw, Wallet, Sparkles, Layers, ArrowRight, Info } from "lucide-react";
+import { BookOpen, Zap, UserCheck, Receipt, FileText, Building2, CheckCircle2, XCircle, AlertTriangle, DollarSign, RefreshCw, Wallet, Sparkles, Layers, ArrowRight, Info, HelpCircle, Users } from "lucide-react";
 
 export const metadata = { title: "Manual do Sistema — CevanRH" };
 
@@ -91,6 +91,20 @@ function FlowArrow() {
   return <ArrowRight className="h-4 w-4 text-slate-400 mx-1 shrink-0" />;
 }
 
+function FAQItem({ q, a }: { q: string; a: string }) {
+  return (
+    <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
+      <div className="flex items-start gap-3 px-4 py-3 bg-slate-50 border-b border-slate-200">
+        <HelpCircle className="h-4 w-4 text-blue-500 shrink-0 mt-0.5" />
+        <p className="text-sm font-bold text-slate-900">{q}</p>
+      </div>
+      <div className="px-4 py-3">
+        <p className="text-sm text-slate-600 leading-relaxed">{a}</p>
+      </div>
+    </div>
+  );
+}
+
 function Screenshot({ src, caption, callouts }: { src: string; caption: string; callouts?: { x: string; y: string; label: string }[] }) {
   return (
     <figure className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-lg bg-white">
@@ -125,6 +139,7 @@ const TOC_ITEMS = [
   { href: "#curadoria", label: "Curadoria (Vagas)" },
   { href: "#taxa-entrada", label: "↳ Taxa de Entrada" },
   { href: "#painel-vaga", label: "↳ Painel da Vaga" },
+  { href: "#candidatos", label: "↳ Como Candidatos Aplicam" },
   { href: "#triagem", label: "↳ Triagem de Candidatos" },
   { href: "#ia", label: "↳ Análise com IA" },
   { href: "#alocacoes", label: "Alocações" },
@@ -135,6 +150,7 @@ const TOC_ITEMS = [
   { href: "#analytics", label: "Analytics" },
   { href: "#talentos", label: "Banco de Talentos" },
   { href: "#empresas", label: "Empresas & Usuários" },
+  { href: "#faq", label: "Perguntas Frequentes" },
   { href: "#glossario", label: "Glossário de Status" },
 ];
 
@@ -228,10 +244,10 @@ export default function ManualPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
               {[
-                { label: "Candidaturas Recentes", desc: "Total de novas inscrições recebidas este mês em todas as vagas." },
-                { label: "Vagas em Triagem", desc: "Vagas de curadoria com status Ativo — há candidatos aguardando análise." },
-                { label: "Alocações em Andamento", desc: "Candidatos no período de trial. Fique atento aos que estão prestes a vencer." },
-                { label: "Receita do Mês", desc: "Soma de comissões pagas e taxas de entrada recebidas no mês corrente. Passe o mouse para ver o detalhamento." },
+                { label: "Novas Empresas", desc: "Empresas cadastradas ou atualizadas este mês — indica o crescimento da base de clientes." },
+                { label: "Vagas em Curadoria", desc: "Vagas com triagem ativa agora. Se esse número crescer sem triagem, candidatos estão acumulando." },
+                { label: "Candidatos p/ Triar", desc: "Candidatos inscritos que ainda não foram avaliados. Clique em 'Fazer Triagem' na vaga correspondente para processar." },
+                { label: "Receita do Mês", desc: "Comissões pagas e taxas de entrada recebidas no mês corrente." },
               ].map((k) => (
                 <div key={k.label} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{k.label}</p>
@@ -327,6 +343,20 @@ export default function ManualPage() {
               Cada vaga tem um painel individual acessível clicando no ícone <strong>↗</strong> em seu card na lista de Curadoria. O painel consolida tudo em um só lugar.
             </p>
 
+            <Screenshot
+              src="/manual/painel-vaga.png"
+              caption="Painel da Vaga — status, KPIs, histórico de candidatos e configuração"
+              callouts={[
+                { x: "79%", y: "19%", label: "Status da taxa de entrada" },
+                { x: "22%", y: "31%", label: "Alerta: taxa pendente" },
+                { x: "22%", y: "44%", label: "Inscritos na vaga" },
+                { x: "41%", y: "44%", label: "Selecionados" },
+                { x: "60%", y: "44%", label: "Rodadas enviadas" },
+                { x: "77%", y: "44%", label: "Posições preenchidas" },
+                { x: "66%", y: "60%", label: "Configuração da vaga" },
+              ]}
+            />
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
               {[
                 { t: "KPIs da Vaga", d: "Inscritos totais, candidatos selecionados, rodadas enviadas e quantas posições foram preenchidas." },
@@ -344,6 +374,43 @@ export default function ManualPage() {
             <Tip>No painel da vaga você pode efetivar, encerrar e gerenciar comissões diretamente, sem precisar ir à tela de Alocações.</Tip>
           </Section>
 
+          {/* ── Como candidatos aplicam ── */}
+          <Section id="candidatos">
+            <SectionTitle icon={Users} title="Como os Candidatos se Candidatam" subtitle="O fluxo do candidato antes de aparecer na triagem" />
+
+            <p className="text-sm text-slate-600 leading-relaxed mb-6">
+              Todo candidato que aparece na triagem passou pelo seguinte caminho antes de chegar ao consultor:
+            </p>
+
+            <div className="space-y-0 mb-6">
+              <Step n={1} title="Candidato acessa o site público da Cevan">
+                O site exibe todas as vagas abertas. O candidato filtra por função, localidade ou modelo de trabalho.
+              </Step>
+              <Step n={2} title="Clica em 'Candidatar-se' na vaga de interesse">
+                Um formulário é aberto com campos obrigatórios: nome completo, e-mail, telefone e uma apresentação pessoal.
+              </Step>
+              <Step n={3} title="Faz upload do currículo em PDF">
+                O PDF é armazenado de forma segura e fica disponível para o consultor baixar ou abrir diretamente na triagem.
+              </Step>
+              <LastStep n={4} title="A candidatura aparece automaticamente na fila">
+                O candidato entra na lista de triagem da vaga correspondente com status <strong>Inscrito</strong>. O consultor recebe uma notificação no sino.
+              </LastStep>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <p className="text-xs font-black text-slate-900 mb-1">Compartilhar a vaga</p>
+                <p className="text-sm text-slate-500 leading-relaxed">Cada vaga tem uma URL pública que pode ser compartilhada via WhatsApp, e-mail ou redes sociais para atrair candidatos específicos.</p>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <p className="text-xs font-black text-slate-900 mb-1">Currículo por e-mail</p>
+                <p className="text-sm text-slate-500 leading-relaxed">Se um candidato enviou o CV por fora do sistema, cadastre-o manualmente no <strong>Banco de Talentos</strong>. Ele não entra na fila de triagem automaticamente.</p>
+              </div>
+            </div>
+
+            <Warn>Cada candidatura é vinculada a uma vaga específica. Um candidato que se inscreveu na Vaga A <strong>não aparece</strong> na triagem da Vaga B, mesmo que os perfis sejam compatíveis.</Warn>
+          </Section>
+
           {/* ── Triagem ── */}
           <Section id="triagem">
             <SectionTitle icon={Zap} title="Triagem de Candidatos" subtitle="Como avaliar e selecionar candidatos para o cliente" />
@@ -351,6 +418,19 @@ export default function ManualPage() {
             <p className="text-sm text-slate-600 leading-relaxed mb-4">
               Na lista de Curadoria, clique em <strong>Fazer Triagem</strong> na vaga desejada. O modal de triagem abrirá com todos os candidatos pendentes em fila.
             </p>
+
+            <Screenshot
+              src="/manual/triagem-modal.png"
+              caption="Modal de triagem — visualização do candidato, parecer de IA e botões de ação"
+              callouts={[
+                { x: "32%", y: "11%", label: "Score de IA (0–100)" },
+                { x: "38%", y: "11%", label: "Veredito da IA" },
+                { x: "32%", y: "19%", label: "Apresentação do candidato" },
+                { x: "32%", y: "40%", label: "Baixar currículo (PDF)" },
+                { x: "32%", y: "53%", label: "Reanalisar com IA" },
+                { x: "32%", y: "64%", label: "Indicar p/ Cliente" },
+              ]}
+            />
 
             <h3 className="text-base font-black text-slate-900 mb-4">Navegação na fila</h3>
             <p className="text-sm text-slate-600 mb-4 leading-relaxed">
@@ -390,7 +470,7 @@ export default function ManualPage() {
             <SectionTitle icon={Sparkles} title="Análise com Inteligência Artificial" subtitle="Como usar a IA para acelerar a triagem" />
 
             <p className="text-sm text-slate-600 leading-relaxed mb-6">
-              O sistema possui integração com IA (Groq / LLaMA 70B) que lê o PDF do currículo e gera um parecer instantâneo. Os scores ficam salvos — não é necessário reanalisar a cada abertura do modal.
+              O sistema possui integração com Inteligência Artificial que lê o PDF do currículo e gera um parecer instantâneo. Os scores ficam salvos — não é necessário reanalisar a cada abertura do modal.
             </p>
 
             <h3 className="text-base font-black text-slate-900 mb-4">Analisar candidato por candidato</h3>
@@ -605,16 +685,32 @@ export default function ManualPage() {
           <Section id="talentos">
             <SectionTitle icon={FileText} title="Banco de Talentos" subtitle="Repositório de currículos recebidos" />
 
-            <p className="text-sm text-slate-600 leading-relaxed mb-4">
-              Acesse <strong>Banco de Talentos</strong> para ver todos os currículos enviados pelos candidatos, independente de vaga. Você pode filtrar por tipo de vaga, buscar por nome e exportar a lista em planilha.
+            <p className="text-sm text-slate-600 leading-relaxed mb-6">
+              O Banco de Talentos é o repositório central de todos os currículos recebidos — tanto os que vieram pelo site público quanto os cadastrados manualmente pelos consultores. Serve como arquivo de candidatos para futuras oportunidades.
             </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+              {[
+                { t: "Visualizar currículo", d: "Clique no nome do candidato para abrir o card. Use o botão 'Abrir PDF' para ver o currículo completo no navegador ou 'Baixar' para salvar localmente." },
+                { t: "Buscar candidato", d: "Use a barra de busca para localizar pelo nome ou e-mail. Útil quando o cliente pede por um candidato que já passou pelo banco antes." },
+                { t: "Filtrar por tipo de vaga", d: "Filtre por 'Curadoria', 'Público' ou 'Manual' para segmentar candidatos por como chegaram ao sistema." },
+                { t: "Exportar planilha", d: "Clique em 'Exportar' para baixar todos os currículos filtrados em formato Excel (.xlsx) com nome, e-mail, data e tipo." },
+              ].map((i) => (
+                <div key={i.t} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                  <p className="text-xs font-black text-slate-900 mb-1">{i.t}</p>
+                  <p className="text-sm text-slate-500 leading-relaxed">{i.d}</p>
+                </div>
+              ))}
+            </div>
 
             <h3 className="text-base font-black text-slate-900 mb-3">Cadastrar currículo manualmente</h3>
-            <p className="text-sm text-slate-600 leading-relaxed mb-4">
-              Se um candidato enviou o currículo por WhatsApp ou e-mail, você pode cadastrá-lo manualmente: clique em <strong>Adicionar Currículo</strong>, informe nome, e-mail e faça upload do PDF.
-            </p>
+            <div className="space-y-0 mb-4">
+              <Step n={1} title="Clique em 'Adicionar Currículo'">O formulário de cadastro manual abrirá.</Step>
+              <Step n={2} title="Informe nome completo e e-mail do candidato">O e-mail é usado como identificador único — dois cadastros com o mesmo e-mail serão vinculados.</Step>
+              <LastStep n={3} title="Faça upload do PDF e salve">O currículo fica no banco com tipo 'Manual'. Ele não entra automaticamente em nenhuma triagem.</LastStep>
+            </div>
 
-            <Tip>Currículos cadastrados manualmente ficam no banco sem vínculo com uma vaga específica. Para vinculá-los a uma triagem, encaminhe o candidato para se inscrever normalmente pela plataforma, ou use o campo de alocação direta.</Tip>
+            <Tip>O Banco de Talentos é uma boa ferramenta para apresentar ao cliente: "Já temos X candidatos com o perfil que você busca." Use o filtro e a exportação para montar uma apresentação rápida.</Tip>
           </Section>
 
           {/* ── Empresas & Usuários ── */}
@@ -648,6 +744,46 @@ export default function ManualPage() {
             </div>
 
             <Tip>O usuário <strong>Master</strong> tem acesso total e não está sujeito a restrições de permissão.</Tip>
+          </Section>
+
+          {/* ── FAQ ── */}
+          <Section id="faq">
+            <SectionTitle icon={HelpCircle} title="Perguntas Frequentes" subtitle="Dúvidas comuns que surgem no dia a dia dos consultores" />
+
+            <div className="space-y-3">
+              <FAQItem
+                q="O candidato se inscreveu mas não aparece na fila de triagem. Por quê?"
+                a="Verifique se ele se inscreveu na vaga correta. Candidaturas são vinculadas a uma vaga específica — se ele aplicou em outra vaga ou enviou o currículo por fora do sistema (WhatsApp, e-mail), não aparecerá automaticamente. Neste caso, cadastre-o manualmente no Banco de Talentos e oriente-o a se inscrever pela plataforma."
+              />
+              <FAQItem
+                q="Posso editar o salário de uma alocação após criá-la?"
+                a="Atualmente não há edição direta do salário de uma alocação já criada. Se o valor foi informado errado, encerre a alocação (motivo: 'erro de cadastro') e crie uma nova com o salário correto. A comissão será recalculada automaticamente com o novo valor."
+              />
+              <FAQItem
+                q="O cliente quer ver candidatos mas ainda não pagou a taxa de entrada. O que fazer?"
+                a="Use a opção 'Dispensar Taxa' no badge de pagamento. Isso libera o envio sem bloquear o fluxo. Depois acerte a situação comercialmente com o cliente e, quando o pagamento entrar, registre normalmente clicando no badge e informando o valor recebido."
+              />
+              <FAQItem
+                q="Posso reprovar um candidato que já foi marcado como Selecionado?"
+                a="Sim. Abra o modal de triagem, navegue até o candidato e clique em 'Reprovar'. O status volta para Reprovado e ele sai da fila. Isso não afeta alocações já criadas para outros candidatos da mesma vaga."
+              />
+              <FAQItem
+                q="A comissão gerada está com o valor errado. Como corrigir?"
+                a="O valor da comissão é calculado automaticamente com base no salário informado no momento da contratação e no modelo de honorários da vaga (percentual ou fixo). Se o salário estava errado, encerre e recrie a alocação. Se o modelo de honorários estava errado, edite a configuração da vaga antes de criar a próxima alocação."
+              />
+              <FAQItem
+                q="Como ver o histórico completo de todas as vagas de um cliente?"
+                a="Acesse Curadoria (Vagas) e use o campo de busca para filtrar pelo nome da empresa. Todas as vagas (ativas e encerradas) aparecerão. Para uma visão ainda mais completa, abra o Painel da Vaga de cada uma — lá você vê todas as rodadas, candidatos e o financeiro desta vaga específica."
+              />
+              <FAQItem
+                q="O que acontece se o trial vencer e eu não registrar nada?"
+                a="O sistema exibe um alerta vermelho pulsando na alocação e nas notificações do sino. Nenhuma ação é tomada automaticamente — a decisão de efetivar ou encerrar é sempre do consultor. Porém, é importante agir logo: a comissão só é gerada quando você clicar em Efetivar."
+              />
+              <FAQItem
+                q="Tem como ver quem fez determinada ação no sistema (audit log)?"
+                a="Ações críticas como efetivações, encerramentos e pagamentos de taxa ficam registradas internamente. Para consultar, entre em contato com o administrador do sistema que pode acessar o log de auditoria."
+              />
+            </div>
           </Section>
 
           {/* ── Glossário ── */}
