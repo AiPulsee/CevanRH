@@ -180,6 +180,73 @@ export async function updateJob(jobId: string, data: unknown) {
   }
 }
 
+export async function markEntryFeePaid(jobId: string, amount?: number) {
+  const session = await auth();
+  const permError = requireAdminPermission(session, "FINANCE");
+  if (permError) return permError;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.job.update({
+        where: { id: jobId },
+        data: {
+          entryFeeStatus: "PAID",
+          entryFeePaidAt: new Date(),
+          ...(amount != null ? { entryFeeAmount: amount } : {}),
+        } as any,
+      });
+
+      // Se já existe comissão PENDING para esta vaga, marca como PAID imediatamente
+      const pendingCommission = await tx.commission.findFirst({
+        where: {
+          status: "PENDING",
+          placement: { application: { jobId } },
+        },
+      });
+      if (pendingCommission) {
+        await tx.commission.update({
+          where: { id: pendingCommission.id },
+          data: { status: "PAID", paidAt: new Date() },
+        });
+      }
+    });
+
+    await logAction("ENTRY_FEE_PAID", `Pagamento de entrada recebido para vaga ${jobId}`, {
+      after: { jobId, entryFeeStatus: "PAID", amount },
+    });
+    revalidatePath("/admin/managed");
+    revalidatePath("/admin/finance");
+    revalidatePath("/admin");
+    return ok();
+  } catch (err) {
+    console.error(err);
+    return fail("Erro ao registrar pagamento de entrada.");
+  }
+}
+
+export async function waiveEntryFee(jobId: string) {
+  const session = await auth();
+  const permError = requireAdminPermission(session, "FINANCE");
+  if (permError) return permError;
+
+  try {
+    await prisma.job.update({
+      where: { id: jobId },
+      data: { entryFeeStatus: "WAIVED" } as any,
+    });
+
+    await logAction("ENTRY_FEE_WAIVED", `Taxa de entrada dispensada para vaga ${jobId}`, {
+      after: { jobId, entryFeeStatus: "WAIVED" },
+    });
+    revalidatePath("/admin/managed");
+    revalidatePath("/admin");
+    return ok();
+  } catch (err) {
+    console.error(err);
+    return fail("Erro ao dispensar taxa de entrada.");
+  }
+}
+
 export async function deleteJob(jobId: string) {
   const session = await auth();
   const permError = requireAdminPermission(session, "MANAGED");
