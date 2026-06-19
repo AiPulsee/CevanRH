@@ -647,7 +647,7 @@ export default function ManualPage() {
               ))}
             </div>
 
-            <Tip>O usuário <strong>Master</strong> tem acesso total e não está sujeito a restrições de permissão. Use com cautela — somente para administradores seniores.</Tip>
+            <Tip>O usuário <strong>Master</strong> tem acesso total e não está sujeito a restrições de permissão.</Tip>
           </Section>
 
           {/* ── Glossário ── */}
