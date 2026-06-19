@@ -121,7 +121,7 @@ export async function confirmEffective(placementId: string) {
   try {
     const placement = await prisma.placement.findUnique({
       where: { id: placementId },
-      include: { application: { include: { job: { select: { companyId: true } } } } },
+      include: { application: { include: { job: { select: { id: true, companyId: true, openings: true } } } } },
     });
 
     if (!placement) return fail("Alocação não encontrada.");
@@ -137,11 +137,24 @@ export async function confirmEffective(placementId: string) {
     }
 
     const now = new Date();
+    const jobId = placement.application.job?.id ?? null;
+    const jobOpenings = (placement.application.job as any)?.openings ?? 1;
 
-    // Commission was created at trial start (hireAndPlace). Just update status here.
-    await prisma.placement.update({
-      where: { id: placementId },
-      data: { status: PlacementStatus.EFFECTIVE, effectiveDate: now },
+    await prisma.$transaction(async (tx) => {
+      await tx.placement.update({
+        where: { id: placementId },
+        data: { status: PlacementStatus.EFFECTIVE, effectiveDate: now },
+      });
+
+      // Reopen job if there are still unfilled openings
+      if (jobId) {
+        const effectiveCount = await tx.placement.count({
+          where: { status: PlacementStatus.EFFECTIVE, application: { jobId } },
+        });
+        if (effectiveCount < jobOpenings) {
+          await tx.job.update({ where: { id: jobId }, data: { status: "ACTIVE" } });
+        }
+      }
     });
 
     await logAction("CONFIRM_EFFECTIVE", `Confirmou efetivação da alocação ${placementId}`, {
@@ -149,6 +162,7 @@ export async function confirmEffective(placementId: string) {
       after: { placementId, status: "EFFECTIVE", effectiveDate: now },
     });
     revalidatePath("/admin/placements");
+    revalidatePath("/admin/managed");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");
     revalidatePath("/dashboard/placements");
@@ -194,6 +208,11 @@ export async function terminatePlacement(placementId: string, reason?: string) {
       }
     }
 
+    const entryFeeStatus = (placement.application.job as any)?.entryFeeStatus ?? "AWAITING";
+
+    const jobId = placement.application.job?.id;
+    const jobOpenings = placement.application.job?.openings ?? 1;
+
     await prisma.$transaction(async (tx) => {
       await tx.placement.update({
         where: { id: placementId },
@@ -204,18 +223,28 @@ export async function terminatePlacement(placementId: string, reason?: string) {
         },
       });
 
-      // Experiência falhou: dispensa automaticamente comissões pendentes.
-      // Comissões já faturadas (INVOICED) ficam para o admin tratar manualmente.
-      await tx.commission.updateMany({
-        where: { placementId, status: "PENDING" },
-        data: { status: "WAIVED" },
-      });
-
-      if (placement.application.job?.id) {
-        await tx.job.update({
-          where: { id: placement.application.job.id },
-          data: { status: "ACTIVE" },
+      if (entryFeeStatus === "PAID") {
+        // Empresa já pagou adiantado: PENDING e INVOICED viram PAID (recebido)
+        await tx.commission.updateMany({
+          where: { placementId, status: { in: ["PENDING", "INVOICED"] } },
+          data: { status: "PAID", paidAt: new Date() },
         });
+      } else {
+        // Experiência falhou sem pagamento: dispensa PENDING e INVOICED
+        await tx.commission.updateMany({
+          where: { placementId, status: { in: ["PENDING", "INVOICED"] } },
+          data: { status: "WAIVED" },
+        });
+      }
+
+      if (jobId) {
+        // Só reabre a vaga se ainda há openings não preenchidos
+        const effectiveCount = await tx.placement.count({
+          where: { status: PlacementStatus.EFFECTIVE, application: { jobId } },
+        });
+        if (effectiveCount < jobOpenings) {
+          await tx.job.update({ where: { id: jobId }, data: { status: "ACTIVE" } });
+        }
       }
     });
 
@@ -262,7 +291,7 @@ export async function hireAndPlace(data: {
       // Get application to resolve jobId and companyId
       const application = await tx.application.findUnique({
         where: { id: data.applicationId },
-        select: { jobId: true, job: { select: { companyId: true } } },
+        select: { jobId: true, job: { select: { companyId: true, entryFeeStatus: true } } },
       });
       if (!application) throw new Error("Candidatura não encontrada.");
 
@@ -283,6 +312,19 @@ export async function hireAndPlace(data: {
         });
       }
 
+      // Block allocation if entry fee not settled
+      const entryFeeStatusCheck = (application.job as any)?.entryFeeStatus ?? "AWAITING";
+      if (entryFeeStatusCheck === "AWAITING") {
+        throw new Error("Taxa de entrada ainda não registrada. Confirme o recebimento ou dispense a taxa antes de enviar o candidato.");
+      }
+
+      // Determine which round this placement is for the job
+      const priorRounds = application.jobId
+        ? await tx.placement.count({
+            where: { application: { jobId: application.jobId } },
+          })
+        : 0;
+
       const placement = await tx.placement.create({
         data: {
           applicationId: data.applicationId,
@@ -290,26 +332,29 @@ export async function hireAndPlace(data: {
           startDate: start,
           trialEndDate: trialEnd,
           status: PlacementStatus.TRIAL,
-        },
+          round: priorRounds + 1,
+        } as any,
       });
 
-      // Commission is charged when the trial starts.
-      // If replacing a candidate, relink the existing active commission to the new placement.
+      // If entry fee already paid and this is a replacement, skip new commission
+      const entryFeeStatus = (application.job as any)?.entryFeeStatus ?? "AWAITING";
+      const hasPaidEntry = entryFeeStatus === "PAID";
+
       const existingCommission = application.jobId
         ? await tx.commission.findFirst({
             where: {
               placement: { application: { jobId: application.jobId } },
-              status: { notIn: ["PAID", "WAIVED"] },
+              status: { notIn: ["WAIVED"] },
             },
           })
         : null;
 
-      if (existingCommission) {
+      if (existingCommission && existingCommission.status !== "PAID") {
         await tx.commission.update({
           where: { id: existingCommission.id },
           data: { placementId: placement.id },
         });
-      } else {
+      } else if (!existingCommission) {
         const dueDate = new Date();
         dueDate.setDate(dueDate.getDate() + 30);
 
@@ -319,12 +364,14 @@ export async function hireAndPlace(data: {
             baseSalary: data.monthlySalary,
             percentage: feePercentage,
             amount: commissionAmount,
-            status: "PENDING",
+            status: hasPaidEntry ? "PAID" : "PENDING",
+            paidAt: hasPaidEntry ? new Date() : null,
             dueDate,
             companyId: application.job?.companyId ?? "",
           },
         });
       }
+      // If existingCommission.status === "PAID" (already paid entry fee), no new commission needed
     });
 
     await logAction("HIRE_AND_PLACE", `Contratou e alocou candidatura ${data.applicationId}`, {
@@ -431,6 +478,23 @@ export async function adminAllocateCandidate(data: {
         data: { status: "CLOSED" },
       });
 
+      const priorRounds = await tx.placement.count({
+        where: { application: { jobId: data.jobId } },
+      });
+
+      const jobFull = await tx.job.findUnique({
+        where: { id: data.jobId },
+        select: { entryFeeStatus: true } as any,
+      });
+      const entryFeeStatus = (jobFull as any)?.entryFeeStatus ?? "AWAITING";
+
+      // Block allocation if entry fee not settled
+      if (entryFeeStatus === "AWAITING") {
+        throw new Error("Taxa de entrada ainda não registrada. Confirme o recebimento ou dispense a taxa antes de enviar o candidato.");
+      }
+
+      const hasPaidEntry = entryFeeStatus === "PAID";
+
       const placement = await tx.placement.create({
         data: {
           applicationId: application.id,
@@ -438,19 +502,23 @@ export async function adminAllocateCandidate(data: {
           startDate: start,
           trialEndDate: trialEnd,
           status: PlacementStatus.TRIAL,
-        },
+          round: priorRounds + 1,
+        } as any,
       });
 
       const existingCommission = await tx.commission.findFirst({
-        where: { placement: { application: { jobId: data.jobId } } },
+        where: {
+          placement: { application: { jobId: data.jobId } },
+          status: { notIn: ["WAIVED"] },
+        },
       });
 
-      if (existingCommission) {
+      if (existingCommission && existingCommission.status !== "PAID") {
         await tx.commission.update({
           where: { id: existingCommission.id },
           data: { placementId: placement.id },
         });
-      } else {
+      } else if (!existingCommission) {
         const dueDate = new Date();
         dueDate.setDate(dueDate.getDate() + 30);
         await tx.commission.create({
@@ -459,7 +527,8 @@ export async function adminAllocateCandidate(data: {
             baseSalary: data.monthlySalary,
             percentage: feePercentage,
             amount: commissionAmount,
-            status: "PENDING",
+            status: hasPaidEntry ? "PAID" : "PENDING",
+            paidAt: hasPaidEntry ? new Date() : null,
             dueDate,
             companyId: job.companyId,
           },

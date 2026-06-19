@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -14,9 +14,13 @@ import {
   CheckCircle2,
   Briefcase,
   Trash2,
+  Wallet,
+  ExternalLink,
 } from "lucide-react";
+import Link from "next/link";
 import { ScreeningModal } from "@/components/admin/screening-modal";
 import { EditJobModal } from "@/components/admin/edit-job-modal";
+import { EntryFeeModal } from "@/components/admin/entry-fee-modal";
 import { deleteJob } from "@/actions/jobs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -27,9 +31,14 @@ type App = {
   status: string;
   resumeUrl: string;
   coverLetter: string | null;
+  aiScore: number | null;
+  aiRecommendation: string | null;
+  aiSummary: string | null;
   candidate: { name: string | null; email: string | null };
   placement: { status: string } | null;
 };
+
+type EntryFeeStatus = "AWAITING" | "PAID" | "WAIVED";
 
 type ManagedJob = {
   id: string;
@@ -48,6 +57,9 @@ type ManagedJob = {
   feePercentage?: number | null;
   feeFixed?: number | null;
   trialDays?: number | null;
+  entryFeeStatus?: string | null;
+  entryFeeAmount?: number | null;
+  entryFeePaidAt?: Date | null;
   company: { name: string; logoUrl: string | null };
   _count: { applications: number };
   applications: App[];
@@ -59,14 +71,27 @@ function statusLabel(status: string) {
   return "Encerrada";
 }
 
+const ENTRY_FEE_META: Record<EntryFeeStatus, { label: string; bg: string; text: string }> = {
+  AWAITING: { label: "Pgto. Pendente", bg: "bg-amber-50 border-amber-200", text: "text-amber-700" },
+  PAID:     { label: "Pgto. Recebido", bg: "bg-violet-50 border-violet-200", text: "text-violet-700" },
+  WAIVED:   { label: "Taxa Dispensada", bg: "bg-slate-100 border-slate-200", text: "text-slate-500" },
+};
+
 type StatusFilter = "ALL" | "ACTIVE" | "CLOSED";
 
-export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
+export function ManagedJobsList({ jobs: initial, highlightJobId }: { jobs: ManagedJob[]; highlightJobId?: string }) {
   const router = useRouter();
   const [jobs, setJobs] = useState(initial);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (highlightJobId) {
+      const el = document.getElementById(`job-${highlightJobId}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [highlightJobId]);
 
   const filtered = jobs.filter((job) => {
     const matchesSearch =
@@ -91,6 +116,21 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
         toast.error(result.error || "Erro ao excluir vaga.");
       }
     });
+  }
+
+  function handleEntryFeeUpdate(jobId: string, newStatus: EntryFeeStatus, amount?: number) {
+    setJobs((prev) =>
+      prev.map((j) =>
+        j.id === jobId
+          ? {
+              ...j,
+              entryFeeStatus: newStatus,
+              ...(amount != null ? { entryFeeAmount: amount } : {}),
+              ...(newStatus === "PAID" ? { entryFeePaidAt: new Date() } : {}),
+            }
+          : j
+      )
+    );
   }
 
   if (jobs.length === 0) {
@@ -147,10 +187,17 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
               (a) => a.placement?.status === "EFFECTIVE"
             );
             const showTriagem = job.status === "ACTIVE" || !hasEffectivePlacement;
+            const entryFeeStatus = (job.entryFeeStatus as EntryFeeStatus) ?? "AWAITING";
+            const feeMeta = ENTRY_FEE_META[entryFeeStatus];
+
             return (
               <Card
                 key={job.id}
-                className="p-4 sm:p-5 border-slate-200 bg-white rounded-xl shadow-sm hover:border-blue-200 transition-all group"
+                id={`job-${job.id}`}
+                className={cn(
+                  "p-4 sm:p-5 border-slate-200 bg-white rounded-xl shadow-sm hover:border-blue-200 transition-all group",
+                  highlightJobId === job.id && "ring-2 ring-violet-400 border-violet-300"
+                )}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <div className="flex items-center gap-3 sm:gap-4 flex-1">
@@ -183,9 +230,7 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-[1.5] py-3 border-y border-slate-100 lg:border-none lg:py-0">
                     <div className="space-y-1">
-                      <p className="text-[9px] font-bold uppercase text-slate-400">
-                        Status
-                      </p>
+                      <p className="text-[9px] font-bold uppercase text-slate-400">Status</p>
                       <Badge
                         className={cn(
                           "rounded-md px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase",
@@ -198,9 +243,7 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
                       </Badge>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[9px] font-bold uppercase text-slate-400">
-                        Inscritos
-                      </p>
+                      <p className="text-[9px] font-bold uppercase text-slate-400">Inscritos</p>
                       <div className="flex items-center gap-1.5">
                         <Users2 className="h-3.5 w-3.5 text-slate-400" />
                         <span className="font-black text-xs sm:text-sm text-slate-900">
@@ -209,9 +252,7 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[9px] font-bold uppercase text-slate-400">
-                        Indicados
-                      </p>
+                      <p className="text-[9px] font-bold uppercase text-slate-400">Indicados</p>
                       <div className="flex items-center gap-1.5">
                         <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
                         <span className="font-black text-xs sm:text-sm text-slate-900">
@@ -220,12 +261,25 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[9px] font-bold uppercase text-slate-400">
-                        Salário
-                      </p>
-                      <span className="text-[10px] sm:text-[11px] font-black text-slate-600 truncate block">
-                        {job.salaryRange || "A combinar"}
-                      </span>
+                      <p className="text-[9px] font-bold uppercase text-slate-400">Pagamento</p>
+                      <EntryFeeModal
+                        jobId={job.id}
+                        jobTitle={job.title}
+                        companyName={job.company.name}
+                        currentStatus={entryFeeStatus}
+                        feeType={job.feeType}
+                        feeFixed={job.feeFixed}
+                        feePercentage={job.feePercentage}
+                        onUpdate={handleEntryFeeUpdate}
+                      >
+                        <button className={cn(
+                          "inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md border text-[8px] sm:text-[9px] font-black uppercase tracking-wider transition-all hover:opacity-80 cursor-pointer",
+                          feeMeta.bg, feeMeta.text
+                        )}>
+                          <Wallet className="h-2.5 w-2.5 shrink-0" />
+                          {feeMeta.label}
+                        </button>
+                      </EntryFeeModal>
                     </div>
                   </div>
 
@@ -237,6 +291,16 @@ export function ManagedJobsList({ jobs: initial }: { jobs: ManagedJob[] }) {
                         applications={job.applications}
                       />
                     )}
+                    <Link href={`/admin/managed/${job.id}`}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600"
+                        title="Ver painel da vaga"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    </Link>
                     <EditJobModal job={job} />
                     <ConfirmAction
                       title="Excluir Vaga?"

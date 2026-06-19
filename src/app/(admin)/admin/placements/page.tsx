@@ -28,7 +28,8 @@ export default async function AdminPlacementsPage() {
       monthlySalary: p.monthlySalary,
       startDate: p.startDate,
       trialEndDate: p.trialEndDate,
-      daysRemaining: Math.max(0, daysRemaining),
+      daysRemaining,
+      round: (p as any).round ?? 1,
       candidate: {
         name: p.application.candidate.name || "Sem Nome",
         email: p.application.candidate.email || ""
@@ -41,6 +42,7 @@ export default async function AdminPlacementsPage() {
         amount: p.commission.amount,
         status: p.commission.status as "PENDING" | "INVOICED" | "PAID" | "WAIVED",
         invoiceNumber: p.commission.invoiceNumber,
+        invoiceUrl: p.commission.invoiceUrl,
       } : null,
       jobFeeType: (p.application.job as any)?.feeType,
       jobFeePercentage: (p.application.job as any)?.feePercentage,
@@ -70,22 +72,23 @@ export default async function AdminPlacementsPage() {
   }, 0);
   
   const formatCurrencyCompact = (cents: number) => {
-    return new Intl.NumberFormat("pt-BR", { 
-      style: "currency", 
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
       currency: "BRL",
       notation: "compact",
-      maximumFractionDigits: 1 
+      maximumFractionDigits: 1
     }).format(cents / 100);
   };
 
+  const expiredPlacements = inTrial.filter(p => p.daysRemaining < 0);
+  const urgentPlacements = inTrial.filter(p => p.daysRemaining >= 0 && p.daysRemaining <= 7);
+
   const stats = [
-    { name: "Em Andamento", value: inTrial.length.toString(), icon: Clock, change: `${inTrial.filter(p => p.daysRemaining <= 7).length} vencem em breve`, tooltip: "Candidatos atualmente no período de experiência (90 dias)" },
+    { name: "Em Andamento", value: inTrial.length.toString(), icon: Clock, change: expiredPlacements.length > 0 ? `${expiredPlacements.length} expirado(s)` : `${urgentPlacements.length} vencem em breve`, tooltip: "Candidatos atualmente no período de experiência (90 dias)" },
     { name: "Efetivados", value: effective.length.toString(), icon: CheckCircle2, change: "Total histórico", tooltip: "Candidatos que concluíram o trial e foram contratados definitivamente" },
     { name: "Taxa de Conversão", value: `${conversionRate}%`, icon: TrendingUp, change: "Andamento para Efetivado", tooltip: "Percentual de andamentos que resultaram em efetivação (Efetivados ÷ Total encerrados)" },
     { name: "Receita Potencial", value: formatCurrencyCompact(potentialRevenue), icon: DollarSign, change: "Em andamentos ativos", tooltip: `Comissão esperada se todos os andamentos ativos forem efetivados` },
   ];
-
-  const urgentPlacements = inTrial.filter(p => p.daysRemaining <= 7);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -123,6 +126,23 @@ export default async function AdminPlacementsPage() {
           </Card>
         ))}
       </div>
+
+      {/* Alerta de expirados (crítico) */}
+      {expiredPlacements.length > 0 && (
+        <Card className="p-4 border-rose-300 bg-rose-50 rounded-2xl shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-rose-100 flex items-center justify-center flex-shrink-0">
+              <AlertTriangle className="h-5 w-5 text-rose-600" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-rose-900">Trial expirado — ação necessária</h4>
+              <p className="text-xs text-rose-700 font-medium">
+                {expiredPlacements.length} alocação(ões) com período de experiência encerrado sem confirmação. Efetive ou encerre cada uma.
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* Alertas de Vencimento */}
       {urgentPlacements.length > 0 && (
@@ -181,11 +201,12 @@ export default async function AdminPlacementsPage() {
                       </div>
                     </div>
                     <span className={`text-[10px] font-black px-2 py-1 rounded-lg ${
+                      p.daysRemaining < 0 ? "text-rose-700 bg-rose-100" :
                       p.daysRemaining <= 7 ? "text-rose-600 bg-rose-50" :
                       p.daysRemaining <= 15 ? "text-amber-600 bg-amber-50" :
                       "text-slate-600 bg-slate-50"
                     }`}>
-                      {p.daysRemaining}d restantes
+                      {p.daysRemaining < 0 ? `Expirado ${Math.abs(p.daysRemaining)}d` : `${p.daysRemaining}d restantes`}
                     </span>
                   </div>
                 ))
@@ -208,7 +229,7 @@ export default async function AdminPlacementsPage() {
             </div>
             <div className="p-3 rounded-lg bg-white/5 border border-white/10">
               <p className="text-[9px] text-blue-200 font-medium leading-relaxed">
-                Com {inTrial.length} candidatos em andamento, a receita potencial de comissões (50% do primeiro salário) é de <span className="font-black text-white">{new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(potentialRevenue / 100)}</span>.
+                Com {inTrial.length} {inTrial.length === 1 ? 'candidato' : 'candidatos'} em andamento, a receita potencial de comissões é de <span className="font-black text-white">{new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(potentialRevenue / 100)}</span>.
               </p>
             </div>
           </div>

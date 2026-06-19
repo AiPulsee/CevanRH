@@ -26,6 +26,7 @@ import Link from "next/link";
 import { differenceInDays } from "date-fns";
 import { confirmEffective, terminatePlacement } from "@/actions/placements";
 import { PaginationBar } from "@/components/ui/pagination-bar";
+import { TerminateModal } from "@/components/admin/terminate-modal";
 import { toast } from "sonner";
 
 const PAGE_SIZE = 10;
@@ -40,6 +41,7 @@ type Placement = {
   startDate: Date;
   trialEndDate: Date;
   daysRemaining: number;
+  round: number;
   candidate: { name: string; email: string };
   company: { name: string };
   jobTitle: string;
@@ -49,6 +51,7 @@ type Placement = {
     amount: number;
     status: CommissionStatus;
     invoiceNumber: string | null;
+    invoiceUrl?: string | null;
   } | null;
 };
 
@@ -94,6 +97,7 @@ function fmt(cents: number) {
 }
 
 function urgency(days: number) {
+  if (days < 0) return "text-rose-700 bg-rose-100";
   if (days <= 7) return "text-rose-600 bg-rose-50";
   if (days <= 15) return "text-amber-600 bg-amber-50";
   return "text-slate-600 bg-slate-50";
@@ -152,9 +156,9 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
     });
   }
 
-  function handleTerminate(id: string) {
+  function handleTerminate(id: string, reason: string) {
     startTransition(async () => {
-      const r = await terminatePlacement(id);
+      const r = await terminatePlacement(id, reason);
       if (r.success) {
         setPlacements((prev) =>
           prev.map((p) =>
@@ -171,7 +175,8 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
   function handleCommissionUpdate(
     commissionId: string,
     newStatus: CommissionStatus,
-    invoiceNumber?: string
+    invoiceNumber?: string,
+    invoiceUrl?: string
   ) {
     setPlacements((prev) =>
       prev.map((p) => {
@@ -182,6 +187,7 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
               ...p.commission,
               status: newStatus,
               invoiceNumber: invoiceNumber ?? p.commission.invoiceNumber,
+              invoiceUrl: invoiceUrl ?? p.commission?.invoiceUrl,
             },
           };
         }
@@ -300,8 +306,15 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                   >
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-black text-xs shrink-0">
-                          {p.candidate.name.charAt(0)}
+                        <div className="relative shrink-0">
+                          <div className="h-9 w-9 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-black text-xs">
+                            {p.candidate.name.charAt(0)}
+                          </div>
+                          {p.round > 1 && (
+                            <span className="absolute -top-1.5 -right-1.5 h-4 min-w-4 px-0.5 rounded-full bg-violet-600 text-white text-[8px] font-black flex items-center justify-center">
+                              R{p.round}
+                            </span>
+                          )}
                         </div>
                         <div>
                           <p className="font-bold text-xs text-slate-900">
@@ -333,6 +346,17 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                     </td>
                     <td className="p-4">
                       {p.status === "TRIAL" ? (
+                        p.daysRemaining < 0 ? (
+                          <div className="space-y-1 min-w-[120px]">
+                            <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-700">
+                              <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />
+                              EXPIRADO {Math.abs(p.daysRemaining)}d atrás
+                            </span>
+                            <div className="h-1.5 w-full bg-rose-100 rounded-full overflow-hidden">
+                              <div className="h-full w-full bg-rose-500 rounded-full" />
+                            </div>
+                          </div>
+                        ) : (
                         <div className="space-y-1.5 min-w-[120px]">
                           <div className="flex items-center justify-between">
                             <span
@@ -357,6 +381,7 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                             />
                           </div>
                         </div>
+                        )
                       ) : p.status === "EFFECTIVE" ? (
                         <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
                           <CheckCircle2 className="h-3.5 w-3.5" /> Concluído
@@ -413,17 +438,15 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                             </Tooltip>
                             <Tooltip>
                               <TooltipTrigger render={
-                                <ConfirmAction
-                                  title="Encerrar Contratação?"
-                                  description="O candidato será desligado. Se não for efetivado, envie um candidato de reposição."
-                                  variant="danger"
-                                  actionText="Encerrar"
-                                  onConfirm={() => handleTerminate(p.id)}
+                                <TerminateModal
+                                  candidateName={p.candidate.name}
+                                  companyName={p.company.name}
+                                  onConfirm={(reason) => handleTerminate(p.id, reason)}
                                 >
                                   <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600">
                                     <XCircle className="h-4 w-4" />
                                   </Button>
-                                </ConfirmAction>
+                                </TerminateModal>
                               } />
                               <TooltipContent>Encerrar contratação</TooltipContent>
                             </Tooltip>
@@ -432,7 +455,7 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                         {p.status === "TERMINATED" && (
                           <Tooltip>
                             <TooltipTrigger render={
-                              <Link href="/admin/managed">
+                              <Link href={p.jobId ? `/admin/managed?highlight=${p.jobId}` : "/admin/managed"}>
                                 <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-violet-50 hover:text-violet-600">
                                   <RefreshCw className="h-4 w-4" />
                                 </Button>
@@ -441,16 +464,24 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                             <TooltipContent>Enviar candidato de reposição</TooltipContent>
                           </Tooltip>
                         )}
-                        {p.commission && (p.commission.status === "PENDING" || p.commission.status === "INVOICED") && (
+                        {p.commission && (
                           <Tooltip>
                             <TooltipTrigger render={
                               <CommissionModal commission={p.commission} candidateName={p.candidate.name} companyName={p.company.name} onUpdate={handleCommissionUpdate}>
-                                <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600">
+                                <Button size="icon" variant="ghost" className={`h-8 w-8 rounded-lg ${
+                                  p.commission.status === "PAID" ? "hover:bg-emerald-50 hover:text-emerald-600"
+                                  : p.commission.status === "WAIVED" ? "hover:bg-slate-100 hover:text-slate-600"
+                                  : "hover:bg-blue-50 hover:text-blue-600"
+                                }`}>
                                   <DollarSign className="h-4 w-4" />
                                 </Button>
                               </CommissionModal>
                             } />
-                            <TooltipContent>Gerenciar comissão</TooltipContent>
+                            <TooltipContent>
+                              {p.commission.status === "PAID" ? "Ver comissão (paga)"
+                                : p.commission.status === "WAIVED" ? "Ver comissão (dispensada)"
+                                : "Gerenciar comissão"}
+                            </TooltipContent>
                           </Tooltip>
                         )}
                       </div>
@@ -508,6 +539,14 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                   </div>
 
                   {p.status === "TRIAL" && (
+                    p.daysRemaining < 0 ? (
+                      <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse shrink-0" />
+                        <span className="text-[10px] font-black uppercase text-rose-700">
+                          Trial expirado há {Math.abs(p.daysRemaining)} dias
+                        </span>
+                      </div>
+                    ) : (
                     <div className="space-y-2 p-3 rounded-xl bg-slate-50 border border-slate-100">
                       <div className="flex items-center justify-between">
                         <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-md ${urgency(p.daysRemaining)}`}>
@@ -522,6 +561,7 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                         />
                       </div>
                     </div>
+                    )
                   )}
 
                   <div className="flex items-center justify-between pt-4 border-t border-slate-100">
@@ -538,31 +578,33 @@ export function PlacementsTable({ placements: initial }: { placements: Placement
                               Efetivar
                             </Button>
                           </ConfirmAction>
-                          <ConfirmAction
-                            title="Encerrar?"
-                            description="O candidato será desligado. Se não for efetivado, envie um candidato de reposição."
-                            variant="danger"
-                            actionText="Encerrar"
-                            onConfirm={() => handleTerminate(p.id)}
+                          <TerminateModal
+                            candidateName={p.candidate.name}
+                            companyName={p.company.name}
+                            onConfirm={(reason) => handleTerminate(p.id, reason)}
                           >
                             <Button size="sm" variant="ghost" className="rounded-lg h-8 text-[10px] font-bold text-rose-500">
                               Encerrar
                             </Button>
-                          </ConfirmAction>
+                          </TerminateModal>
                         </>
                       )}
                       {p.status === "TERMINATED" && (
-                        <Link href="/admin/managed">
+                        <Link href={p.jobId ? `/admin/managed?highlight=${p.jobId}` : "/admin/managed"}>
                           <Button size="sm" variant="outline" className="rounded-lg h-8 text-[10px] font-black uppercase border-violet-200 text-violet-600 hover:bg-violet-50 gap-1.5">
                             <RefreshCw className="h-3 w-3" />
                             Enviar Reposição
                           </Button>
                         </Link>
                       )}
-                      {p.commission && (p.commission.status === "PENDING" || p.commission.status === "INVOICED") && (
+                      {p.commission && (
                         <CommissionModal commission={p.commission} candidateName={p.candidate.name} companyName={p.company.name} onUpdate={handleCommissionUpdate}>
-                          <Button size="sm" className="rounded-lg h-8 text-[10px] font-black uppercase bg-slate-900 text-white">
-                            Gerenciar $$
+                          <Button size="sm" className={`rounded-lg h-8 text-[10px] font-black uppercase ${
+                            p.commission.status === "PAID" ? "bg-emerald-600 text-white"
+                            : p.commission.status === "WAIVED" ? "bg-slate-200 text-slate-600"
+                            : "bg-slate-900 text-white"
+                          }`}>
+                            {p.commission.status === "PAID" ? "Ver $$" : p.commission.status === "WAIVED" ? "Dispensado" : "Gerenciar $$"}
                           </Button>
                         </CommissionModal>
                       )}

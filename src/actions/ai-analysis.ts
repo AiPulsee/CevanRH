@@ -70,6 +70,27 @@ async function extractPdfText(resumeUrl: string): Promise<{ text: string; error?
   }
 }
 
+export async function saveAiScore(
+  applicationId: string,
+  result: AIAnalysisResult
+): Promise<void> {
+  const session = await auth();
+  if (!session || (session.user as any)?.role !== "ADMIN") return;
+  try {
+    await prisma.application.update({
+      where: { id: applicationId },
+      data: {
+        aiScore: result.score,
+        aiRecommendation: result.recommendation,
+        aiSummary: result.summary,
+        aiAnalyzedAt: new Date(),
+      },
+    });
+  } catch {
+    // non-critical — analysis result was already returned to client
+  }
+}
+
 export async function analyzeCandidate(
   applicationId: string
 ): Promise<{ success: true; data: AIAnalysisResult } | { success: false; error: string }> {

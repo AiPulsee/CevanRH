@@ -15,6 +15,8 @@ export default async function AdminAnalyticsPage() {
     totalPlacements,
     applicationsByStatus,
     jobsByType,
+    firstRoundHired,
+    effectivePlacements,
   ] = await Promise.all([
     prisma.company.count(),
     prisma.application.count(),
@@ -22,6 +24,9 @@ export default async function AdminAnalyticsPage() {
     prisma.placement.count(),
     prisma.application.groupBy({ by: ["status"], _count: { id: true } }),
     prisma.job.groupBy({ by: ["type"], _count: { id: true } }),
+    // Only count HIRED applications where the placement is the first send (round=1)
+    prisma.placement.count({ where: { round: 1, status: { not: "CANCELLED" } } }),
+    prisma.placement.count({ where: { status: "EFFECTIVE" } }),
   ]);
 
   // Applications per month — last 6 months
@@ -59,19 +64,11 @@ export default async function AdminAnalyticsPage() {
     applicationsByStatus.map((s) => [s.status, s._count.id])
   );
   const funnel = [
-    { label: "Candidaturas", count: totalApplications, color: "bg-blue-500" },
-    {
-      label: "Em Revisão",
-      count: statusMap["REVIEWING"] ?? 0,
-      color: "bg-indigo-500",
-    },
-    {
-      label: "Selecionados",
-      count: statusMap["SHORTLISTED"] ?? 0,
-      color: "bg-violet-500",
-    },
-    { label: "Contratados", count: statusMap["HIRED"] ?? 0, color: "bg-emerald-500" },
-    { label: "Efetivados", count: totalPlacements, color: "bg-teal-500" },
+    { label: "Candidaturas", count: totalApplications, color: "bg-blue-500", tooltip: "Total de candidaturas recebidas em todas as vagas" },
+    { label: "Em Revisão", count: statusMap["REVIEWING"] ?? 0, color: "bg-indigo-500", tooltip: "Candidaturas em análise pela equipe Cevan" },
+    { label: "Selecionados", count: statusMap["SHORTLISTED"] ?? 0, color: "bg-violet-500", tooltip: "Candidatos aprovados na triagem e prontos para envio" },
+    { label: "Enviados (1ª vez)", count: firstRoundHired, color: "bg-emerald-500", tooltip: "Candidatos enviados pela primeira vez ao cliente — exclui rodadas de reposição" },
+    { label: "Efetivados", count: effectivePlacements, color: "bg-teal-500", tooltip: "Candidatos efetivamente contratados pela empresa após o período de trial" },
   ];
   const maxFunnel = Math.max(...funnel.map((f) => f.count), 1);
 
@@ -110,7 +107,7 @@ export default async function AdminAnalyticsPage() {
       icon: TrendingUp,
       color: "text-amber-600",
       bg: "bg-amber-50",
-      tooltip: "Total histórico de candidatos alocados (em andamento + efetivados + encerrados)",
+      tooltip: "Total de alocações incluindo rodadas de reposição — 1 vaga preenchida 3 vezes conta como 3",
     },
   ];
 
@@ -223,28 +220,33 @@ export default async function AdminAnalyticsPage() {
           <h3 className="text-base font-bold text-slate-900 mb-6">Funil de Conversão</h3>
           <div className="space-y-3">
             {funnel.map((step) => (
-              <div key={step.label} className="space-y-1">
-                <div className="flex justify-between text-[11px] font-bold">
-                  <span className="text-slate-600">{step.label}</span>
-                  <span className="text-slate-900">{step.count}</span>
-                </div>
-                <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${step.color} rounded-full transition-all duration-700`}
-                    style={{ width: `${Math.max((step.count / maxFunnel) * 100, 2)}%` }}
-                  />
-                </div>
-              </div>
+              <Tooltip key={step.label}>
+                <TooltipTrigger render={
+                  <div className="space-y-1 cursor-default">
+                    <div className="flex justify-between text-[11px] font-bold">
+                      <span className="text-slate-600">{step.label}</span>
+                      <span className="text-slate-900">{step.count}</span>
+                    </div>
+                    <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full ${step.color} rounded-full transition-all duration-700`}
+                        style={{ width: `${Math.max((step.count / maxFunnel) * 100, 2)}%` }}
+                      />
+                    </div>
+                  </div>
+                } />
+                <TooltipContent>{step.tooltip}</TooltipContent>
+              </Tooltip>
             ))}
           </div>
-          {totalApplications > 0 && (
+          {firstRoundHired > 0 && (
             <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-100">
               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">
                 Taxa de Efetivação
               </p>
               <p className="text-sm font-black text-slate-900">
-                {((totalPlacements / totalApplications) * 100).toFixed(1)}% das candidaturas
-                resultam em efetivação
+                {((effectivePlacements / firstRoundHired) * 100).toFixed(1)}% dos candidatos
+                enviados são efetivados
               </p>
             </div>
           )}

@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Zap } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ManagedJobsList } from "@/components/admin/managed-jobs-list";
+import { JobRoundsHistory } from "@/components/admin/job-rounds-history";
 import { CreateJobModal } from "@/components/dashboard/create-job-modal";
 import { PaginationBar } from "@/components/ui/pagination-bar";
 
@@ -13,9 +14,9 @@ const PAGE_SIZE = 8;
 export default async function AdminManagedJobs({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; highlight?: string }>;
 }) {
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, highlight } = await searchParams;
   const page = Math.max(1, parseInt(pageParam ?? "1"));
 
   const [managedJobs, totalManagedJobs, totalActive, totalShortlisted, companies] = await Promise.all([
@@ -39,6 +40,9 @@ export default async function AdminManagedJobs({
         feePercentage: true,
         feeFixed: true,
         trialDays: true,
+        entryFeeStatus: true,
+        entryFeeAmount: true,
+        entryFeePaidAt: true,
         _count: { select: { applications: true } },
         applications: {
           select: {
@@ -46,6 +50,9 @@ export default async function AdminManagedJobs({
             status: true,
             resumeUrl: true,
             coverLetter: true,
+            aiScore: true,
+            aiRecommendation: true,
+            aiSummary: true,
             candidate: { select: { name: true, email: true } },
             placement: { select: { status: true } },
           },
@@ -68,6 +75,59 @@ export default async function AdminManagedJobs({
   ]);
 
   const totalPages = Math.ceil(totalManagedJobs / PAGE_SIZE);
+
+  // History scoped to IDs on the current page only — avoids loading all history at once
+  const pageJobIds = managedJobs.map((j) => j.id);
+  const jobsWithPlacements = await prisma.job.findMany({
+    where: {
+      id: { in: pageJobIds },
+      applications: { some: { placement: { isNot: null } } },
+    },
+    select: {
+      id: true,
+      title: true,
+      company: { select: { name: true } },
+      applications: {
+        where: { placement: { isNot: null } },
+        select: {
+          candidate: { select: { name: true, email: true } },
+          placement: {
+            select: {
+              round: true,
+              status: true,
+              startDate: true,
+              trialEndDate: true,
+              effectiveDate: true,
+              terminationDate: true,
+              terminationReason: true,
+            },
+          },
+        },
+        orderBy: { placement: { round: "asc" } },
+      },
+    },
+    // Preserve same order as page
+    orderBy: { createdAt: "desc" },
+  });
+
+  const jobRoundsData = jobsWithPlacements.map((job) => ({
+    jobId: job.id,
+    jobTitle: job.title,
+    companyName: job.company.name,
+    placements: job.applications
+      .filter((a) => a.placement)
+      .map((a) => ({
+        round: (a.placement as any).round ?? 1,
+        status: a.placement!.status as "TRIAL" | "EFFECTIVE" | "TERMINATED" | "CANCELLED",
+        candidateName: a.candidate.name ?? "Sem Nome",
+        candidateEmail: a.candidate.email ?? "",
+        startDate: a.placement!.startDate,
+        trialEndDate: a.placement!.trialEndDate,
+        effectiveDate: a.placement!.effectiveDate,
+        terminationDate: a.placement!.terminationDate,
+        terminationReason: a.placement!.terminationReason,
+      })),
+  }));
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -121,7 +181,7 @@ export default async function AdminManagedJobs({
         </Card>
       </div>
 
-      <ManagedJobsList jobs={managedJobs} />
+      <ManagedJobsList jobs={managedJobs} highlightJobId={highlight} />
 
       {totalPages > 1 && (
         <PaginationBar
@@ -129,6 +189,10 @@ export default async function AdminManagedJobs({
           totalPages={totalPages}
           baseHref="/admin/managed"
         />
+      )}
+
+      {jobRoundsData.length > 0 && (
+        <JobRoundsHistory jobs={jobRoundsData} />
       )}
     </div>
   );

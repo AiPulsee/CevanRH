@@ -27,6 +27,7 @@ export default async function AdminPage() {
     recentApplications,
     trialCount,
     effectiveCount,
+    entryFeeStats,
   ] = await Promise.all([
     prisma.company.count(),
     prisma.company.count({ where: { createdAt: { gte: monthStart } } }),
@@ -52,6 +53,11 @@ export default async function AdminPage() {
     }),
     prisma.placement.count({ where: { status: "TRIAL" } }),
     prisma.placement.count({ where: { status: "EFFECTIVE" } }),
+    prisma.job.aggregate({
+      where: { entryFeeStatus: "PAID", entryFeePaidAt: { gte: monthStart } },
+      _sum: { entryFeeAmount: true },
+      _count: { id: true },
+    }),
   ]);
 
   // Revenue evolution — last 6 months
@@ -76,15 +82,25 @@ export default async function AdminPage() {
     pct: Math.round((m.amount / maxRevenue) * 100),
   }));
 
-  const revenueFormatted = new Intl.NumberFormat("pt-BR", { notation: "compact", maximumFractionDigits: 1 }).format(
-    (monthlyRevenue._sum.amount || 0) / 100
-  );
+  const fmt = (cents: number) =>
+    new Intl.NumberFormat("pt-BR", { notation: "compact", maximumFractionDigits: 1 }).format(cents / 100);
+
+  const commissionRevenue = monthlyRevenue._sum.amount || 0;
+  const entryFeeRevenue = entryFeeStats._sum.entryFeeAmount || 0;
+  const totalMonthRevenue = commissionRevenue + entryFeeRevenue;
+  const entryFeeCount = entryFeeStats._count.id;
 
   const stats = [
     { name: "Novas Empresas", value: newCompaniesThisMonth.toString(), icon: Building2, change: "Neste mês", tooltip: "Número de novas empresas clientes cadastradas neste mês" },
     { name: "Vagas em Curadoria", value: managedActiveCount.toString(), icon: Zap, change: "Ativas agora", tooltip: "Vagas do tipo Curadoria com status Ativo — aguardando triagem de candidatos pela equipe Cevan" },
     { name: "Candidatos p/ Triar", value: applicantsToScreen.toString(), icon: Users2, change: "Aguardando revisão", tooltip: "Candidatos com status Candidatado que ainda não foram revisados pela equipe" },
-    { name: "Receita do Mês", value: `R$ ${revenueFormatted}`, icon: TrendingUp, change: "Comissões pagas", tooltip: "Total de comissões com status Pago recebidas no mês corrente" },
+    {
+      name: "Receita do Mês",
+      value: `R$ ${fmt(totalMonthRevenue)}`,
+      icon: TrendingUp,
+      change: entryFeeCount > 0 ? `+${entryFeeCount} taxa${entryFeeCount > 1 ? "s" : ""} entrada` : "Comissões pagas",
+      tooltip: `Receita total do mês: comissões pagas (R$ ${fmt(commissionRevenue)}) + taxas de entrada recebidas (R$ ${fmt(entryFeeRevenue)})`,
+    },
   ];
 
   const conversionRate = (trialCount + effectiveCount) > 0

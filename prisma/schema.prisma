@@ -70,6 +70,9 @@ model Job {
   feePercentage    Float?   @map("fee_percentage")
   feeFixed         Int?     @map("fee_fixed")
   trialDays        Int?     @map("trial_days")
+  entryFeeStatus   String   @default("AWAITING") @map("entry_fee_status")
+  entryFeeAmount   Int?     @map("entry_fee_amount")
+  entryFeePaidAt   DateTime? @map("entry_fee_paid_at")
   applications     Application[]
   company          Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
@@ -79,18 +82,22 @@ model Job {
 }
 
 model Application {
-  id          String            @id @default(uuid())
-  resumeUrl   String            @map("resume_url")
-  coverLetter String?           @map("cover_letter")
-  status      ApplicationStatus @default(APPLIED)
-  jobId       String?           @map("job_id")
-  candidateId String            @map("candidate_id")
-  createdAt   DateTime          @default(now()) @map("created_at")
-  updatedAt   DateTime          @updatedAt @map("updated_at")
-  candidate   User              @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-  job         Job?              @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  placement   Placement?
-  shortlist   Shortlist?
+  id               String            @id @default(uuid())
+  resumeUrl        String            @map("resume_url")
+  coverLetter      String?           @map("cover_letter")
+  status           ApplicationStatus @default(APPLIED)
+  jobId            String?           @map("job_id")
+  candidateId      String            @map("candidate_id")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  aiScore          Int?              @map("ai_score")
+  aiRecommendation String?           @map("ai_recommendation")
+  aiSummary        String?           @map("ai_summary")
+  aiAnalyzedAt     DateTime?         @map("ai_analyzed_at")
+  candidate        User              @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  job              Job?              @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  placement        Placement?
+  shortlist        Shortlist?
 
   @@unique([jobId, candidateId])
   @@index([status])
@@ -123,6 +130,7 @@ model Placement {
   terminationReason String?         @map("termination_reason")
   adminNotes        String?         @map("admin_notes")
   companyFeedback   String?         @map("company_feedback")
+  round             Int             @default(1)
   createdAt         DateTime        @default(now()) @map("created_at")
   updatedAt         DateTime        @updatedAt @map("updated_at")
   commission        Commission?
@@ -140,6 +148,7 @@ model Commission {
   amount        Int
   status        CommissionStatus @default(PENDING)
   invoiceNumber String?          @map("invoice_number")
+  invoiceUrl    String?          @map("invoice_url")
   dueDate       DateTime?        @map("due_date")
   paidAt        DateTime?        @map("paid_at")
   companyId     String           @map("company_id")
