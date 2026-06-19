@@ -33,6 +33,7 @@ export function PublicFooter() {
           {[
             { title: "Navegação", items: [{ name: "Serviços", href: "/servicos" }, { name: "Vagas de Emprego", href: "/jobs" }] },
             { title: "Empresa", items: [{ name: "Quem Somos", href: "/about" }, { name: "Grupo Cevan", href: "/grupo-cevan" }] },
+            { title: "Legal", items: [{ name: "Termos de Uso", href: "/termos" }, { name: "Privacidade", href: "/privacidade" }] },
           ].map((col) => (
             <div key={col.title} className="space-y-6 sm:space-y-8 lg:ml-auto text-center lg:text-left">
               <h4 className="font-extrabold text-[16px] sm:text-[18px] text-white tracking-wide">{col.title}</h4>
@@ -50,7 +51,14 @@ export function PublicFooter() {
         </div>
 
         <div className="pt-8 sm:pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6 text-[13px] sm:text-[14px] text-slate-500 font-medium text-center">
-          <p>© {new Date().getFullYear()} Cevan Serviços Empresariais. <br className="sm:hidden" /> Todos os direitos reservados.</p>
+          <div className="flex flex-col items-center lg:items-start gap-2">
+            <p>© {new Date().getFullYear()} Cevan Serviços Empresariais. <br className="sm:hidden" /> Todos os direitos reservados.</p>
+            <div className="flex gap-4">
+              <Link href="/termos" className="hover:text-slate-300 transition-colors">Termos de Uso</Link>
+              <span className="text-slate-700">·</span>
+              <Link href="/privacidade" className="hover:text-slate-300 transition-colors">Privacidade</Link>
+            </div>
+          </div>
 
           <a
             href="https://www.instagram.com/ipulsemkt?igsh=MWlpb3A3MWQzb3Z5"
