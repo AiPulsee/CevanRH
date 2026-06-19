@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { PublicFooter } from "@/components/public/footer";
 import { GrupoCevanFooter } from "@/components/public/grupo-cevan-footer";
+import { CookieBanner } from "@/components/public/cookie-banner";
 import { useState, useEffect } from "react";
 import { WHATSAPP_HREF } from "@/lib/contact";
 
@@ -246,6 +247,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         {children}
       </main>
       {!hideFooter && (isGrupoCevan ? <GrupoCevanFooter /> : <PublicFooter />)}
+      <CookieBanner />
 
     </div>
   );
