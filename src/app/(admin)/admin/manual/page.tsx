@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { BookOpen, Zap, UserCheck, Receipt, FileText, Building2, CheckCircle2, XCircle, AlertTriangle, DollarSign, RefreshCw, Wallet, Sparkles, Layers, ArrowRight, Info } from "lucide-react";
 
 export const metadata = { title: "Manual do Sistema — CevanRH" };
@@ -88,6 +89,34 @@ function StatusBadge({ color, label, description }: { color: string; label: stri
 
 function FlowArrow() {
   return <ArrowRight className="h-4 w-4 text-slate-400 mx-1 shrink-0" />;
+}
+
+function Screenshot({ src, caption, callouts }: { src: string; caption: string; callouts?: { x: string; y: string; label: string }[] }) {
+  return (
+    <figure className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-lg bg-white">
+      <div className="relative">
+        <Image src={src} alt={caption} width={1440} height={900} className="w-full h-auto block" unoptimized />
+        {callouts?.map((c, i) => (
+          <div
+            key={i}
+            className="absolute flex items-center gap-1.5 pointer-events-none"
+            style={{ left: c.x, top: c.y }}
+          >
+            <div className="h-5 w-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-[10px] shadow-lg ring-2 ring-white shrink-0">
+              {i + 1}
+            </div>
+            <span className="bg-slate-900/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-md whitespace-nowrap shadow-lg">
+              {c.label}
+            </span>
+          </div>
+        ))}
+      </div>
+      <figcaption className="px-4 py-2.5 bg-slate-50 border-t border-slate-200 text-[11px] font-semibold text-slate-500 flex items-center gap-1.5">
+        <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-400 shrink-0" />
+        {caption}
+      </figcaption>
+    </figure>
+  );
 }
 
 const TOC_ITEMS = [
@@ -186,6 +215,17 @@ export default function ManualPage() {
               O Dashboard (<strong>/admin</strong>) é a primeira tela após o login. Exibe os indicadores mais importantes do momento.
             </p>
 
+            <Screenshot
+              src="/manual/dashboard.png"
+              caption="Dashboard — visão geral: KPIs, gráfico de receita e atividade recente"
+              callouts={[
+                { x: "23%", y: "18%", label: "Novas empresas este mês" },
+                { x: "44%", y: "18%", label: "Vagas em triagem ativa" },
+                { x: "63%", y: "18%", label: "Candidatos aguardando triagem" },
+                { x: "81%", y: "18%", label: "Receita do mês" },
+              ]}
+            />
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
               {[
                 { label: "Candidaturas Recentes", desc: "Total de novas inscrições recebidas este mês em todas as vagas." },
@@ -207,9 +247,21 @@ export default function ManualPage() {
           <Section id="curadoria">
             <SectionTitle icon={Zap} title="Curadoria (Vagas)" subtitle="Como criar e gerenciar vagas de triagem especializada" />
 
-            <p className="text-sm text-slate-600 leading-relaxed mb-6">
+            <p className="text-sm text-slate-600 leading-relaxed mb-4">
               Acesse <strong>Curadoria (Vagas)</strong> no menu lateral. Aqui ficam todas as vagas que a Cevan gerencia ativamente para clientes. Cada vaga passa pelo ciclo completo: criação → taxa de entrada → triagem → alocação → efetivação.
             </p>
+
+            <Screenshot
+              src="/manual/curadoria.png"
+              caption="Lista de Curadoria — vagas ativas, encerradas, KPIs e botão de triagem"
+              callouts={[
+                { x: "13%", y: "18%", label: "Total sob gestão" },
+                { x: "35%", y: "18%", label: "Em triagem ativa" },
+                { x: "55%", y: "18%", label: "Selecionados" },
+                { x: "57%", y: "52%", label: "Badge de pagamento" },
+                { x: "72%", y: "52%", label: "Botão Fazer Triagem" },
+              ]}
+            />
 
             <h3 className="text-base font-black text-slate-900 mb-4">Criar uma nova vaga</h3>
             <div className="space-y-0 mb-6">
@@ -365,9 +417,22 @@ export default function ManualPage() {
           <Section id="alocacoes">
             <SectionTitle icon={UserCheck} title="Alocações" subtitle="Gerenciamento do período de experiência dos candidatos contratados" />
 
-            <p className="text-sm text-slate-600 leading-relaxed mb-6">
+            <p className="text-sm text-slate-600 leading-relaxed mb-4">
               Acesse <strong>Alocações</strong> no menu lateral. Cada linha é um candidato que foi contratado. O sistema monitora o período de trial e exibe alertas quando o prazo está próximo ou vencido.
             </p>
+
+            <Screenshot
+              src="/manual/alocacoes.png"
+              caption="Alocações — candidatos contratados com status de trial, efetivação e comissão"
+              callouts={[
+                { x: "13%", y: "17%", label: "Em andamento (trial)" },
+                { x: "33%", y: "17%", label: "Efetivados no total" },
+                { x: "53%", y: "17%", label: "Taxa de conversão" },
+                { x: "73%", y: "17%", label: "Receita potencial" },
+                { x: "60%", y: "58%", label: "Status da alocação" },
+                { x: "75%", y: "58%", label: "Status da comissão" },
+              ]}
+            />
 
             <div className="space-y-2 mb-6">
               <StatusBadge color="amber" label="Em Andamento" description="Candidato no período de experiência. Aguardando confirmação de efetivação." />
@@ -467,6 +532,18 @@ export default function ManualPage() {
               Acesse <strong>Finanças</strong> no menu. A página consolida todas as comissões do sistema com filtros por status, empresa e período.
             </p>
 
+            <Screenshot
+              src="/manual/financas.png"
+              caption="Finanças — visão consolidada de comissões: a receber, pendentes, faturados e total recebido"
+              callouts={[
+                { x: "22%", y: "24%", label: "A Receber (total em aberto)" },
+                { x: "43%", y: "24%", label: "Pendentes (sem NF)" },
+                { x: "60%", y: "24%", label: "Faturados (NF emitida)" },
+                { x: "79%", y: "24%", label: "Total já recebido" },
+                { x: "60%", y: "68%", label: "Status de cada comissão" },
+              ]}
+            />
+
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
               {[
                 { label: "Receita Confirmada", desc: "Soma de comissões com status Pago." },
@@ -490,6 +567,19 @@ export default function ManualPage() {
             <p className="text-sm text-slate-600 leading-relaxed mb-4">
               A página de <strong>Relatórios Gerais</strong> exibe o funil de recrutamento e os principais indicadores de performance.
             </p>
+
+            <Screenshot
+              src="/manual/analytics.png"
+              caption="Relatórios Gerais — KPIs globais, volume de candidaturas e funil de conversão"
+              callouts={[
+                { x: "23%", y: "16%", label: "Empresas cadastradas" },
+                { x: "43%", y: "16%", label: "Total de candidaturas" },
+                { x: "63%", y: "16%", label: "Vagas publicadas" },
+                { x: "81%", y: "16%", label: "Alocações totais" },
+                { x: "22%", y: "83%", label: "Funil de conversão" },
+                { x: "63%", y: "83%", label: "Vagas de curadoria" },
+              ]}
+            />
 
             <div className="space-y-3 mb-6">
               {[
