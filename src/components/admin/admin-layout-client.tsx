@@ -17,6 +17,7 @@ import {
   Menu,
   X,
   MoreHorizontal,
+  BookOpen,
 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,12 @@ const ALL_SECTIONS = [
     items: [
       { name: "Empresas", mobileName: "Empresas", href: "/admin/companies", icon: Building2, key: "COMPANIES", tooltip: "Empresas clientes cadastradas, suas vagas e usuários vinculados" },
       { name: "Usuários", mobileName: "Usuários", href: "/admin/users", icon: Users2, key: "USERS", tooltip: "Gerenciar administradores do sistema, suas funções e permissões de acesso" },
+    ],
+  },
+  {
+    label: "Suporte",
+    items: [
+      { name: "Manual do Sistema", mobileName: "Manual", href: "/admin/manual", icon: BookOpen, tooltip: "Guia completo de uso do CevanRH para consultores" },
     ],
   },
 ];
