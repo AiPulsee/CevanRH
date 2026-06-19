@@ -658,45 +658,45 @@ export default function ManualPage() {
               <div>
                 <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Taxa de Entrada (Vaga)</p>
                 <div className="space-y-2">
-                  <StatusBadge color="amber" label="Awaiting / Pendente" description="Taxa não registrada. Envio de candidatos bloqueado." />
-                  <StatusBadge color="violet" label="Paid / Recebido" description="Pagamento confirmado. Triagem liberada." />
-                  <StatusBadge color="slate" label="Waived / Dispensado" description="Taxa isenta. Triagem liberada." />
+                  <StatusBadge color="amber" label="Pendente" description="Taxa não registrada. Envio de candidatos bloqueado." />
+                  <StatusBadge color="violet" label="Recebido" description="Pagamento confirmado. Triagem liberada." />
+                  <StatusBadge color="slate" label="Dispensado" description="Taxa isenta por acordo comercial. Triagem liberada." />
                 </div>
               </div>
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Candidatura (Application)</p>
+                <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Candidatura</p>
                 <div className="space-y-2">
-                  <StatusBadge color="blue" label="Applied" description="Inscrito — aguardando triagem." />
-                  <StatusBadge color="amber" label="Reviewing" description="Em análise pelo consultor." />
-                  <StatusBadge color="emerald" label="Shortlisted" description="Selecionado — indicado para o cliente." />
-                  <StatusBadge color="rose" label="Rejected" description="Reprovado na triagem." />
-                  <StatusBadge color="violet" label="Hired" description="Contratado — alocação criada." />
+                  <StatusBadge color="blue" label="Inscrito" description="Candidato se inscreveu — aguardando triagem pelo consultor." />
+                  <StatusBadge color="amber" label="Em Análise" description="Em avaliação pelo consultor." />
+                  <StatusBadge color="emerald" label="Selecionado" description="Indicado para o cliente — pode ser contratado." />
+                  <StatusBadge color="rose" label="Reprovado" description="Eliminado na triagem desta vaga." />
+                  <StatusBadge color="violet" label="Contratado" description="Efetivado — alocação criada automaticamente." />
                 </div>
               </div>
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Alocação / Placement</p>
+                <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Alocação</p>
                 <div className="space-y-2">
-                  <StatusBadge color="amber" label="Trial" description="Em período de experiência." />
-                  <StatusBadge color="emerald" label="Effective" description="Efetivado após o trial." />
-                  <StatusBadge color="rose" label="Terminated" description="Encerrado durante o trial." />
-                  <StatusBadge color="slate" label="Cancelled" description="Cancelado antes do início." />
+                  <StatusBadge color="amber" label="Em Experiência" description="Candidato no período de trial. Aguardando efetivação." />
+                  <StatusBadge color="emerald" label="Efetivado" description="Passou pelo trial e foi contratado definitivamente." />
+                  <StatusBadge color="rose" label="Encerrado" description="Contratação encerrada durante o período de experiência." />
+                  <StatusBadge color="slate" label="Cancelado" description="Cancelado antes do início do trabalho." />
                 </div>
               </div>
               <div>
                 <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Comissão</p>
                 <div className="space-y-2">
-                  <StatusBadge color="amber" label="Pending" description="Gerada, aguardando NF do cliente." />
-                  <StatusBadge color="blue" label="Invoiced" description="NF recebida, aguardando pagamento." />
-                  <StatusBadge color="emerald" label="Paid" description="Pago e contabilizado." />
-                  <StatusBadge color="slate" label="Waived" description="Dispensado por acordo comercial." />
+                  <StatusBadge color="amber" label="Pendente" description="Gerada, aguardando emissão de NF pelo cliente." />
+                  <StatusBadge color="blue" label="Faturado" description="NF recebida. Aguardando pagamento." />
+                  <StatusBadge color="emerald" label="Pago" description="Pagamento confirmado e receita contabilizada." />
+                  <StatusBadge color="slate" label="Dispensado" description="Comissão isenta por acordo comercial." />
                 </div>
               </div>
               <div>
                 <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Score de IA</p>
                 <div className="space-y-2">
-                  <StatusBadge color="emerald" label="75–100% · Approve" description="Candidato recomendado. Alta aderência ao perfil da vaga." />
-                  <StatusBadge color="amber" label="50–74% · Maybe" description="Avaliar com atenção. Aderência parcial." />
-                  <StatusBadge color="rose" label="0–49% · Reject" description="Não recomendado. Baixa aderência ao perfil." />
+                  <StatusBadge color="emerald" label="75–100% · Recomendar" description="Candidato recomendado. Alta aderência ao perfil da vaga." />
+                  <StatusBadge color="amber" label="50–74% · Avaliar" description="Avaliar com atenção. Aderência parcial ao perfil." />
+                  <StatusBadge color="rose" label="0–49% · Reprovar" description="Não recomendado. Baixa aderência ao perfil da vaga." />
                 </div>
               </div>
             </div>
