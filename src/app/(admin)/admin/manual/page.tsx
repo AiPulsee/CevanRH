@@ -219,10 +219,10 @@ export default function ManualPage() {
               src="/manual/dashboard.png"
               caption="Dashboard — visão geral: KPIs, gráfico de receita e atividade recente"
               callouts={[
-                { x: "23%", y: "18%", label: "Novas empresas este mês" },
-                { x: "44%", y: "18%", label: "Vagas em triagem ativa" },
-                { x: "63%", y: "18%", label: "Candidatos aguardando triagem" },
-                { x: "81%", y: "18%", label: "Receita do mês" },
+                { x: "21%", y: "28%", label: "Novas empresas este mês" },
+                { x: "41%", y: "28%", label: "Vagas em triagem ativa" },
+                { x: "60%", y: "28%", label: "Candidatos aguardando triagem" },
+                { x: "78%", y: "28%", label: "Receita do mês" },
               ]}
             />
 
@@ -255,11 +255,11 @@ export default function ManualPage() {
               src="/manual/curadoria.png"
               caption="Lista de Curadoria — vagas ativas, encerradas, KPIs e botão de triagem"
               callouts={[
-                { x: "13%", y: "18%", label: "Total sob gestão" },
-                { x: "35%", y: "18%", label: "Em triagem ativa" },
-                { x: "55%", y: "18%", label: "Selecionados" },
-                { x: "57%", y: "52%", label: "Badge de pagamento" },
-                { x: "72%", y: "52%", label: "Botão Fazer Triagem" },
+                { x: "22%", y: "28%", label: "Total sob gestão" },
+                { x: "47%", y: "28%", label: "Em triagem ativa" },
+                { x: "70%", y: "28%", label: "Selecionados" },
+                { x: "55%", y: "50%", label: "Badge de pagamento" },
+                { x: "71%", y: "50%", label: "Botão Fazer Triagem" },
               ]}
             />
 
@@ -425,12 +425,12 @@ export default function ManualPage() {
               src="/manual/alocacoes.png"
               caption="Alocações — candidatos contratados com status de trial, efetivação e comissão"
               callouts={[
-                { x: "13%", y: "17%", label: "Em andamento (trial)" },
-                { x: "33%", y: "17%", label: "Efetivados no total" },
-                { x: "53%", y: "17%", label: "Taxa de conversão" },
-                { x: "73%", y: "17%", label: "Receita potencial" },
-                { x: "60%", y: "58%", label: "Status da alocação" },
-                { x: "75%", y: "58%", label: "Status da comissão" },
+                { x: "22%", y: "28%", label: "Em andamento (trial)" },
+                { x: "41%", y: "28%", label: "Efetivados no total" },
+                { x: "58%", y: "28%", label: "Taxa de conversão" },
+                { x: "75%", y: "28%", label: "Receita potencial" },
+                { x: "57%", y: "58%", label: "Status da alocação" },
+                { x: "73%", y: "58%", label: "Status da comissão" },
               ]}
             />
 
@@ -572,12 +572,12 @@ export default function ManualPage() {
               src="/manual/analytics.png"
               caption="Relatórios Gerais — KPIs globais, volume de candidaturas e funil de conversão"
               callouts={[
-                { x: "23%", y: "16%", label: "Empresas cadastradas" },
-                { x: "43%", y: "16%", label: "Total de candidaturas" },
-                { x: "63%", y: "16%", label: "Vagas publicadas" },
-                { x: "81%", y: "16%", label: "Alocações totais" },
-                { x: "22%", y: "83%", label: "Funil de conversão" },
-                { x: "63%", y: "83%", label: "Vagas de curadoria" },
+                { x: "21%", y: "26%", label: "Empresas cadastradas" },
+                { x: "41%", y: "26%", label: "Total de candidaturas" },
+                { x: "61%", y: "26%", label: "Vagas publicadas" },
+                { x: "78%", y: "26%", label: "Alocações totais" },
+                { x: "22%", y: "80%", label: "Funil de conversão" },
+                { x: "62%", y: "80%", label: "Vagas de curadoria" },
               ]}
             />
 
