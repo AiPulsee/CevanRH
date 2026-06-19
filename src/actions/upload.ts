@@ -57,6 +57,38 @@ export async function getPresignedUrl(fileName: string, fileType: string, fileSi
   };
 }
 
+export async function getInvoicePresignedUrl(fileName: string, fileType: string, fileSize: number) {
+  const session = await auth();
+  if (!session?.user || (session.user as any).role !== "ADMIN") {
+    throw new Error("Não autorizado.");
+  }
+
+  if (!ALLOWED_TYPES.includes(fileType)) {
+    throw new Error("Tipo de arquivo não permitido. Use PDF.");
+  }
+
+  if (fileSize > MAX_FILE_SIZE_BYTES) {
+    throw new Error("Arquivo muito grande. Tamanho máximo: 10 MB.");
+  }
+
+  const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 100);
+  const fileKey = `invoices/${uuidv4()}-${safeName}`;
+
+  const command = new PutObjectCommand({
+    Bucket: process.env.R2_BUCKET_NAME,
+    Key: fileKey,
+    ContentType: fileType,
+    ContentLength: fileSize,
+  });
+
+  const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 120 });
+
+  return {
+    uploadUrl: signedUrl,
+    fileUrl: `${process.env.R2_PUBLIC_DOMAIN}/${fileKey}`,
+  };
+}
+
 export async function getLogoPresignedUrl(fileName: string, fileType: string, fileSize: number) {
   const session = await auth();
   if (!session?.user || (session.user as any).role !== "ADMIN") {

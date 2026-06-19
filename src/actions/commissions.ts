@@ -7,7 +7,11 @@ import { revalidatePath } from "next/cache";
 import { requireAdminPermission, ok, fail } from "@/lib/permissions";
 import { logAction } from "@/lib/audit";
 
-export async function markCommissionAsInvoiced(commissionId: string, invoiceNumber: string) {
+export async function markCommissionAsInvoiced(
+  commissionId: string,
+  invoiceNumber: string,
+  invoiceUrl?: string
+) {
   const session = await auth();
   const permError = requireAdminPermission(session, "FINANCE");
   if (permError) return permError;
@@ -15,14 +19,18 @@ export async function markCommissionAsInvoiced(commissionId: string, invoiceNumb
   try {
     const result = await prisma.commission.updateMany({
       where: { id: commissionId, status: CommissionStatus.PENDING },
-      data: { status: CommissionStatus.INVOICED, invoiceNumber },
+      data: {
+        status: CommissionStatus.INVOICED,
+        invoiceNumber,
+        ...(invoiceUrl ? { invoiceUrl } : {}),
+      },
     });
 
     if (result.count === 0) return fail("Comissão só pode ser faturada quando estiver pendente.");
 
     await logAction("COMMISSION_INVOICED", `Faturou comissão ${commissionId} (NF: ${invoiceNumber})`, {
       before: { commissionId, status: "PENDING" },
-      after: { commissionId, status: "INVOICED", invoiceNumber },
+      after: { commissionId, status: "INVOICED", invoiceNumber, invoiceUrl },
     });
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");

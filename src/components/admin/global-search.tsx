@@ -131,7 +131,7 @@ export function GlobalSearch() {
           onKeyDown={handleKeyDown}
           onFocus={() => hasResults && setOpen(true)}
           placeholder="Busca rápida..."
-          className="pl-11 pr-10 h-10 border-none bg-slate-100 rounded-xl focus-visible:ring-2 focus-visible:ring-blue-500/20 font-medium text-sm text-slate-900 transition-all"
+          className="pl-11 pr-10 h-[42px] border border-slate-200/60 bg-slate-50/50 rounded-full focus-visible:ring-2 focus-visible:ring-blue-500/20 font-medium text-[14px] text-slate-800 transition-all shadow-sm hover:bg-slate-100/50"
           autoComplete="off"
         />
       </div>

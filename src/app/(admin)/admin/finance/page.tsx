@@ -37,6 +37,7 @@ export default async function AdminFinancePage() {
     amount: c.amount,
     status: c.status as "PENDING" | "INVOICED" | "PAID" | "WAIVED",
     invoiceNumber: c.invoiceNumber,
+    invoiceUrl: c.invoiceUrl,
     dueDate: c.dueDate,
     paidAt: c.paidAt,
     candidateName: c.placement.application.candidate.name ?? "Sem Nome",

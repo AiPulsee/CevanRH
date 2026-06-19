@@ -20,6 +20,7 @@ type CommissionRow = {
   amount: number;
   status: CommissionStatus;
   invoiceNumber: string | null;
+  invoiceUrl?: string | null;
   dueDate: Date | null;
   paidAt: Date | null;
   candidateName: string;
@@ -91,7 +92,7 @@ export function CommissionsTable({
     setCurrentPage(1);
   }
 
-  function handleUpdate(id: string, newStatus: CommissionStatus, invoiceNumber?: string) {
+  function handleUpdate(id: string, newStatus: CommissionStatus, invoiceNumber?: string, invoiceUrl?: string) {
     setCommissions((prev) =>
       prev.map((c) =>
         c.id === id
@@ -99,6 +100,7 @@ export function CommissionsTable({
               ...c,
               status: newStatus,
               invoiceNumber: invoiceNumber ?? c.invoiceNumber,
+              invoiceUrl: invoiceUrl ?? c.invoiceUrl,
               paidAt: newStatus === "PAID" ? new Date() : c.paidAt,
             }
           : c

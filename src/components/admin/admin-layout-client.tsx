@@ -135,9 +135,9 @@ export function AdminLayoutClient({ children, userName, permissions }: Props) {
         {/* Main column */}
         <div className="flex-1 flex flex-col h-screen overflow-hidden">
           {/* ── Header ── */}
-          <header className="h-16 lg:h-20 border-b border-slate-100 bg-white/90 backdrop-blur-xl flex items-center justify-between px-4 lg:px-10 z-10 sticky top-0 shadow-sm">
+          <header className="h-16 lg:h-20 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl flex items-center justify-between px-4 lg:px-8 z-10 sticky top-0">
             {/* Left: page identity */}
-            <div className="flex items-center gap-2 lg:gap-3">
+            <div className="flex items-center gap-2 lg:gap-4">
               {/* Mobile logo (replaces the sidebar logo) */}
               <Link href="/admin" className="lg:hidden shrink-0">
                 <Image
@@ -150,15 +150,15 @@ export function AdminLayoutClient({ children, userName, permissions }: Props) {
               </Link>
 
               {/* Desktop: current page name + icon */}
-              <div className="hidden lg:flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-blue-600/10 flex items-center justify-center">
-                  <currentPage.icon className="h-4 w-4 text-blue-600" />
+              <div className="hidden lg:flex items-center gap-3.5">
+                <div className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-100/50 flex items-center justify-center shadow-sm">
+                  <currentPage.icon className="h-5 w-5 text-blue-600" />
                 </div>
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 leading-none mb-0.5">
+                <div className="flex flex-col justify-center">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 leading-none mb-1">
                     Admin
                   </p>
-                  <h1 className="text-sm font-bold text-slate-700 leading-none">
+                  <h1 className="text-base font-bold text-slate-800 leading-none tracking-tight">
                     {currentPage.name}
                   </h1>
                 </div>
@@ -166,41 +166,43 @@ export function AdminLayoutClient({ children, userName, permissions }: Props) {
             </div>
 
             {/* Center: search (desktop) */}
-            <div className="hidden lg:block flex-1 max-w-sm mx-8">
+            <div className="hidden lg:block flex-1 max-w-md mx-8">
               <GlobalSearch />
             </div>
 
             {/* Right: actions */}
-            <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
               <NotificationsPopover />
 
-              <div className="w-px h-4 lg:h-5 bg-slate-200 hidden sm:block mx-0.5" />
+              <div className="w-px h-6 bg-slate-200 hidden sm:block mx-1" />
 
               {/* User chip */}
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 lg:h-9 lg:w-9 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center font-black text-white text-[10px] lg:text-xs shadow-sm shrink-0 select-none ring-2 ring-white">
-                  {(userName ?? "AD").slice(0, 2).toUpperCase()}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 py-1 rounded-full transition-all">
+                  <div className="h-9 w-9 rounded-full bg-slate-900 flex items-center justify-center font-bold text-white text-xs shadow-sm shrink-0 select-none">
+                    {(userName ?? "AD").slice(0, 2).toUpperCase()}
+                  </div>
+                  <p className="text-[14px] font-medium text-slate-700 truncate max-w-[120px] hidden lg:block">
+                    {userName ?? "Admin"}
+                  </p>
                 </div>
-                <p className="text-xs font-bold text-slate-700 truncate max-w-[100px] hidden lg:block">
-                  {userName ?? "Admin"}
-                </p>
-              </div>
 
-              <Tooltip>
-                <form action={async () => { await logout(); }}>
-                  <TooltipTrigger render={
-                    <Button
-                      type="submit"
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 lg:h-10 lg:w-10 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all shrink-0 ml-1"
-                    >
-                      <LogOut className="h-4 w-4" />
-                    </Button>
-                  } />
-                </form>
-                <TooltipContent side="bottom">Sair do sistema</TooltipContent>
-              </Tooltip>
+                <Tooltip>
+                  <form action={async () => { await logout(); }}>
+                    <TooltipTrigger render={
+                      <Button
+                        type="submit"
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all shrink-0"
+                      >
+                        <LogOut className="h-[18px] w-[18px]" />
+                      </Button>
+                    } />
+                  </form>
+                  <TooltipContent side="bottom">Sair do sistema</TooltipContent>
+                </Tooltip>
+              </div>
             </div>
           </header>
 
@@ -254,27 +256,24 @@ function SidebarContent({
 }) {
   return (
     <>
-      <div className={cn("p-8 flex flex-col items-center border-b border-white/5", isMobile && "items-start px-6")}>
+      <div className={cn("px-6 py-8 flex flex-col items-center", isMobile && "items-start")}>
         <Link href="/" className="flex flex-col items-center group w-full">
           <Image
             src="/cevanempresarial/logocevanempresarial.png"
             alt="Cevan"
             width={240}
             height={70}
-            className="h-14 w-auto object-contain brightness-0 invert opacity-100 transition-all group-hover:scale-105"
+            className="h-10 w-auto object-contain brightness-0 invert opacity-90 transition-all group-hover:opacity-100 group-hover:scale-105"
           />
         </Link>
       </div>
 
-      <nav className="flex-1 px-4 py-6 overflow-y-auto custom-scrollbar pb-10">
-        <div className="space-y-1">
+      <nav className="flex-1 px-4 py-2 overflow-y-auto custom-scrollbar pb-10">
+        <div className="space-y-6">
           {menuSections.map((section, sectionIdx) => (
             <div key={section.label}>
               {/* Section label */}
-              <p className={cn(
-                "px-3 text-[9px] font-black uppercase tracking-[0.2em] text-slate-500",
-                sectionIdx > 0 ? "mt-6 mb-2" : "mb-2"
-              )}>
+              <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
                 {section.label}
               </p>
 
@@ -289,29 +288,22 @@ function SidebarContent({
                         <Link
                           href={item.href}
                           className={cn(
-                            "flex items-center gap-3 px-3 py-3 rounded-xl text-[13px] font-semibold transition-all group relative",
+                            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium transition-all group relative",
                             isActive
-                              ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
-                              : "text-slate-400 hover:bg-white/8 hover:text-slate-200"
+                              ? "bg-blue-600/10 text-blue-400"
+                              : "text-slate-400 hover:bg-slate-800/40 hover:text-slate-200"
                           )}
                         >
-                          <div className={cn(
-                            "h-8 w-8 rounded-lg flex items-center justify-center shrink-0 transition-all",
-                            isActive
-                              ? "bg-white/15"
-                              : "bg-white/5 group-hover:bg-white/10"
-                          )}>
-                            <item.icon
-                              className={cn(
-                                "h-4 w-4 transition-transform group-hover:scale-110",
-                                isActive ? "text-white" : "text-slate-500 group-hover:text-blue-400"
-                              )}
-                            />
-                          </div>
-                          <span className="truncate">{item.name}</span>
                           {isActive && (
-                            <div className="absolute right-3 w-1.5 h-1.5 bg-white/70 rounded-full" />
+                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-blue-500 rounded-r-full shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
                           )}
+                          <item.icon
+                            className={cn(
+                              "h-5 w-5 transition-transform group-hover:scale-110",
+                              isActive ? "text-blue-500" : "text-slate-500 group-hover:text-slate-300"
+                            )}
+                          />
+                          <span className="truncate">{item.name}</span>
                         </Link>
                       } />
                       <TooltipContent side="right" className="max-w-[220px]">
