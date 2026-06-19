@@ -28,7 +28,7 @@ export const metadata: Metadata = {
       { url: "/cevanempresarial/icon-180.png", sizes: "180x180", type: "image/png" },
     ],
     icon: [
-      { url: "/favicon.ico", sizes: "32x32", type: "image/png" },
+      { url: "/cevanempresarial/iconparaapp.png", sizes: "32x32", type: "image/png" },
       { url: "/cevanempresarial/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/cevanempresarial/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
