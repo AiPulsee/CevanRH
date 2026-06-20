@@ -180,6 +180,9 @@ model AuditLog {
   after     Json?
   createdAt DateTime @default(now()) @map("created_at")
 
+  @@index([createdAt])
+  @@index([userId])
+  @@index([action])
   @@map("audit_logs")
 }
 
