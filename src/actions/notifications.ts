@@ -8,10 +8,6 @@ export async function getNotifications() {
   const session = await auth();
   if (!session) return [];
 
-  if ((session.user as any).role === "ADMIN") {
-    checkTrialExpirations();
-  }
-
   return prisma.notification.findMany({
     where: {
       OR: [{ userId: session.user.id }, { userId: null }],
@@ -95,44 +91,36 @@ export async function checkTrialExpirations() {
 
   const sevenDaysFromNow = new Date();
   sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+  const cutoff48h = new Date(Date.now() - 48 * 60 * 60 * 1000);
 
-  const expiringTrials = await prisma.placement.findMany({
-    where: {
-      status: "TRIAL",
-      trialEndDate: {
-        lte: sevenDaysFromNow,
-        gt: new Date() // Ainda não venceu
-      }
-    },
-    include: {
-      application: {
-        include: {
-          candidate: { select: { name: true } },
-          job: { select: { company: { select: { name: true } } } }
-        }
-      }
-    }
-  });
+  // Fetch expiring trials and recent notifications in parallel
+  const [expiringTrials, recentNotifications] = await Promise.all([
+    prisma.placement.findMany({
+      where: { status: "TRIAL", trialEndDate: { lte: sevenDaysFromNow, gt: new Date() } },
+      select: {
+        trialEndDate: true,
+        application: {
+          select: {
+            candidate: { select: { name: true } },
+            job: { select: { company: { select: { name: true } } } },
+          },
+        },
+      },
+    }),
+    // One query to get all recent trial notifications — replaces N findFirst queries
+    prisma.notification.findMany({
+      where: { title: "Andamento Vencendo", createdAt: { gte: cutoff48h } },
+      select: { message: true },
+    }),
+  ]);
+
+  const recentMessages = new Set(recentNotifications.map((n) => n.message));
 
   for (const trial of expiringTrials) {
-    const title = "Andamento Vencendo";
     const message = `O período de andamento de ${trial.application.candidate.name} na ${trial.application.job?.company.name ?? "empresa"} vence em ${trial.trialEndDate.toLocaleDateString()}.`;
-
-    // Evitar spam: checar se já notificamos sobre este trial nas últimas 48h
-    const recent = await prisma.notification.findFirst({
-      where: {
-        title,
-        message,
-        createdAt: { gte: new Date(Date.now() - 48 * 60 * 60 * 1000) }
-      }
-    });
-
-    if (!recent) {
-      await createNotification({
-        title,
-        message,
-        type: "WARNING"
-      });
+    if (!recentMessages.has(message)) {
+      await createNotification({ title: "Andamento Vencendo", message, type: "WARNING" });
+      recentMessages.add(message);
     }
   }
 }

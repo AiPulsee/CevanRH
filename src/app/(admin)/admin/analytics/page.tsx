@@ -10,6 +10,14 @@ import { ptBR } from "date-fns/locale";
 export default async function AdminAnalyticsPage() {
   const now = new Date();
 
+  // Build month buckets before fetching so we can compute sixMonthsAgo
+  const months = Array.from({ length: 6 }, (_, i) => {
+    const d = subMonths(now, 5 - i);
+    return { start: startOfMonth(d), label: format(d, "MMM", { locale: ptBR }) };
+  });
+  const sixMonthsAgo = months[0].start;
+
+  // Single parallel batch — was 3 sequential batches (20 queries total)
   const [
     totalCompanies,
     totalApplications,
@@ -19,6 +27,8 @@ export default async function AdminAnalyticsPage() {
     jobsByType,
     firstRoundHired,
     effectivePlacements,
+    recentAppDates,
+    recentCompanyDates,
   ] = await Promise.all([
     prisma.company.count(),
     prisma.application.count(),
@@ -26,39 +36,28 @@ export default async function AdminAnalyticsPage() {
     prisma.placement.count(),
     prisma.application.groupBy({ by: ["status"], _count: { id: true } }),
     prisma.job.groupBy({ by: ["type"], _count: { id: true } }),
-    // Only count HIRED applications where the placement is the first send (round=1)
     prisma.placement.count({ where: { round: 1, status: { not: "CANCELLED" } } }),
     prisma.placement.count({ where: { status: "EFFECTIVE" } }),
+    // Fetch only dates for grouping in JS — replaces 6 count queries
+    prisma.application.findMany({ where: { createdAt: { gte: sixMonthsAgo } }, select: { createdAt: true } }),
+    prisma.company.findMany({ where: { createdAt: { gte: sixMonthsAgo } }, select: { createdAt: true } }),
   ]);
 
-  // Applications per month — last 6 months
-  const months = Array.from({ length: 6 }, (_, i) => {
-    const d = subMonths(now, 5 - i);
-    return { start: startOfMonth(d), label: format(d, "MMM", { locale: ptBR }) };
+  // Group in JS — no additional DB round-trips
+  const appsByMonth = months.map((m) => {
+    const end = new Date(m.start);
+    end.setMonth(end.getMonth() + 1);
+    const count = recentAppDates.filter((a) => a.createdAt >= m.start && a.createdAt < end).length;
+    return { label: m.label, count };
   });
-  const appsByMonth = await Promise.all(
-    months.map(async (m) => {
-      const end = new Date(m.start);
-      end.setMonth(end.getMonth() + 1);
-      const count = await prisma.application.count({
-        where: { createdAt: { gte: m.start, lt: end } },
-      });
-      return { label: m.label, count };
-    })
-  );
   const maxApps = Math.max(...appsByMonth.map((m) => m.count), 1);
 
-  // New companies per month — last 6 months
-  const companiesByMonth = await Promise.all(
-    months.map(async (m) => {
-      const end = new Date(m.start);
-      end.setMonth(end.getMonth() + 1);
-      const count = await prisma.company.count({
-        where: { createdAt: { gte: m.start, lt: end } },
-      });
-      return { label: m.label, count };
-    })
-  );
+  const companiesByMonth = months.map((m) => {
+    const end = new Date(m.start);
+    end.setMonth(end.getMonth() + 1);
+    const count = recentCompanyDates.filter((c) => c.createdAt >= m.start && c.createdAt < end).length;
+    return { label: m.label, count };
+  });
   const maxCompanies = Math.max(...companiesByMonth.map((m) => m.count), 1);
 
   // Funnel

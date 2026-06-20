@@ -42,6 +42,7 @@ model Company {
   jobs        Job[]
   users       User[]
 
+  @@index([createdAt])
   @@map("companies")
 }
 
@@ -102,6 +103,7 @@ model Application {
   @@unique([jobId, candidateId])
   @@index([status])
   @@index([candidateId])
+  @@index([createdAt])
   @@map("applications")
 }
 
