@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { BookOpen, Zap, UserCheck, Receipt, FileText, Building2, CheckCircle2, XCircle, AlertTriangle, DollarSign, RefreshCw, Wallet, Sparkles, Layers, ArrowRight, Info, HelpCircle, Users } from "lucide-react";
+import { ManualTOC } from "@/components/admin/manual-toc";
 
 export const metadata = { title: "Manual do Sistema — CevanRH" };
 
@@ -107,25 +108,25 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 
 function Screenshot({ src, caption, callouts }: { src: string; caption: string; callouts?: { x: string; y: string; label: string }[] }) {
   return (
-    <figure className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-lg bg-white">
+    <figure className="my-4 sm:my-6 rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200 shadow-md sm:shadow-lg bg-white">
       <div className="relative">
         <Image src={src} alt={caption} width={1440} height={900} className="w-full h-auto block" unoptimized />
         {callouts?.map((c, i) => (
           <div
             key={i}
-            className="absolute flex items-center gap-1.5 pointer-events-none"
+            className="absolute flex items-center gap-1 sm:gap-1.5 pointer-events-none"
             style={{ left: c.x, top: c.y }}
           >
-            <div className="h-5 w-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-[10px] shadow-lg ring-2 ring-white shrink-0">
+            <div className="h-4 w-4 sm:h-5 sm:w-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-[8px] sm:text-[10px] shadow-lg ring-1 sm:ring-2 ring-white shrink-0">
               {i + 1}
             </div>
-            <span className="bg-slate-900/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-md whitespace-nowrap shadow-lg">
+            <span className="hidden sm:inline bg-slate-900/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-md whitespace-nowrap shadow-lg">
               {c.label}
             </span>
           </div>
         ))}
       </div>
-      <figcaption className="px-4 py-2.5 bg-slate-50 border-t border-slate-200 text-[11px] font-semibold text-slate-500 flex items-center gap-1.5">
+      <figcaption className="px-3 sm:px-4 py-2 sm:py-2.5 bg-slate-50 border-t border-slate-200 text-[10px] sm:text-[11px] font-semibold text-slate-500 flex items-center gap-1.5">
         <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-400 shrink-0" />
         {caption}
       </figcaption>
@@ -158,38 +159,23 @@ export default function ManualPage() {
   return (
     <div className="animate-in fade-in duration-500">
       {/* Page header */}
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <div className="flex items-center gap-1.5 text-blue-600 mb-1">
           <BookOpen className="h-4 w-4" />
           <span className="text-[10px] font-black uppercase tracking-widest">Documentação Interna</span>
         </div>
-        <h1 className="text-3xl font-black text-slate-900">Manual do Sistema CevanRH</h1>
-        <p className="text-slate-500 font-medium mt-1">
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">Manual do Sistema CevanRH</h1>
+        <p className="text-slate-500 font-medium mt-1 text-sm sm:text-base">
           Guia completo para consultores — triagem, alocações, comissões e gestão de clientes.
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Table of Contents — sticky sidebar */}
-        <aside className="lg:w-56 shrink-0 lg:sticky lg:top-24">
-          <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-3">Sumário</p>
-            <nav className="space-y-0.5">
-              {TOC_ITEMS.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className="block px-2 py-1.5 rounded-lg text-[11px] font-semibold text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-all leading-tight"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-          </div>
-        </aside>
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+        {/* Table of Contents */}
+        <ManualTOC items={TOC_ITEMS} />
 
         {/* Content */}
-        <div className="flex-1 min-w-0 space-y-12">
+        <div className="flex-1 min-w-0 space-y-8 sm:space-y-12">
 
           {/* ── Introdução ── */}
           <Section id="introducao">
@@ -200,9 +186,29 @@ export default function ManualPage() {
                 O <strong>CevanRH</strong> é o sistema de gestão de recrutamento especializado da Cevan Empresariais. Ele suporta o modelo de <strong>curadoria</strong>: a empresa cliente paga uma <strong>taxa de entrada</strong> para a Cevan iniciar a triagem, e uma <strong>comissão</strong> quando o candidato passa pelo período de experiência e é efetivado.
               </p>
 
-              <div className="bg-slate-900 rounded-2xl p-6 text-white mb-6">
+              <div className="bg-slate-900 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-white mb-6">
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Fluxo do Processo Cevan</p>
-                <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
+                {/* Mobile: vertical list */}
+                <ol className="sm:hidden space-y-2 text-xs font-bold">
+                  {[
+                    "Cliente contrata",
+                    "Taxa de entrada",
+                    "Triagem + IA",
+                    "Candidato enviado",
+                    "Período de trial",
+                  ].map((s, i) => (
+                    <li key={i} className="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-lg">
+                      <span className="h-5 w-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] shrink-0">{i + 1}</span>
+                      {s}
+                    </li>
+                  ))}
+                  <li className="flex items-center gap-2 bg-emerald-600 px-3 py-2 rounded-lg">
+                    <span className="h-5 w-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] shrink-0">6</span>
+                    Efetivado + Comissão
+                  </li>
+                </ol>
+                {/* Desktop: horizontal flow */}
+                <div className="hidden sm:flex flex-wrap items-center gap-2 text-xs font-bold">
                   <span className="bg-white/10 px-3 py-1.5 rounded-lg">1. Cliente contrata</span>
                   <FlowArrow />
                   <span className="bg-white/10 px-3 py-1.5 rounded-lg">2. Taxa de entrada</span>
