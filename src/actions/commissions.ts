@@ -31,7 +31,7 @@ export async function markCommissionAsInvoiced(
     await logAction("COMMISSION_INVOICED", `Faturou comissão ${commissionId} (NF: ${invoiceNumber})`, {
       before: { commissionId, status: "PENDING" },
       after: { commissionId, status: "INVOICED", invoiceNumber, invoiceUrl },
-    });
+    }, session?.user?.id);
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");
@@ -60,7 +60,7 @@ export async function markCommissionAsPaid(commissionId: string) {
 
     await logAction("COMMISSION_PAID", `Registrou pagamento da comissão ${commissionId}`, {
       after: { commissionId, status: "PAID", paidAt: new Date() },
-    });
+    }, session?.user?.id);
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");
@@ -89,7 +89,7 @@ export async function waiveCommission(commissionId: string) {
 
     await logAction("COMMISSION_WAIVED", `Dispensou comissão ${commissionId}`, {
       after: { commissionId, status: "WAIVED" },
-    });
+    }, session?.user?.id);
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");

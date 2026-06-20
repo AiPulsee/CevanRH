@@ -89,7 +89,7 @@ export async function createPlacement(data: {
 
     await logAction("CREATE_PLACEMENT", `Criou alocação para candidatura ${data.applicationId}`, {
       after: { applicationId: data.applicationId, monthlySalary: data.monthlySalary, startDate: start, trialEndDate: trialEnd, feePercentage, commissionAmount },
-    });
+    }, session?.user?.id);
     revalidatePath("/admin/placements");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");
@@ -160,7 +160,7 @@ export async function confirmEffective(placementId: string) {
     await logAction("CONFIRM_EFFECTIVE", `Confirmou efetivação da alocação ${placementId}`, {
       before: { placementId, status: "TRIAL" },
       after: { placementId, status: "EFFECTIVE", effectiveDate: now },
-    });
+    }, session?.user?.id);
     revalidatePath("/admin/placements");
     revalidatePath("/admin/managed");
     revalidatePath("/admin/finance");
@@ -251,7 +251,7 @@ export async function terminatePlacement(placementId: string, reason?: string) {
     await logAction("TERMINATE_PLACEMENT", `Encerrou alocação ${placementId}`, {
       before: { placementId, status: "TRIAL" },
       after: { placementId, status: "TERMINATED", terminationReason: reason || "Não efetivado pela empresa." },
-    });
+    }, session?.user?.id);
     revalidatePath("/admin/placements");
     revalidatePath("/admin/managed");
     revalidatePath("/admin");
@@ -376,7 +376,7 @@ export async function hireAndPlace(data: {
 
     await logAction("HIRE_AND_PLACE", `Contratou e alocou candidatura ${data.applicationId}`, {
       after: { applicationId: data.applicationId, monthlySalary: data.monthlySalary, startDate: start, trialEndDate: trialEnd, feePercentage, commissionAmount },
-    });
+    }, session?.user?.id);
     revalidatePath("/admin/placements");
     revalidatePath("/admin/managed");
     revalidatePath("/admin/finance");
@@ -538,7 +538,7 @@ export async function adminAllocateCandidate(data: {
 
     await logAction("ADMIN_ALLOCATE", `Admin alocou candidato ${data.candidateId} para vaga ${data.jobId}`, {
       after: { candidateId: data.candidateId, jobId: data.jobId, monthlySalary: data.monthlySalary, feePercentage, commissionAmount },
-    });
+    }, session?.user?.id);
     revalidatePath("/admin/placements");
     revalidatePath("/admin/managed");
     revalidatePath("/admin/resumes");

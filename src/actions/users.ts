@@ -49,7 +49,9 @@ export async function createUser(data: z.infer<typeof createUserSchema>) {
 
     await logAction(
       "CREATE_USER",
-      `Criou administrador ${name} (${email}) — permissões: ${permissions.join(", ")}`
+      `Criou administrador ${name} (${email}) — permissões: ${permissions.join(", ")}`,
+      undefined,
+      session?.user?.id
     );
     revalidatePath("/admin/users");
     return ok();
@@ -81,7 +83,7 @@ export async function updateUser(id: string, data: z.infer<typeof updateUserSche
 
     await prisma.user.update({ where: { id }, data: updateData });
 
-    await logAction("UPDATE_USER", `Atualizou o usuário ${name || id}`);
+    await logAction("UPDATE_USER", `Atualizou o usuário ${name || id}`, undefined, session?.user?.id);
     revalidatePath("/admin/users");
     return ok();
   } catch {
@@ -130,7 +132,7 @@ export async function deleteUser(userId: string) {
     await logAction("DELETE_USER", `Excluiu o usuário ${user?.name || user?.email} (${userId})`, {
       before: { userId, name: user?.name, email: user?.email },
       after: { deletedAt: new Date() },
-    });
+    }, session?.user?.id);
     revalidatePath("/admin/users");
     return ok();
   } catch {

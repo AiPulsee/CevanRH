@@ -213,7 +213,7 @@ export async function markEntryFeePaid(jobId: string, amount?: number) {
 
     await logAction("ENTRY_FEE_PAID", `Pagamento de entrada recebido para vaga ${jobId}`, {
       after: { jobId, entryFeeStatus: "PAID", amount },
-    });
+    }, session?.user?.id);
     revalidatePath("/admin/managed");
     revalidatePath("/admin/finance");
     revalidatePath("/admin");
@@ -237,7 +237,7 @@ export async function waiveEntryFee(jobId: string) {
 
     await logAction("ENTRY_FEE_WAIVED", `Taxa de entrada dispensada para vaga ${jobId}`, {
       after: { jobId, entryFeeStatus: "WAIVED" },
-    });
+    }, session?.user?.id);
     revalidatePath("/admin/managed");
     revalidatePath("/admin");
     return ok();
@@ -261,7 +261,7 @@ export async function deleteJob(jobId: string) {
 
     await logAction("DELETE_JOB", `Excluiu vaga ${jobId}`, {
       after: { jobId, deletedAt: now },
-    });
+    }, session?.user?.id);
 
     revalidatePath("/admin/managed");
     revalidatePath("/admin");

@@ -1,18 +1,17 @@
 import { prisma } from "./prisma";
-import { auth } from "./auth";
 
 export async function logAction(
   action: string,
   details?: string,
-  context?: { before?: unknown; after?: unknown }
+  context?: { before?: unknown; after?: unknown },
+  userId?: string
 ) {
   try {
-    const session = await auth();
     await prisma.auditLog.create({
       data: {
         action,
         details,
-        userId: session?.user?.id,
+        userId: userId ?? null,
         ...(context?.before !== undefined && { before: context.before as any }),
         ...(context?.after !== undefined && { after: context.after as any }),
       },
