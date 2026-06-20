@@ -180,6 +180,32 @@ export async function rejectApplication(applicationId: string) {
   }
 }
 
+export async function getJobApplicationsForScreening(jobId: string) {
+  const session = await auth();
+  const permError = requireAdminPermission(session, "MANAGED");
+  if (permError) return { success: false as const, error: permError.error };
+
+  try {
+    const data = await prisma.application.findMany({
+      where: { jobId, status: { notIn: ["REJECTED", "HIRED"] } },
+      select: {
+        id: true,
+        status: true,
+        resumeUrl: true,
+        coverLetter: true,
+        aiScore: true,
+        aiRecommendation: true,
+        aiSummary: true,
+        candidate: { select: { name: true, email: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return { success: true as const, data };
+  } catch {
+    return { success: false as const, error: "Erro ao buscar candidaturas." };
+  }
+}
+
 export async function shortlistApplication(applicationId: string, feedback?: string) {
   const session = await auth();
   const permError = requireAdminPermission(session, "MANAGED");

@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
@@ -60,22 +60,24 @@ export default async function AdminPage() {
     }),
   ]);
 
-  // Revenue evolution — last 6 months
+  // Revenue evolution — last 6 months (1 query instead of 6)
   const months = Array.from({ length: 6 }, (_, i) => {
     const d = subMonths(now, 5 - i);
     return { start: startOfMonth(d), label: format(d, "MMM", { locale: ptBR }) };
   });
-  const revenueByMonth = await Promise.all(
-    months.map(async (m) => {
-      const end = new Date(m.start);
-      end.setMonth(end.getMonth() + 1);
-      const r = await prisma.commission.aggregate({
-        where: { status: "PAID", paidAt: { gte: m.start, lt: end } },
-        _sum: { amount: true },
-      });
-      return { label: m.label, amount: r._sum.amount || 0 };
-    })
-  );
+  const sixMonthsAgo = months[0].start;
+  const paidCommissions = await prisma.commission.findMany({
+    where: { status: "PAID", paidAt: { gte: sixMonthsAgo } },
+    select: { amount: true, paidAt: true },
+  });
+  const revenueByMonth = months.map((m) => {
+    const end = new Date(m.start);
+    end.setMonth(end.getMonth() + 1);
+    const amount = paidCommissions
+      .filter((c) => c.paidAt && c.paidAt >= m.start && c.paidAt < end)
+      .reduce((sum, c) => sum + c.amount, 0);
+    return { label: m.label, amount };
+  });
   const maxRevenue = Math.max(...revenueByMonth.map((m) => m.amount), 1);
   const revenueChartBars = revenueByMonth.map((m) => ({
     ...m,

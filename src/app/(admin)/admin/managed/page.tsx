@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
@@ -44,19 +44,25 @@ export default async function AdminManagedJobs({
         entryFeeAmount: true,
         entryFeePaidAt: true,
         _count: { select: { applications: true } },
+        // Only load the minimal data needed for list display + rounds history
         applications: {
+          where: { OR: [{ status: "SHORTLISTED" }, { placement: { isNot: null } }] },
           select: {
             id: true,
             status: true,
-            resumeUrl: true,
-            coverLetter: true,
-            aiScore: true,
-            aiRecommendation: true,
-            aiSummary: true,
+            placement: {
+              select: {
+                round: true,
+                status: true,
+                startDate: true,
+                trialEndDate: true,
+                effectiveDate: true,
+                terminationDate: true,
+                terminationReason: true,
+              },
+            },
             candidate: { select: { name: true, email: true } },
-            placement: { select: { status: true } },
           },
-          orderBy: { createdAt: "desc" },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -76,58 +82,34 @@ export default async function AdminManagedJobs({
 
   const totalPages = Math.ceil(totalManagedJobs / PAGE_SIZE);
 
-  // History scoped to IDs on the current page only — avoids loading all history at once
-  const pageJobIds = managedJobs.map((j) => j.id);
-  const jobsWithPlacements = await prisma.job.findMany({
-    where: {
-      id: { in: pageJobIds },
-      applications: { some: { placement: { isNot: null } } },
-    },
-    select: {
-      id: true,
-      title: true,
-      company: { select: { name: true } },
-      applications: {
-        where: { placement: { isNot: null } },
-        select: {
-          candidate: { select: { name: true, email: true } },
-          placement: {
-            select: {
-              round: true,
-              status: true,
-              startDate: true,
-              trialEndDate: true,
-              effectiveDate: true,
-              terminationDate: true,
-              terminationReason: true,
-            },
-          },
-        },
-        orderBy: { placement: { round: "asc" } },
-      },
-    },
-    // Preserve same order as page
-    orderBy: { createdAt: "desc" },
-  });
-
-  const jobRoundsData = jobsWithPlacements.map((job) => ({
-    jobId: job.id,
-    jobTitle: job.title,
-    companyName: job.company.name,
-    placements: job.applications
-      .filter((a) => a.placement)
-      .map((a) => ({
-        round: (a.placement as any).round ?? 1,
-        status: a.placement!.status as "TRIAL" | "EFFECTIVE" | "TERMINATED" | "CANCELLED",
-        candidateName: a.candidate.name ?? "Sem Nome",
-        candidateEmail: a.candidate.email ?? "",
-        startDate: a.placement!.startDate,
-        trialEndDate: a.placement!.trialEndDate,
-        effectiveDate: a.placement!.effectiveDate,
-        terminationDate: a.placement!.terminationDate,
-        terminationReason: a.placement!.terminationReason,
-      })),
+  // Build rounds data and computed list fields from the main query — no second DB call needed
+  const enhancedJobs = managedJobs.map((job) => ({
+    ...job,
+    shortlistCount: job.applications.filter((a) => a.status === "SHORTLISTED").length,
+    hasEffectivePlacement: job.applications.some((a) => (a.placement as any)?.status === "EFFECTIVE"),
   }));
+
+  const jobRoundsData = managedJobs
+    .filter((job) => job.applications.some((a) => a.placement))
+    .map((job) => ({
+      jobId: job.id,
+      jobTitle: job.title,
+      companyName: job.company.name,
+      placements: job.applications
+        .filter((a) => a.placement)
+        .sort((a, b) => ((a.placement as any)?.round ?? 1) - ((b.placement as any)?.round ?? 1))
+        .map((a) => ({
+          round: (a.placement as any).round ?? 1,
+          status: (a.placement as any).status as "TRIAL" | "EFFECTIVE" | "TERMINATED" | "CANCELLED",
+          candidateName: a.candidate.name ?? "Sem Nome",
+          candidateEmail: a.candidate.email ?? "",
+          startDate: (a.placement as any).startDate,
+          trialEndDate: (a.placement as any).trialEndDate,
+          effectiveDate: (a.placement as any).effectiveDate,
+          terminationDate: (a.placement as any).terminationDate,
+          terminationReason: (a.placement as any).terminationReason,
+        })),
+    }));
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -181,7 +163,7 @@ export default async function AdminManagedJobs({
         </Card>
       </div>
 
-      <ManagedJobsList jobs={managedJobs} highlightJobId={highlight} />
+      <ManagedJobsList jobs={enhancedJobs} highlightJobId={highlight} />
 
       {totalPages > 1 && (
         <PaginationBar

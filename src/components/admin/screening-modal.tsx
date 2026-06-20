@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -29,7 +29,7 @@ import {
   Layers,
   Loader2,
 } from "lucide-react";
-import { shortlistApplication, rejectApplication } from "@/actions/applications";
+import { shortlistApplication, rejectApplication, getJobApplicationsForScreening } from "@/actions/applications";
 import { hireAndPlace } from "@/actions/placements";
 import { analyzeCandidate, saveAiScore, type AIAnalysisResult } from "@/actions/ai-analysis";
 import { toast } from "sonner";
@@ -48,9 +48,9 @@ type App = {
 };
 
 interface ScreeningModalProps {
+  jobId: string;
   jobTitle: string;
   companyName: string;
-  applications: App[];
 }
 
 type ScoreEntry = { score: number; recommendation: string; summary: string };
@@ -98,24 +98,15 @@ function sortByScore(apps: App[], scores: Record<string, ScoreEntry>): App[] {
   });
 }
 
-export function ScreeningModal({ jobTitle, companyName, applications }: ScreeningModalProps) {
+export function ScreeningModal({ jobId, jobTitle, companyName }: ScreeningModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-
-  const initialScores: Record<string, ScoreEntry> = {};
-  for (const a of applications) {
-    if (a.aiScore != null) {
-      initialScores[a.id] = { score: a.aiScore, recommendation: a.aiRecommendation ?? "", summary: a.aiSummary ?? "" };
-    }
-  }
-
-  const [apps, setApps] = useState<App[]>(() => {
-    const pending = applications.filter((a) => a.status !== "REJECTED" && a.status !== "HIRED");
-    return sortByScore(pending, initialScores);
-  });
-
-  const [scores, setScores] = useState<Record<string, ScoreEntry>>(initialScores);
+  const [loading, setLoading] = useState(false);
+  const [rawApps, setRawApps] = useState<App[]>([]);
+  const [apps, setApps] = useState<App[]>([]);
+  const [scores, setScores] = useState<Record<string, ScoreEntry>>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [mode, setMode] = useState<"review" | "hire">("review");
+
   const [salary, setSalary] = useState("");
   const [startDate, setStartDate] = useState(() => new Date().toISOString().split("T")[0]);
   const [aiResult, setAiResult] = useState<AIAnalysisResult | null>(null);
@@ -127,6 +118,33 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
   const [bulkThreshold, setBulkThreshold] = useState(50);
   const [bulkRejecting, setBulkRejecting] = useState(false);
   const [, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!isOpen) return;
+    let cancelled = false;
+    setLoading(true);
+    setRawApps([]);
+    setApps([]);
+    setScores({});
+    setCurrentIndex(0);
+    getJobApplicationsForScreening(jobId).then((res) => {
+      if (cancelled) return;
+      if (res.success) {
+        const initialScores: Record<string, ScoreEntry> = {};
+        for (const a of res.data) {
+          if (a.aiScore != null) {
+            initialScores[a.id] = { score: a.aiScore, recommendation: a.aiRecommendation ?? "", summary: a.aiSummary ?? "" };
+          }
+        }
+        setScores(initialScores);
+        setRawApps(res.data as App[]);
+        const pending = (res.data as App[]).filter((a) => a.status !== "REJECTED" && a.status !== "HIRED");
+        setApps(sortByScore(pending, initialScores));
+      }
+      setLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, [isOpen, jobId]);
 
   const currentApp = apps[currentIndex];
   const isShortlisted = currentApp?.status === "SHORTLISTED";
@@ -432,9 +450,14 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
           </div>
         </div>
 
-        {apps.length === 0 ? (
+        {loading ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-white gap-4">
+            <Loader2 className="h-10 w-10 text-blue-400 animate-spin" />
+            <p className="text-sm font-bold text-slate-400">Carregando candidatos...</p>
+          </div>
+        ) : apps.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-white">
-            {applications.length === 0 ? (
+            {rawApps.length === 0 ? (
               <>
                 <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-6">
                   <Briefcase className="h-8 w-8 text-blue-300" />
@@ -451,7 +474,7 @@ export function ScreeningModal({ jobTitle, companyName, applications }: Screenin
                 </div>
                 <h3 className="text-xl font-black text-slate-900 tracking-tight">Triagem concluída</h3>
                 <p className="text-sm text-slate-500 max-w-sm mx-auto mt-2 leading-relaxed">
-                  Todos os {applications.length} currículos deste lote foram processados.
+                  Todos os {rawApps.length} currículos deste lote foram processados.
                 </p>
               </>
             )}

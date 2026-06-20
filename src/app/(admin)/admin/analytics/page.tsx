@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Users, Building2, Target, ArrowUpRight } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";

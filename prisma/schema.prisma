@@ -190,6 +190,8 @@ model Notification {
   userId    String?  @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
 
+  @@index([userId])
+  @@index([isRead])
   @@map("notifications")
 }
 

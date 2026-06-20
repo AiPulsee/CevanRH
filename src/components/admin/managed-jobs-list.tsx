@@ -26,18 +26,6 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-type App = {
-  id: string;
-  status: string;
-  resumeUrl: string;
-  coverLetter: string | null;
-  aiScore: number | null;
-  aiRecommendation: string | null;
-  aiSummary: string | null;
-  candidate: { name: string | null; email: string | null };
-  placement: { status: string } | null;
-};
-
 type EntryFeeStatus = "AWAITING" | "PAID" | "WAIVED";
 
 type ManagedJob = {
@@ -62,7 +50,8 @@ type ManagedJob = {
   entryFeePaidAt?: Date | null;
   company: { name: string; logoUrl: string | null };
   _count: { applications: number };
-  applications: App[];
+  shortlistCount: number;
+  hasEffectivePlacement: boolean;
 };
 
 function statusLabel(status: string) {
@@ -180,13 +169,8 @@ export function ManagedJobsList({ jobs: initial, highlightJobId }: { jobs: Manag
       ) : (
         <div className="grid grid-cols-1 gap-3">
           {filtered.map((job) => {
-            const shortlistedCount = job.applications.filter(
-              (a) => a.status === "SHORTLISTED"
-            ).length;
-            const hasEffectivePlacement = job.applications.some(
-              (a) => a.placement?.status === "EFFECTIVE"
-            );
-            const showTriagem = job.status === "ACTIVE" || !hasEffectivePlacement;
+            const shortlistedCount = job.shortlistCount;
+            const showTriagem = job.status === "ACTIVE" || !job.hasEffectivePlacement;
             const entryFeeStatus = (job.entryFeeStatus as EntryFeeStatus) ?? "AWAITING";
             const feeMeta = ENTRY_FEE_META[entryFeeStatus];
 
@@ -286,9 +270,9 @@ export function ManagedJobsList({ jobs: initial, highlightJobId }: { jobs: Manag
                   <div className="flex items-center gap-2 w-full lg:w-auto">
                     {showTriagem && (
                       <ScreeningModal
+                        jobId={job.id}
                         jobTitle={job.title}
                         companyName={job.company.name}
-                        applications={job.applications}
                       />
                     )}
                     <Link href={`/admin/managed/${job.id}`}>

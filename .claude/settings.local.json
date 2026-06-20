@@ -86,7 +86,25 @@
       "Bash(git merge *)",
       "Bash(node -e \"console.log\\(require\\('sharp'\\)\\)\")",
       "Bash(node make-favicon.js)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(dir \"C:\\\\Users\\\\danil\\\\Desktop\\\\CevanRH\" /b /a)",
+      "Bash(findstr /i env)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('next:', p.dependencies.next, 'next-auth:', p.dependencies['next-auth']\\)\")",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\danil\\\\Desktop\\\\CevanRH\\\\public\\\\cevanempresarial\\\\iconparaapp.png\" -Destination \"C:\\\\Users\\\\danil\\\\Desktop\\\\CevanRH\\\\src\\\\app\\\\icon.png\" -Force)",
+      "Skill(run)",
+      "Skill(run:*)",
+      "PowerShell(curl -s -o $null -w \"%{http_code}\" http://localhost:3000 2>$null)",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000\" -TimeoutSec 3 -ErrorAction Stop; \"RUNNING: $\\($r.StatusCode\\)\" } catch { \"NOT_RUNNING\" })",
+      "PowerShell(cd \"c:\\\\Users\\\\danil\\\\Desktop\\\\CevanRH\"; $env:DATABASE_URL=\"postgresql://neondb_owner:npg_pQXn6YUove8O@ep-spring-cherry-angy2pxc-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connection_limit=1&pool_timeout=15\"; node -e \"const {PrismaClient}=require\\('@prisma/client'\\);const p=new PrismaClient\\(\\);p.user.findMany\\({where:{role:'ADMIN'},select:{email:true,name:true},take:5}\\).then\\(r=>console.log\\(JSON.stringify\\(r,null,2\\)\\)\\).catch\\(e=>console.error\\(e\\)\\).finally\\(\\(\\)=>p.`$disconnect\\(\\)\\)\")",
+      "Bash(echo \"PID: $!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(npx playwright *)",
+      "Bash(node --experimental-vm-modules scripts/take-screenshots.mjs)",
+      "Bash(node scripts/take-screenshots.mjs)",
+      "Bash(node scripts/screenshot-manual.mjs)",
+      "Bash(node scripts/ss.mjs)",
+      "Bash(rm scripts/ss.mjs)",
+      "PowerShell(cd \"c:\\\\Users\\\\danil\\\\Desktop\\\\CevanRH\"; \\(Get-Content \"src\\\\app\\\\\\(admin\\)\\\\admin\\\\managed\\\\[id]\\\\page.tsx\" -First 1\\); \\(Get-Content \"src\\\\app\\\\\\(admin\\)\\\\admin\\\\users\\\\page.tsx\" -First 1\\); \\(Get-Content \"src\\\\app\\\\\\(admin\\)\\\\admin\\\\notifications\\\\page.tsx\" -First 1\\))"
     ]
   }
 }

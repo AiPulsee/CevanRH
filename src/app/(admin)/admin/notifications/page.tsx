@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 import { getAllNotifications } from "@/actions/notifications";
 import { NotificationsClient } from "@/components/admin/notifications-client";

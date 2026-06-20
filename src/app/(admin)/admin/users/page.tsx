@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 import { getUsers } from "@/actions/users";
 import { UsersTable } from "@/components/admin/users-table";
