@@ -152,10 +152,19 @@ export default async function JobsPublicPage({
 
           {/* Job Cards */}
           {jobs.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
+            <div className="flex flex-col items-center justify-center py-16 gap-5 text-center">
               <Search className="h-12 w-12 text-slate-200" />
-              <p className="text-slate-400 font-bold text-lg">Nenhuma vaga encontrada</p>
-              <p className="text-slate-400 text-sm">Tente ajustar seus filtros ou busca.</p>
+              <div className="space-y-1">
+                <p className="text-slate-500 font-bold text-lg">Nenhuma vaga encontrada</p>
+                <p className="text-slate-400 text-sm">Tente ajustar seus filtros ou busca.</p>
+              </div>
+              <Link
+                href="/candidatura-espontanea"
+                className="mt-2 inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#1967D2] text-white font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+              >
+                Cadastrar no Banco de Talentos
+                <ChevronRight className="h-4 w-4" />
+              </Link>
             </div>
           ) : (
             <div className="space-y-4">
@@ -214,6 +223,26 @@ export default async function JobsPublicPage({
                 baseHref="/jobs"
                 params={paginationParams}
               />
+            </div>
+          )}
+
+          {/* Talent bank CTA */}
+          {jobs.length > 0 && (
+            <div className="mt-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 to-blue-950 text-white text-center space-y-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">Banco de Talentos</p>
+              <h3 className="text-xl sm:text-2xl font-black leading-tight">
+                Não encontrou a vaga certa?
+              </h3>
+              <p className="text-slate-400 font-medium text-sm max-w-sm mx-auto">
+                Cadastre seu currículo e seja contactado quando surgir uma oportunidade para o seu perfil.
+              </p>
+              <Link
+                href="/candidatura-espontanea"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#1967D2] hover:bg-blue-500 text-white font-bold text-sm transition-all shadow-lg shadow-blue-900/40"
+              >
+                Enviar meu currículo
+                <ChevronRight className="h-4 w-4" />
+              </Link>
             </div>
           )}
         </div>

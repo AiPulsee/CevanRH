@@ -17,6 +17,61 @@ const applySchema = z.object({
   coverLetter: z.string().max(1000, "Carta muito longa").optional(),
 });
 
+const talentBankSchema = z.object({
+  name: z.string().min(2, "Nome muito curto").max(100, "Nome muito longo"),
+  email: z.string().email("E-mail inválido"),
+  resumeUrl: z.string().url("URL de currículo inválida"),
+  coverLetter: z.string().max(1000, "Mensagem muito longa").optional(),
+});
+
+export async function joinTalentBank(data: {
+  name: string;
+  email: string;
+  resumeUrl: string;
+  coverLetter?: string;
+}) {
+  const validated = talentBankSchema.safeParse(data);
+  if (!validated.success) return fail(validated.error.issues[0].message);
+
+  const { name, email, resumeUrl, coverLetter } = validated.data;
+
+  const r2Domain = process.env.R2_PUBLIC_DOMAIN;
+  if (!r2Domain || !resumeUrl.startsWith(r2Domain)) {
+    return fail("URL de currículo inválida.");
+  }
+
+  try {
+    let user = await prisma.user.findFirst({ where: { email } });
+    if (!user) {
+      user = await prisma.user.create({
+        data: { name, email, role: "CANDIDATE" },
+      });
+    }
+
+    // jobId = null → entrada no banco de talentos
+    const id = randomUUID();
+    const now = new Date();
+    await prisma.$executeRaw`
+      INSERT INTO applications (id, resume_url, cover_letter, status, candidate_id, created_at, updated_at)
+      VALUES (${id}, ${resumeUrl}, ${coverLetter ?? null}, 'APPLIED', ${user.id}, ${now}, ${now})
+    `;
+
+    await createNotification({
+      title: "Novo Currículo no Banco de Talentos",
+      message: `${name} (${email}) enviou o currículo para o banco de talentos.`,
+      type: "INFO",
+    });
+
+    revalidatePath("/admin/resumes");
+    revalidatePath("/admin");
+
+    return { success: true as const };
+  } catch (error: any) {
+    console.error("Erro ao cadastrar no banco de talentos:", error);
+    return fail("Ocorreu um erro ao enviar seu currículo. Tente novamente.");
+  }
+}
+
 export async function applyToJob(data: {
   jobId: string;
   name: string;

@@ -31,6 +31,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   const defaultNavLinks = [
     { name: "Início", href: "/" },
     { name: "Vagas", href: "/jobs" },
+    { name: "Banco de Talentos", href: "/candidatura-espontanea" },
     { name: "Para Empresas", href: "/servicos" },
     { name: "Quem Somos", href: "/about" },
     // { name: "Grupo Cevan", href: "/grupo-cevan" },
