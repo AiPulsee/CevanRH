@@ -57,7 +57,7 @@ export default function TalentBankPage() {
             <span className="text-[#1967D2]">Fique no nosso radar.</span>
           </h1>
           <p className="text-slate-500 font-medium text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mb-8">
-            Cadastre seu currículo e nossos consultores entrarão em contato quando surgir uma oportunidade alinhada ao seu perfil — mesmo antes de ela ser publicada.
+            Cadastre seu currículo e nossos consultores entrarão em contato quando surgir uma oportunidade alinhada ao seu perfil.
           </p>
         </div>
       </section>
