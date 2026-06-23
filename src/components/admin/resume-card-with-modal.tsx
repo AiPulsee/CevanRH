@@ -157,7 +157,7 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
               <div className="flex items-center gap-2">
                 <Briefcase className="h-3.5 w-3.5 text-slate-400" />
                 <span className="text-sm font-bold text-slate-700">
-                  {app.job?.title ?? "Cadastro Manual"}
+                  {app.job?.title ?? "Banco de Talentos"}
                 </span>
               </div>
             </div>
@@ -174,8 +174,8 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
                     </Badge>
                   </>
                 ) : (
-                  <Badge className="rounded-md px-1.5 py-0 text-[8px] font-black uppercase border-none bg-slate-100 text-slate-500">
-                    Manual
+                  <Badge className="rounded-md px-1.5 py-0 text-[8px] font-black uppercase border-none bg-violet-50 text-violet-600">
+                    Banco de Talentos
                   </Badge>
                 )}
               </div>
@@ -259,7 +259,7 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
                     {app.job ? "Candidatou-se para" : "Origem"}
                   </p>
                   <p className="text-xs font-black text-slate-300 mt-0.5">
-                    {app.job?.title ?? "Cadastro Manual"}
+                    {app.job?.title ?? "Banco de Talentos"}
                   </p>
                   {app.job && (
                     <p className="text-[10px] text-slate-500 font-bold">{app.job.company.name}</p>
@@ -292,12 +292,12 @@ export function ResumeCardWithModal({ app, formattedDate, activeJobs }: ResumeCa
             {/* Quick Info */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { label: "Vaga", value: app.job?.title ?? "Cadastro Manual" },
+                { label: "Vaga", value: app.job?.title ?? "Banco de Talentos" },
                 { label: "Empresa", value: app.job?.company.name ?? "—" },
                 { label: "Recebido", value: formattedDate },
                 {
                   label: "Tipo",
-                  value: app.job ? "Curadoria" : "Manual",
+                  value: app.job ? "Curadoria" : "Banco de Talentos",
                 },
               ].map((item) => (
                 <div key={item.label} className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">

@@ -28,6 +28,7 @@ const STATUS_OPTIONS = [
 const TYPE_OPTIONS = [
   { value: "", label: "Todos" },
   { value: "MANAGED", label: "Curadoria" },
+  { value: "TALENT_BANK", label: "Banco de Talentos" },
 ];
 
 const SORT_OPTIONS = [
@@ -58,23 +59,33 @@ export default async function ResumesPage({
 
   const page = Math.max(1, parseInt(pageParam ?? "1"));
 
+  const isTalentBank = typeFilter === "TALENT_BANK";
+
   const where: Record<string, unknown> = {
-    ...(typeFilter && { job: { type: typeFilter as JobType } }),
+    ...(isTalentBank
+      ? { jobId: null }
+      : typeFilter === "MANAGED"
+      ? { job: { type: typeFilter as JobType } }
+      : {}),
     ...(statusFilter && { status: statusFilter }),
-    ...(companyFilter && { job: { company: { id: companyFilter } } }),
+    ...(!isTalentBank && companyFilter && { job: { company: { id: companyFilter } } }),
     ...(query && {
       OR: [
         { candidate: { name: { contains: query, mode: "insensitive" } } },
         { candidate: { email: { contains: query, mode: "insensitive" } } },
-        { job: { title: { contains: query, mode: "insensitive" } } },
-        { job: { company: { name: { contains: query, mode: "insensitive" } } } },
+        ...(!isTalentBank
+          ? [
+              { job: { title: { contains: query, mode: "insensitive" } } },
+              { job: { company: { name: { contains: query, mode: "insensitive" } } } },
+            ]
+          : []),
       ],
     }),
   };
 
   // When filtering by company, also need type filter on job if typeFilter set
   const whereResolved =
-    typeFilter && companyFilter
+    !isTalentBank && typeFilter === "MANAGED" && companyFilter
       ? { ...where, job: { type: typeFilter as JobType, company: { id: companyFilter } } }
       : where;
 
@@ -272,7 +283,7 @@ export default async function ResumesPage({
               )}
               {typeFilter && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 rounded-lg text-[10px] font-black">
-                  Curadoria
+                  {TYPE_OPTIONS.find((o) => o.value === typeFilter)?.label ?? typeFilter}
                 </span>
               )}
               {statusFilter && (
