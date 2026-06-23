@@ -86,7 +86,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                   "w-auto object-contain transition-all duration-300",
                   isGrupoCevan
                     ? (scrolled ? "h-6" : "h-7 lg:h-8")
-                    : (scrolled ? "h-8" : "h-10 lg:h-11")
+                    : (scrolled ? "h-6" : "h-7 lg:h-8")
                 )}
                 priority
               />
