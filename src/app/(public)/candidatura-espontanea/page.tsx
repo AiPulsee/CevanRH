@@ -4,8 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Users, Zap, ShieldCheck, Clock, CheckCircle2, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-
 export const metadata: Metadata = {
   title: "Banco de Talentos | Cevan Serviços Empresariais",
   description: "Não encontrou a vaga ideal? Cadastre seu currículo no banco de talentos da Cevan e seja encontrado pelas melhores empresas do Maranhão.",
@@ -43,9 +41,7 @@ const BENEFITS = [
   },
 ];
 
-export default async function TalentBankPage() {
-  const talentCount = await prisma.application.count({ where: { jobId: null } });
-
+export default function TalentBankPage() {
   return (
     <div className="flex flex-col min-h-screen bg-[#FAFBFC] font-sans mt-24">
 
@@ -63,14 +59,6 @@ export default async function TalentBankPage() {
           <p className="text-slate-500 font-medium text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mb-8">
             Cadastre seu currículo e nossos consultores entrarão em contato quando surgir uma oportunidade alinhada ao seu perfil — mesmo antes de ela ser publicada.
           </p>
-          {talentCount > 0 && (
-            <div className="inline-flex items-center gap-2 bg-white border border-slate-100 rounded-full px-4 py-2 shadow-sm">
-              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-bold text-slate-600">
-                {talentCount} {talentCount === 1 ? "profissional cadastrado" : "profissionais cadastrados"}
-              </span>
-            </div>
-          )}
         </div>
       </section>
 
